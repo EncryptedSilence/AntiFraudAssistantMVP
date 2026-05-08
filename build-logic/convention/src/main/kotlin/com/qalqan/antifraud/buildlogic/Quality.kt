@@ -1,0 +1,32 @@
+package com.qalqan.antifraud.buildlogic
+
+import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.withType
+
+internal fun Project.applyQuality() {
+    pluginManager.apply("org.jlleitschuh.gradle.ktlint")
+    pluginManager.apply("io.gitlab.arturbosch.detekt")
+
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = false
+        }
+    }
+}
+
+internal fun Project.addJvmTestDependencies() {
+    val libs = extensions.getByName("libs") as org.gradle.api.artifacts.VersionCatalog
+    fun lib(alias: String) = libs.findLibrary(alias).get()
+    dependencies {
+        add("testImplementation", lib("junit-jupiter-api"))
+        add("testImplementation", lib("junit-jupiter-params"))
+        add("testRuntimeOnly", lib("junit-jupiter-engine"))
+        add("testImplementation", lib("kotest-assertions-core"))
+        add("testImplementation", lib("mockk"))
+    }
+}
