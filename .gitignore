@@ -1,0 +1,69 @@
+# --- project-private (kept off the public repo) ----------------------------
+docs/
+CLAUDE.md
+.claude/
+
+# --- Gradle ----------------------------------------------------------------
+.gradle/
+build/
+gradle-app.setting
+gradle.properties.local
+# keep the wrapper jar so cloners can build without a system Gradle install
+!gradle/wrapper/gradle-wrapper.jar
+
+# --- Android ---------------------------------------------------------------
+local.properties
+*.iml
+.cxx/
+captures/
+output.json
+release/
+app/release/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# --- Signing keys and secrets (NEVER commit these) -------------------------
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+google-services.json
+secrets.properties
+local.env
+*.env.local
+
+# --- IDE: JetBrains (Android Studio / IntelliJ) ----------------------------
+.idea/
+*.iws
+out/
+
+# --- IDE: VS Code / Eclipse ------------------------------------------------
+.vscode/
+.project
+.classpath
+.settings/
+
+# --- Test / coverage / reports --------------------------------------------
+test-results/
+*.exec
+coverage/
+*.lcov
+jacoco.exec
+
+# --- Kotlin / Java compile by-products ------------------------------------
+*.class
+hs_err_pid*
+
+# --- Operating system noise ------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editor temp / logs ----------------------------------------------------
+*.log
+*.tmp
+*~
+*.swp
+*.swo
