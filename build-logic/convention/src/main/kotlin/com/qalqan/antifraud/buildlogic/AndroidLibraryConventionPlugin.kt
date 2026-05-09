@@ -3,7 +3,7 @@ package com.qalqan.antifraud.buildlogic
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -36,7 +36,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
         applyQuality()
 
-        val libs = extensions.getByName("libs") as VersionCatalog
+        val libs = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
         fun lib(alias: String) = libs.findLibrary(alias).get()
         dependencies {
             add("testImplementation", lib("junit-jupiter-api"))
