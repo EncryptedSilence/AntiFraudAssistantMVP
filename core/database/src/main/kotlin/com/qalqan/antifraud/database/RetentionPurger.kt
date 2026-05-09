@@ -19,6 +19,7 @@ class RetentionPurger internal constructor(
         db.riskCampaignDao().deleteArchivedOlderThan(
             now.minus(policy.archivedCampaignTtl).toEpochMilli(),
         )
+        db.applicationActionLogDao().deleteOlderThan(now.minus(policy.actionLogTtl).toEpochMilli())
     }
 
     companion object {
