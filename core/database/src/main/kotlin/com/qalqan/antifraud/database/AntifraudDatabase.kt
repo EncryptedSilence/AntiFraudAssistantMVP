@@ -5,6 +5,8 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.qalqan.antifraud.database.answers.UserAnswerDao
+import com.qalqan.antifraud.database.answers.UserAnswerEntity
 import com.qalqan.antifraud.database.calls.CallEventDao
 import com.qalqan.antifraud.database.calls.CallEventEntity
 import com.qalqan.antifraud.database.contacts.ContactProfileDao
@@ -21,6 +23,7 @@ import com.qalqan.antifraud.database.web.WebEventEntity
         CallEventEntity::class,
         SmsEventEntity::class,
         WebEventEntity::class,
+        UserAnswerEntity::class,
     ],
     version = 1,
     exportSchema = true,
@@ -33,6 +36,8 @@ abstract class AntifraudDatabase : RoomDatabase() {
     internal abstract fun smsEventDao(): SmsEventDao
 
     internal abstract fun webEventDao(): WebEventDao
+
+    internal abstract fun userAnswerDao(): UserAnswerDao
 
     companion object {
         private const val NAME = "antifraud.db"

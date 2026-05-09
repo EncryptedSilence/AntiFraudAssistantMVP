@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "26b0526cbc4f8bc0585cf9b698adfadf",
+    "identityHash": "df080cc477c5eaf8fbc0c1e2f2397f46",
     "entities": [
       {
         "tableName": "contact_profile",
@@ -371,11 +371,94 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_web_event_visitedAtMs` ON `${TABLE_NAME}` (`visitedAtMs`)"
           }
         ]
+      },
+      {
+        "tableName": "user_answer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `relatedEventId` TEXT NOT NULL, `relatedSessionId` TEXT, `relatedCampaignId` TEXT, `questionCode` TEXT NOT NULL, `answerCode` TEXT NOT NULL, `userNoteLocalEnc` BLOB, `answerRiskScore` INTEGER NOT NULL, `createdAtMs` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedEventId",
+            "columnName": "relatedEventId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedSessionId",
+            "columnName": "relatedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "relatedCampaignId",
+            "columnName": "relatedCampaignId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "questionCode",
+            "columnName": "questionCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "answerCode",
+            "columnName": "answerCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userNoteLocalEnc",
+            "columnName": "userNoteLocalEnc",
+            "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "answerRiskScore",
+            "columnName": "answerRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMs",
+            "columnName": "createdAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_user_answer_createdAtMs",
+            "unique": false,
+            "columnNames": [
+              "createdAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_answer_createdAtMs` ON `${TABLE_NAME}` (`createdAtMs`)"
+          },
+          {
+            "name": "index_user_answer_relatedEventId",
+            "unique": false,
+            "columnNames": [
+              "relatedEventId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_answer_relatedEventId` ON `${TABLE_NAME}` (`relatedEventId`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26b0526cbc4f8bc0585cf9b698adfadf')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'df080cc477c5eaf8fbc0c1e2f2397f46')"
     ]
   }
 }
