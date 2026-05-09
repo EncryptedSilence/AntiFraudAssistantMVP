@@ -3,6 +3,8 @@ package com.qalqan.antifraud.database
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
+import com.qalqan.antifraud.database.log.ApplicationActionLogRepository
+import com.qalqan.antifraud.database.log.ApplicationActionLogger
 import com.qalqan.antifraud.database.repository.CallEventRepository
 import com.qalqan.antifraud.database.repository.ContactProfileRepository
 import com.qalqan.antifraud.database.repository.RiskCampaignRepository
@@ -26,6 +28,8 @@ class Repositories private constructor(
     val sessions: RiskSessionRepository = RiskSessionRepository(db.riskSessionDao())
     val campaigns: RiskCampaignRepository = RiskCampaignRepository(db.riskCampaignDao())
     val contacts: ContactProfileRepository = ContactProfileRepository(db.contactProfileDao())
+    val actionLog: ApplicationActionLogRepository = ApplicationActionLogRepository(db.applicationActionLogDao())
+    val actionLogger: ApplicationActionLogger = ApplicationActionLogger(db.applicationActionLogDao())
 
     /**
      * Spec §23 #20 — full local wipe. Deletes every row across all entity tables, then resets the
@@ -39,6 +43,7 @@ class Repositories private constructor(
         db.riskSessionDao().deleteAll()
         db.riskCampaignDao().deleteAll()
         db.contactProfileDao().deleteAll()
+        db.applicationActionLogDao().deleteAll()
         onWipe()
     }
 
