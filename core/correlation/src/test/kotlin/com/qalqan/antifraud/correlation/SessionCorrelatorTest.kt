@@ -19,11 +19,12 @@ class SessionCorrelatorTest {
 
     @Test fun `no open session creates a new session`() {
         val event = call("h1", t)
-        val result = SessionCorrelator.findOrOpen(
-            event = RiskEvent.Call(event),
-            openSessions = emptyList(),
-            now = t
-        )
+        val result =
+            SessionCorrelator.findOrOpen(
+                event = RiskEvent.Call(event),
+                openSessions = emptyList(),
+                now = t,
+            )
         result.shouldBeInstanceOf<SessionCorrelator.Outcome.Created>()
     }
 
@@ -32,11 +33,12 @@ class SessionCorrelatorTest {
         val openSession = sessionFor(first)
         val second = call("h1", t.plusSeconds(60))
 
-        val result = SessionCorrelator.findOrOpen(
-            event = RiskEvent.Call(second),
-            openSessions = listOf(openSession),
-            now = t.plusSeconds(60)
-        )
+        val result =
+            SessionCorrelator.findOrOpen(
+                event = RiskEvent.Call(second),
+                openSessions = listOf(openSession),
+                now = t.plusSeconds(60),
+            )
         result.shouldBeInstanceOf<SessionCorrelator.Outcome.Attached>()
         (result as SessionCorrelator.Outcome.Attached).sessionId shouldBe openSession.id
     }
@@ -45,15 +47,19 @@ class SessionCorrelatorTest {
         val first = call("h1", t)
         val openSession = sessionFor(first)
         val second = call("h1", t.plusSeconds(60 * 60))
-        val result = SessionCorrelator.findOrOpen(
-            event = RiskEvent.Call(second),
-            openSessions = listOf(openSession),
-            now = t.plusSeconds(60 * 60)
-        )
+        val result =
+            SessionCorrelator.findOrOpen(
+                event = RiskEvent.Call(second),
+                openSessions = listOf(openSession),
+                now = t.plusSeconds(60 * 60),
+            )
         result.shouldBeInstanceOf<SessionCorrelator.Outcome.Created>()
     }
 
-    private fun call(hash: String, at: Instant) = CallEvent(
+    private fun call(
+        hash: String,
+        at: Instant,
+    ) = CallEvent(
         id = EventId("c-$hash-$at"),
         phoneHash = PhoneHash(hash),
         simSlot = null,
@@ -65,20 +71,21 @@ class SessionCorrelatorTest {
         isRepeated = false,
         callRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
-    private fun sessionFor(call: CallEvent) = RiskSession(
-        id = SessionId("s-${call.id.value}"),
-        startedAt = call.startedAt,
-        endedAt = null,
-        status = SessionStatus.OPEN,
-        relatedCallEventIds = listOf(call.id),
-        relatedSmsEventIds = emptyList(),
-        relatedWebEventIds = emptyList(),
-        relatedUserAnswerIds = emptyList(),
-        sessionRiskScore = 0,
-        sessionRiskBand = RiskBand.LOW,
-        explanation = null
-    )
+    private fun sessionFor(call: CallEvent) =
+        RiskSession(
+            id = SessionId("s-${call.id.value}"),
+            startedAt = call.startedAt,
+            endedAt = null,
+            status = SessionStatus.OPEN,
+            relatedCallEventIds = listOf(call.id),
+            relatedSmsEventIds = emptyList(),
+            relatedWebEventIds = emptyList(),
+            relatedUserAnswerIds = emptyList(),
+            sessionRiskScore = 0,
+            sessionRiskBand = RiskBand.LOW,
+            explanation = null,
+        )
 }

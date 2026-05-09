@@ -12,19 +12,20 @@ import java.time.Instant
 class SessionCorrelatorCloseTest {
     private val t = Instant.parse("2026-05-08T10:00:00Z")
 
-    private fun open(startedAt: Instant) = RiskSession(
-        id = SessionId("s-$startedAt"),
-        startedAt = startedAt,
-        endedAt = null,
-        status = SessionStatus.OPEN,
-        relatedCallEventIds = emptyList(),
-        relatedSmsEventIds = emptyList(),
-        relatedWebEventIds = emptyList(),
-        relatedUserAnswerIds = emptyList(),
-        sessionRiskScore = 0,
-        sessionRiskBand = RiskBand.LOW,
-        explanation = null
-    )
+    private fun open(startedAt: Instant) =
+        RiskSession(
+            id = SessionId("s-$startedAt"),
+            startedAt = startedAt,
+            endedAt = null,
+            status = SessionStatus.OPEN,
+            relatedCallEventIds = emptyList(),
+            relatedSmsEventIds = emptyList(),
+            relatedWebEventIds = emptyList(),
+            relatedUserAnswerIds = emptyList(),
+            sessionRiskScore = 0,
+            sessionRiskBand = RiskBand.LOW,
+            explanation = null,
+        )
 
     @Test fun `session closes when older than the maximum window plus grace`() {
         val ancient = open(t.minus(Duration.ofHours(25)))

@@ -12,7 +12,10 @@ import java.time.Instant
 class CampaignCorrelatorArchiveTest {
     private val t = Instant.parse("2026-05-08T10:00:00Z")
 
-    private fun camp(daysAgo: Long, status: CampaignStatus = CampaignStatus.ACTIVE) = RiskCampaign(
+    private fun camp(
+        daysAgo: Long,
+        status: CampaignStatus = CampaignStatus.ACTIVE,
+    ) = RiskCampaign(
         campaignId = CampaignId("c-$daysAgo"),
         startedAt = t.minus(Duration.ofDays(daysAgo)),
         lastEventAt = t.minus(Duration.ofDays(daysAgo)),
@@ -27,7 +30,7 @@ class CampaignCorrelatorArchiveTest {
         triggeredPatternIds = emptyList(),
         campaignRiskScore = 0,
         campaignRiskBand = RiskBand.LOW,
-        explanation = null
+        explanation = null,
     )
 
     @Test fun `campaigns older than 14 days are archived`() {

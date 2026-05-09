@@ -54,7 +54,10 @@ class LinkSignalResolverTest {
         LinkSignalResolver.resolve(RiskEvent.Call(callA), RiskEvent.Sms(smsB)) shouldBe listOf(LinkSignal.WEAK)
     }
 
-    private fun call(hash: String, at: Instant) = CallEvent(
+    private fun call(
+        hash: String,
+        at: Instant,
+    ) = CallEvent(
         id = EventId("c-$hash-$at"),
         phoneHash = PhoneHash(hash),
         simSlot = null,
@@ -66,10 +69,13 @@ class LinkSignalResolverTest {
         isRepeated = false,
         callRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
-    private fun sms(hash: String, at: Instant) = SmsEvent(
+    private fun sms(
+        hash: String,
+        at: Instant,
+    ) = SmsEvent(
         id = EventId("s-$hash-$at"),
         senderHash = SenderHash(hash),
         senderDisplayNameLocal = null,
@@ -83,10 +89,13 @@ class LinkSignalResolverTest {
         bodyExcerptEnc = byteArrayOf(),
         smsRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
-    private fun web(hash: String, at: Instant) = WebEvent(
+    private fun web(
+        hash: String,
+        at: Instant,
+    ) = WebEvent(
         id = EventId("w-$hash-$at"),
         domainHash = DomainHash(hash),
         domainDisplayLocal = "halykbank.kz",
@@ -95,6 +104,6 @@ class LinkSignalResolverTest {
         domainStatus = DomainStatus.NEW,
         webRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 }

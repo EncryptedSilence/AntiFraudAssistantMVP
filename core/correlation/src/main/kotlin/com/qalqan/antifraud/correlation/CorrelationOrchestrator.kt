@@ -14,30 +14,32 @@ import java.time.Instant
 class CorrelationOrchestrator {
     data class Outcome(
         val sessionOutcome: SessionCorrelator.Outcome,
-        val campaignOutcome: CampaignCorrelator.Outcome
+        val campaignOutcome: CampaignCorrelator.Outcome,
     )
 
     fun absorb(
         event: RiskEvent,
         now: Instant,
         openSessions: List<RiskSession>,
-        activeCampaigns: List<RiskCampaign>
+        activeCampaigns: List<RiskCampaign>,
     ): Outcome {
         val sessionOutcome = SessionCorrelator.findOrOpen(event, openSessions, now)
         val (phoneHash, senderHash) = actorOf(event)
-        val campaignOutcome = CampaignCorrelator.findOrOpen(
-            actorPhoneHash = phoneHash,
-            actorSenderHash = senderHash,
-            now = now,
-            activeCampaigns = activeCampaigns
-        )
+        val campaignOutcome =
+            CampaignCorrelator.findOrOpen(
+                actorPhoneHash = phoneHash,
+                actorSenderHash = senderHash,
+                now = now,
+                activeCampaigns = activeCampaigns,
+            )
         return Outcome(sessionOutcome, campaignOutcome)
     }
 
-    private fun actorOf(event: RiskEvent): Pair<PhoneHash?, SenderHash?> = when (event) {
-        is RiskEvent.Call -> event.event.phoneHash to null
-        is RiskEvent.Sms -> null to event.event.senderHash
-        is RiskEvent.Web -> null to null
-        is RiskEvent.Answer -> null to null
-    }
+    private fun actorOf(event: RiskEvent): Pair<PhoneHash?, SenderHash?> =
+        when (event) {
+            is RiskEvent.Call -> event.event.phoneHash to null
+            is RiskEvent.Sms -> null to event.event.senderHash
+            is RiskEvent.Web -> null to null
+            is RiskEvent.Answer -> null to null
+        }
 }

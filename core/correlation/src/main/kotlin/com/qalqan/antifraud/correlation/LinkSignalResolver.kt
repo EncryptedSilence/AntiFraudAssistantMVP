@@ -12,7 +12,10 @@ import java.time.Duration
 object LinkSignalResolver {
     private val WINDOW_24H: Duration = Duration.ofHours(24)
 
-    fun resolve(a: RiskEvent, b: RiskEvent): List<LinkSignal> {
+    fun resolve(
+        a: RiskEvent,
+        b: RiskEvent,
+    ): List<LinkSignal> {
         val signals = mutableSetOf<LinkSignal>()
 
         if (sameActor(a, b)) signals += LinkSignal.SAME_NUMBER
@@ -35,10 +38,14 @@ object LinkSignalResolver {
         return signals.toList()
     }
 
-    private fun sameActor(a: RiskEvent, b: RiskEvent): Boolean = when {
-        a is RiskEvent.Call && b is RiskEvent.Call -> a.event.phoneHash == b.event.phoneHash
-        a is RiskEvent.Sms && b is RiskEvent.Sms -> a.event.senderHash == b.event.senderHash
-        a is RiskEvent.Web && b is RiskEvent.Web -> a.event.domainHash == b.event.domainHash
-        else -> false
-    }
+    private fun sameActor(
+        a: RiskEvent,
+        b: RiskEvent,
+    ): Boolean =
+        when {
+            a is RiskEvent.Call && b is RiskEvent.Call -> a.event.phoneHash == b.event.phoneHash
+            a is RiskEvent.Sms && b is RiskEvent.Sms -> a.event.senderHash == b.event.senderHash
+            a is RiskEvent.Web && b is RiskEvent.Web -> a.event.domainHash == b.event.domainHash
+            else -> false
+        }
 }

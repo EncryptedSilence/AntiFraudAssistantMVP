@@ -19,48 +19,55 @@ object CampaignCorrelator {
 
     sealed interface Outcome {
         data class Attached(val campaignId: CampaignId) : Outcome
+
         data class Created(val campaign: RiskCampaign) : Outcome
     }
 
+    @Suppress("MaxLineLength")
     fun findOrOpen(
         actorPhoneHash: PhoneHash?,
         actorSenderHash: SenderHash?,
         now: Instant,
-        activeCampaigns: List<RiskCampaign>
+        activeCampaigns: List<RiskCampaign>,
     ): Outcome {
-        val match = activeCampaigns.firstOrNull { camp ->
-            val withinHorizon = Duration.between(camp.startedAt, now) <= HORIZON
-            val sameActor =
-                (actorPhoneHash != null && actorPhoneHash in camp.relatedPhoneHashes) ||
-                    (actorSenderHash != null && actorSenderHash in camp.relatedSmsSenderHashes)
-            withinHorizon && sameActor
-        }
+        val match =
+            activeCampaigns.firstOrNull { camp ->
+                val withinHorizon = Duration.between(camp.startedAt, now) <= HORIZON
+                val sameActor =
+                    (actorPhoneHash != null && actorPhoneHash in camp.relatedPhoneHashes) ||
+                        (actorSenderHash != null && actorSenderHash in camp.relatedSmsSenderHashes)
+                withinHorizon && sameActor
+            }
         return if (match != null) Outcome.Attached(match.campaignId) else Outcome.Created(empty(actorPhoneHash, actorSenderHash, now))
     }
 
     private fun empty(
         actorPhoneHash: PhoneHash?,
         actorSenderHash: SenderHash?,
-        now: Instant
-    ): RiskCampaign = RiskCampaign(
-        campaignId = CampaignId(UUID.randomUUID().toString()),
-        startedAt = now,
-        lastEventAt = now,
-        status = CampaignStatus.ACTIVE,
-        scenarioType = null,
-        relatedPhoneHashes = listOfNotNull(actorPhoneHash).toSet(),
-        relatedSmsSenderHashes = listOfNotNull(actorSenderHash).toSet(),
-        relatedDomainHashes = emptySet(),
-        relatedEventIds = emptyList(),
-        relatedSessionIds = emptyList(),
-        userAnswerIds = emptyList(),
-        triggeredPatternIds = emptyList(),
-        campaignRiskScore = 0,
-        campaignRiskBand = RiskBand.LOW,
-        explanation = null
-    )
+        now: Instant,
+    ): RiskCampaign =
+        RiskCampaign(
+            campaignId = CampaignId(UUID.randomUUID().toString()),
+            startedAt = now,
+            lastEventAt = now,
+            status = CampaignStatus.ACTIVE,
+            scenarioType = null,
+            relatedPhoneHashes = listOfNotNull(actorPhoneHash).toSet(),
+            relatedSmsSenderHashes = listOfNotNull(actorSenderHash).toSet(),
+            relatedDomainHashes = emptySet(),
+            relatedEventIds = emptyList(),
+            relatedSessionIds = emptyList(),
+            userAnswerIds = emptyList(),
+            triggeredPatternIds = emptyList(),
+            campaignRiskScore = 0,
+            campaignRiskBand = RiskBand.LOW,
+            explanation = null,
+        )
 
-    fun archiveExpired(campaigns: List<RiskCampaign>, now: Instant): List<RiskCampaign> =
+    fun archiveExpired(
+        campaigns: List<RiskCampaign>,
+        now: Instant,
+    ): List<RiskCampaign> =
         campaigns.map { c ->
             if (c.status == CampaignStatus.ACTIVE &&
                 Duration.between(c.startedAt, now) > HORIZON

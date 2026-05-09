@@ -17,7 +17,7 @@ class CampaignCorrelatorTest {
 
     private fun activeCampaign(
         startedDaysAgo: Long = 1,
-        phoneHash: PhoneHash = PhoneHash("h1")
+        phoneHash: PhoneHash = PhoneHash("h1"),
     ) = RiskCampaign(
         campaignId = CampaignId("camp"),
         startedAt = t.minus(Duration.ofDays(startedDaysAgo)),
@@ -33,40 +33,43 @@ class CampaignCorrelatorTest {
         triggeredPatternIds = emptyList(),
         campaignRiskScore = 0,
         campaignRiskBand = RiskBand.LOW,
-        explanation = null
+        explanation = null,
     )
 
     @Test fun `same actor inside 14 day horizon attaches`() {
         val camp = activeCampaign(startedDaysAgo = 5, phoneHash = PhoneHash("h1"))
-        val outcome = CampaignCorrelator.findOrOpen(
-            actorPhoneHash = PhoneHash("h1"),
-            actorSenderHash = null,
-            now = t,
-            activeCampaigns = listOf(camp)
-        )
+        val outcome =
+            CampaignCorrelator.findOrOpen(
+                actorPhoneHash = PhoneHash("h1"),
+                actorSenderHash = null,
+                now = t,
+                activeCampaigns = listOf(camp),
+            )
         outcome.shouldBeInstanceOf<CampaignCorrelator.Outcome.Attached>()
         (outcome as CampaignCorrelator.Outcome.Attached).campaignId shouldBe camp.campaignId
     }
 
     @Test fun `same actor older than 14 days opens a new campaign`() {
         val camp = activeCampaign(startedDaysAgo = 20, phoneHash = PhoneHash("h1"))
-        val outcome = CampaignCorrelator.findOrOpen(
-            actorPhoneHash = PhoneHash("h1"),
-            actorSenderHash = null,
-            now = t,
-            activeCampaigns = listOf(camp)
-        )
+        val outcome =
+            CampaignCorrelator.findOrOpen(
+                actorPhoneHash = PhoneHash("h1"),
+                actorSenderHash = null,
+                now = t,
+                activeCampaigns = listOf(camp),
+            )
         outcome.shouldBeInstanceOf<CampaignCorrelator.Outcome.Created>()
     }
 
     @Test fun `different actor opens new campaign`() {
         val camp = activeCampaign(phoneHash = PhoneHash("h1"))
-        val outcome = CampaignCorrelator.findOrOpen(
-            actorPhoneHash = PhoneHash("h2"),
-            actorSenderHash = SenderHash("s1"),
-            now = t,
-            activeCampaigns = listOf(camp)
-        )
+        val outcome =
+            CampaignCorrelator.findOrOpen(
+                actorPhoneHash = PhoneHash("h2"),
+                actorSenderHash = SenderHash("s1"),
+                now = t,
+                activeCampaigns = listOf(camp),
+            )
         outcome.shouldBeInstanceOf<CampaignCorrelator.Outcome.Created>()
     }
 }

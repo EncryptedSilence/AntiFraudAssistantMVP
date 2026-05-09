@@ -10,15 +10,17 @@ enum class LinkClue {
     SAME_DOMAIN_HASH,
     SAME_SENDER_HASH,
     USER_CONFIRMED_LINK,
-    SAME_SCENARIO_CATEGORY
+    SAME_SCENARIO_CATEGORY,
 }
 
 object SessionWindowSelector {
-    private val windows: List<Pair<Set<LinkClue>, Duration>> = listOf(
-        setOf(LinkClue.SAME_PHONE_HASH, LinkClue.SAME_DOMAIN_HASH, LinkClue.SAME_SENDER_HASH) to Duration.ofMinutes(15),
-        setOf(LinkClue.USER_CONFIRMED_LINK) to Duration.ofMinutes(60),
-        setOf(LinkClue.SAME_SCENARIO_CATEGORY) to Duration.ofHours(24)
-    )
+    @Suppress("MaxLineLength")
+    private val windows: List<Pair<Set<LinkClue>, Duration>> =
+        listOf(
+            setOf(LinkClue.SAME_PHONE_HASH, LinkClue.SAME_DOMAIN_HASH, LinkClue.SAME_SENDER_HASH) to Duration.ofMinutes(15),
+            setOf(LinkClue.USER_CONFIRMED_LINK) to Duration.ofMinutes(60),
+            setOf(LinkClue.SAME_SCENARIO_CATEGORY) to Duration.ofHours(24),
+        )
 
     private val DEFAULT: Duration = Duration.ofMinutes(30)
 
