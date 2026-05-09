@@ -20,7 +20,7 @@ internal fun Project.applyQuality() {
 }
 
 internal fun Project.addJvmTestDependencies() {
-    val libs = extensions.getByName("libs") as org.gradle.api.artifacts.VersionCatalog
+    val libs = extensions.getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java).named("libs")
     fun lib(alias: String) = libs.findLibrary(alias).get()
     dependencies {
         add("testImplementation", lib("junit-jupiter-api"))
