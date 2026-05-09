@@ -59,4 +59,15 @@ object CampaignCorrelator {
         campaignRiskBand = RiskBand.LOW,
         explanation = null
     )
+
+    fun archiveExpired(campaigns: List<RiskCampaign>, now: Instant): List<RiskCampaign> =
+        campaigns.map { c ->
+            if (c.status == CampaignStatus.ACTIVE &&
+                Duration.between(c.startedAt, now) > HORIZON
+            ) {
+                c.copy(status = CampaignStatus.ARCHIVED)
+            } else {
+                c
+            }
+        }
 }
