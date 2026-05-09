@@ -7,6 +7,10 @@ android {
     namespace = "com.qalqan.antifraud.database"
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(project(":core:domain"))
     implementation(libs.coroutines.core)
