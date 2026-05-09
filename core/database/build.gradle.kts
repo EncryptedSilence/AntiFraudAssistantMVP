@@ -21,6 +21,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.sqlcipher.android)
+    implementation(libs.moshi)
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.room.testing)

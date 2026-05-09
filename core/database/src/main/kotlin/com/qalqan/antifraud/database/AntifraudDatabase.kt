@@ -5,13 +5,19 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.qalqan.antifraud.database.answers.UserAnswerDao
 import com.qalqan.antifraud.database.answers.UserAnswerEntity
 import com.qalqan.antifraud.database.calls.CallEventDao
 import com.qalqan.antifraud.database.calls.CallEventEntity
+import com.qalqan.antifraud.database.campaigns.RiskCampaignDao
+import com.qalqan.antifraud.database.campaigns.RiskCampaignEntity
 import com.qalqan.antifraud.database.contacts.ContactProfileDao
 import com.qalqan.antifraud.database.contacts.ContactProfileEntity
+import com.qalqan.antifraud.database.converters.JsonListConverters
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
+import com.qalqan.antifraud.database.sessions.RiskSessionDao
+import com.qalqan.antifraud.database.sessions.RiskSessionEntity
 import com.qalqan.antifraud.database.sms.SmsEventDao
 import com.qalqan.antifraud.database.sms.SmsEventEntity
 import com.qalqan.antifraud.database.web.WebEventDao
@@ -24,10 +30,13 @@ import com.qalqan.antifraud.database.web.WebEventEntity
         SmsEventEntity::class,
         WebEventEntity::class,
         UserAnswerEntity::class,
+        RiskSessionEntity::class,
+        RiskCampaignEntity::class,
     ],
     version = 1,
     exportSchema = true,
 )
+@TypeConverters(JsonListConverters::class)
 abstract class AntifraudDatabase : RoomDatabase() {
     internal abstract fun contactProfileDao(): ContactProfileDao
 
@@ -38,6 +47,10 @@ abstract class AntifraudDatabase : RoomDatabase() {
     internal abstract fun webEventDao(): WebEventDao
 
     internal abstract fun userAnswerDao(): UserAnswerDao
+
+    internal abstract fun riskSessionDao(): RiskSessionDao
+
+    internal abstract fun riskCampaignDao(): RiskCampaignDao
 
     companion object {
         private const val NAME = "antifraud.db"
