@@ -17,7 +17,7 @@ data class ContactProfile(
     val firstSeenAt: Instant,
     val lastSeenAt: Instant,
     val riskCounter: Int,
-    val userComment: String?
+    val userComment: String?,
 ) {
     init {
         require(id.isNotBlank()) { "id must not be blank" }

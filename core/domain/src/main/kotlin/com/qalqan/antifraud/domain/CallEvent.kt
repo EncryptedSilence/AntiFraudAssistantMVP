@@ -17,7 +17,7 @@ data class CallEvent(
     val isRepeated: Boolean,
     val callRiskScore: Int,
     val linkedSessionId: SessionId?,
-    val linkedCampaignId: CampaignId?
+    val linkedCampaignId: CampaignId?,
 ) {
     init {
         require(durationSec >= 0) { "durationSec must be non-negative" }

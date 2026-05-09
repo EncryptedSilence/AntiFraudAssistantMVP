@@ -20,7 +20,7 @@ data class RiskCampaign(
     val triggeredPatternIds: List<PatternId>,
     val campaignRiskScore: Int,
     val campaignRiskBand: RiskBand,
-    val explanation: String?
+    val explanation: String?,
 ) {
     init {
         require(!lastEventAt.isBefore(startedAt)) { "lastEventAt must be on or after startedAt" }

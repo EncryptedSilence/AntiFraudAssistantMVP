@@ -23,7 +23,7 @@ class ContactProfileTest {
                 firstSeenAt = baseTime,
                 lastSeenAt = baseTime,
                 riskCounter = 0,
-                userComment = null
+                userComment = null,
             )
         }
     }
@@ -43,7 +43,7 @@ class ContactProfileTest {
                 firstSeenAt = baseTime,
                 lastSeenAt = baseTime,
                 riskCounter = -1,
-                userComment = null
+                userComment = null,
             )
         }
     }
@@ -63,27 +63,28 @@ class ContactProfileTest {
                 firstSeenAt = baseTime,
                 lastSeenAt = baseTime.minusSeconds(1),
                 riskCounter = 0,
-                userComment = null
+                userComment = null,
             )
         }
     }
 
     @Test
     fun `valid contact profile is accepted`() {
-        val cp = ContactProfile(
-            id = "c1",
-            phoneNormalizedEnc = byteArrayOf(),
-            phoneHash = PhoneHash("hash"),
-            phoneLast4 = "1234",
-            isShortCode = false,
-            displayNameLocal = "Mom",
-            isInContacts = true,
-            trustStatus = TrustStatus.TRUSTED,
-            firstSeenAt = baseTime,
-            lastSeenAt = baseTime,
-            riskCounter = 0,
-            userComment = null
-        )
+        val cp =
+            ContactProfile(
+                id = "c1",
+                phoneNormalizedEnc = byteArrayOf(),
+                phoneHash = PhoneHash("hash"),
+                phoneLast4 = "1234",
+                isShortCode = false,
+                displayNameLocal = "Mom",
+                isInContacts = true,
+                trustStatus = TrustStatus.TRUSTED,
+                firstSeenAt = baseTime,
+                lastSeenAt = baseTime,
+                riskCounter = 0,
+                userComment = null,
+            )
         cp.trustStatus shouldBe TrustStatus.TRUSTED
     }
 }

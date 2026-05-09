@@ -12,21 +12,22 @@ class CallEventTest {
     private fun call(
         durationSec: Long = 180,
         endedAt: Instant? = ended,
-        riskScore: Int = 0
-    ): CallEvent = CallEvent(
-        id = EventId("e1"),
-        phoneHash = PhoneHash("h"),
-        simSlot = null,
-        direction = CallDirection.INCOMING,
-        startedAt = started,
-        endedAt = endedAt,
-        durationSec = durationSec,
-        isKnownContact = false,
-        isRepeated = false,
-        callRiskScore = riskScore,
-        linkedSessionId = null,
-        linkedCampaignId = null
-    )
+        riskScore: Int = 0,
+    ): CallEvent =
+        CallEvent(
+            id = EventId("e1"),
+            phoneHash = PhoneHash("h"),
+            simSlot = null,
+            direction = CallDirection.INCOMING,
+            startedAt = started,
+            endedAt = endedAt,
+            durationSec = durationSec,
+            isKnownContact = false,
+            isRepeated = false,
+            callRiskScore = riskScore,
+            linkedSessionId = null,
+            linkedCampaignId = null,
+        )
 
     @Test fun `durationSec cannot be negative`() {
         shouldThrow<IllegalArgumentException> { call(durationSec = -1) }

@@ -9,7 +9,7 @@ import java.time.Instant
 enum class QuestionCode {
     Q1_CALLER_OFFICIAL_CLAIM,
     Q2_PRESSURE_OR_DONT_CONSULT,
-    Q3_ASKED_TO_ACT_NOW
+    Q3_ASKED_TO_ACT_NOW,
 }
 
 enum class AnswerCode { YES, NO, NOT_SURE, NOT_ANSWERED }
@@ -23,7 +23,7 @@ data class UserAnswer(
     val answerCode: AnswerCode,
     val userNoteLocalEnc: ByteArray?,
     val answerRiskScore: Int,
-    val createdAt: Instant
+    val createdAt: Instant,
 ) {
     init {
         require(answerRiskScore in 0..100) { "answerRiskScore must be in 0..100" }

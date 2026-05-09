@@ -16,7 +16,7 @@ data class RiskSession(
     val relatedUserAnswerIds: List<AnswerId>,
     val sessionRiskScore: Int,
     val sessionRiskBand: RiskBand,
-    val explanation: String?
+    val explanation: String?,
 ) {
     init {
         endedAt?.let {

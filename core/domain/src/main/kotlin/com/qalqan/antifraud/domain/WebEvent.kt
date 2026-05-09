@@ -14,7 +14,7 @@ data class WebEvent(
     val domainStatus: DomainStatus,
     val webRiskScore: Int,
     val linkedSessionId: SessionId?,
-    val linkedCampaignId: CampaignId?
+    val linkedCampaignId: CampaignId?,
 ) {
     init {
         require(domainDisplayLocal.isNotBlank()) { "domainDisplayLocal must not be blank" }

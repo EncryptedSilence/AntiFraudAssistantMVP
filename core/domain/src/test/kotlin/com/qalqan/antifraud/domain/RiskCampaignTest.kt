@@ -11,7 +11,7 @@ class RiskCampaignTest {
     private fun campaign(
         lastEventAt: Instant = t,
         riskScore: Int = 0,
-        scenarioType: ScenarioCategory? = null
+        scenarioType: ScenarioCategory? = null,
     ) = RiskCampaign(
         campaignId = CampaignId("c1"),
         startedAt = t,
@@ -27,7 +27,7 @@ class RiskCampaignTest {
         triggeredPatternIds = emptyList(),
         campaignRiskScore = riskScore,
         campaignRiskBand = RiskBand.LOW,
-        explanation = null
+        explanation = null,
     )
 
     @Test fun `lastEventAt cannot precede startedAt`() {

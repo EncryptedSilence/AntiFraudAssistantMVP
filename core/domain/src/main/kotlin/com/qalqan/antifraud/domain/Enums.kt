@@ -22,7 +22,7 @@ enum class SmsCategory {
     PASSWORD_CHANGE,
     TRANSFER,
     LOAN,
-    SECURITY_WARNING
+    SECURITY_WARNING,
 }
 
 enum class ScenarioCategory {
@@ -31,7 +31,7 @@ enum class ScenarioCategory {
     INVESTMENT_SCHEME,
     DELIVERY_SCAM,
     TECH_SUPPORT_SCAM,
-    UNKNOWN_SOCIAL_ENGINEERING
+    UNKNOWN_SOCIAL_ENGINEERING,
 }
 
 enum class RiskBand { LOW, MEDIUM, HIGH, CRITICAL }

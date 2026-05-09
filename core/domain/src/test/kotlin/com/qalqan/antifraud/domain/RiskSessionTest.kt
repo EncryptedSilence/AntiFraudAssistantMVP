@@ -11,7 +11,7 @@ class RiskSessionTest {
     private fun session(
         endedAt: Instant? = null,
         riskScore: Int = 0,
-        riskBand: RiskBand = RiskBand.LOW
+        riskBand: RiskBand = RiskBand.LOW,
     ) = RiskSession(
         id = SessionId("s1"),
         startedAt = t,
@@ -23,7 +23,7 @@ class RiskSessionTest {
         relatedUserAnswerIds = emptyList(),
         sessionRiskScore = riskScore,
         sessionRiskBand = riskBand,
-        explanation = null
+        explanation = null,
     )
 
     @Test fun `endedAt cannot be before startedAt`() {

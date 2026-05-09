@@ -12,7 +12,7 @@ class UserAnswerTest {
         questionCode: QuestionCode = QuestionCode.Q1_CALLER_OFFICIAL_CLAIM,
         answerCode: AnswerCode = AnswerCode.YES,
         userNoteEnc: ByteArray? = null,
-        riskScore: Int = 25
+        riskScore: Int = 25,
     ) = UserAnswer(
         id = AnswerId("a1"),
         relatedEventId = EventId("e1"),
@@ -22,7 +22,7 @@ class UserAnswerTest {
         answerCode = answerCode,
         userNoteLocalEnc = userNoteEnc,
         answerRiskScore = riskScore,
-        createdAt = now
+        createdAt = now,
     )
 
     @Test fun `risk score bounded`() {

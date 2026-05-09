@@ -19,7 +19,7 @@ data class SmsEvent(
     val bodyExcerptEnc: ByteArray,
     val smsRiskScore: Int,
     val linkedSessionId: SessionId?,
-    val linkedCampaignId: CampaignId?
+    val linkedCampaignId: CampaignId?,
 ) {
     init {
         require(bodyExcerptEnc.size <= MAX_BODY_EXCERPT_BYTES) {

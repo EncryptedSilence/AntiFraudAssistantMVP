@@ -14,7 +14,7 @@ class ApplicationActionLogTest {
                 id = "l1",
                 createdAt = t,
                 action = AppAction.EXPORT,
-                details = mapOf("phoneNumber" to "+77001234567")
+                details = mapOf("phoneNumber" to "+77001234567"),
             )
         }
         shouldThrow<IllegalArgumentException> {
@@ -22,7 +22,7 @@ class ApplicationActionLogTest {
                 id = "l1",
                 createdAt = t,
                 action = AppAction.EXPORT,
-                details = mapOf("smsBody" to "your code is 1234")
+                details = mapOf("smsBody" to "your code is 1234"),
             )
         }
     }
@@ -32,7 +32,7 @@ class ApplicationActionLogTest {
             id = "l1",
             createdAt = t,
             action = AppAction.SYNC_VERIFY_OK,
-            details = mapOf("packageVersion" to "1.0.3")
+            details = mapOf("packageVersion" to "1.0.3"),
         ).action shouldBe AppAction.SYNC_VERIFY_OK
     }
 }

@@ -6,3 +6,28 @@ naming:
     excludeClassPattern: '$^'
     ignoreAnnotated:
       - 'Composable'
+
+style:
+  MagicNumber:
+    active: true
+    ignoreNumbers: ['-1', '0', '1', '2', '4', '100']
+    ignoreEnums: true
+    ignoreRanges: true
+
+complexity:
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 18
+    ignoreSingleWhenExpression: false
+    ignoreSimpleWhenEntries: false
+    ignoreNestingFunctions: false
+    nestingFunctions:
+      - 'also'
+      - 'apply'
+      - 'forEach'
+      - 'isNotNull'
+      - 'ifNull'
+      - 'let'
+      - 'run'
+      - 'use'
+      - 'with'

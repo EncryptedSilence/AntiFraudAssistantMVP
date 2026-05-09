@@ -17,22 +17,23 @@ enum class AppAction {
     PATTERN_ROLLBACK,
     EXPORT,
     DATA_DELETED,
-    SETTING_CHANGED
+    SETTING_CHANGED,
 }
 
-private val FORBIDDEN_DETAIL_KEYS: Set<String> = setOf(
-    "phoneNumber", "phone", "phoneNormalized",
-    "smsBody", "body", "messageBody",
-    "domain", "url",
-    "otp", "code",
-    "userNote", "userText"
-)
+private val FORBIDDEN_DETAIL_KEYS: Set<String> =
+    setOf(
+        "phoneNumber", "phone", "phoneNormalized",
+        "smsBody", "body", "messageBody",
+        "domain", "url",
+        "otp", "code",
+        "userNote", "userText",
+    )
 
 data class ApplicationActionLogEntry(
     val id: String,
     val createdAt: Instant,
     val action: AppAction,
-    val details: Map<String, String>
+    val details: Map<String, String>,
 ) {
     init {
         require(id.isNotBlank()) { "id must not be blank" }

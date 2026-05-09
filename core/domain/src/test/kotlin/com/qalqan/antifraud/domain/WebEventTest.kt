@@ -8,7 +8,10 @@ import java.time.Instant
 class WebEventTest {
     private val visited = Instant.parse("2026-05-08T10:00:00Z")
 
-    private fun web(domainDisplay: String = "halykbank.kz", riskScore: Int = 0) = WebEvent(
+    private fun web(
+        domainDisplay: String = "halykbank.kz",
+        riskScore: Int = 0,
+    ) = WebEvent(
         id = EventId("e1"),
         domainHash = DomainHash("h"),
         domainDisplayLocal = domainDisplay,
@@ -17,7 +20,7 @@ class WebEventTest {
         domainStatus = DomainStatus.NEW,
         webRiskScore = riskScore,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
     @Test fun `domain display must not contain a path or query`() {
