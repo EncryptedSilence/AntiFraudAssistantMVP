@@ -5,7 +5,8 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class DemoFixtureTest {
-    private val json = """
+    private val json =
+        """
         {
           "name": "Fast attack",
           "specReference": "§13.1",
@@ -15,7 +16,7 @@ class DemoFixtureTest {
             { "type": "Sms",  "sender": "BANK", "offsetSeconds": 60, "body": "code" }
           ]
         }
-    """.trimIndent()
+        """.trimIndent()
 
     @Test fun `parses Call and Sms variants`() {
         val fixture = DemoFixture.fromJson(json)

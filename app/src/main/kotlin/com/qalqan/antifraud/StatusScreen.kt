@@ -23,7 +23,7 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
         Column(
             modifier = Modifier.fillMaxSize().padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text("AntiFraud Assistant — Stage 1 status board", style = MaterialTheme.typography.titleLarge)
             Text("Calls captured: ${state.calls}")

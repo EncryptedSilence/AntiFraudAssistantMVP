@@ -24,7 +24,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val calls: Int = 0,
         val sms: Int = 0,
         val web: Int = 0,
-        val campaigns: Int = 0
+        val campaigns: Int = 0,
     )
 
     fun runDemo() {
@@ -44,12 +44,13 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
     private suspend fun refresh() {
         val callsCount = repos.calls.listSince(Instant.EPOCH).size
         val smsCount = repos.sms.listSince(Instant.EPOCH).size
-        _state.value = State(
-            calls = callsCount,
-            sms = smsCount,
-            web = 0,
-            campaigns = 0
-        )
+        _state.value =
+            State(
+                calls = callsCount,
+                sms = smsCount,
+                web = 0,
+                campaigns = 0,
+            )
     }
 
     override fun onCleared() {
