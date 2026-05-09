@@ -27,4 +27,10 @@ dependencies {
 
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+
+    testImplementation(libs.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.coroutines.test)
 }
