@@ -5,14 +5,18 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.qalqan.antifraud.database.contacts.ContactProfileDao
+import com.qalqan.antifraud.database.contacts.ContactProfileEntity
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
 
 @Database(
-    entities = [SchemaBootstrapEntity::class],
+    entities = [ContactProfileEntity::class],
     version = 1,
     exportSchema = true,
 )
 abstract class AntifraudDatabase : RoomDatabase() {
+    internal abstract fun contactProfileDao(): ContactProfileDao
+
     companion object {
         private const val NAME = "antifraud.db"
 

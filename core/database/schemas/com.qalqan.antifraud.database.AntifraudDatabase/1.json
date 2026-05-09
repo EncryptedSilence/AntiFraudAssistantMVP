@@ -2,17 +2,80 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "33459a923ccb780b9c7680c41de08c51",
+    "identityHash": "739027ed706d63a634600c53722434f8",
     "entities": [
       {
-        "tableName": "schema_bootstrap",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "contact_profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `phoneNormalizedEnc` BLOB NOT NULL, `phoneHash` TEXT NOT NULL, `phoneLast4` TEXT, `isShortCode` INTEGER NOT NULL, `displayNameLocal` TEXT, `isInContacts` INTEGER NOT NULL, `trustStatus` TEXT NOT NULL, `firstSeenAtMs` INTEGER NOT NULL, `lastSeenAtMs` INTEGER NOT NULL, `riskCounter` INTEGER NOT NULL, `userComment` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneNormalizedEnc",
+            "columnName": "phoneNormalizedEnc",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneHash",
+            "columnName": "phoneHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneLast4",
+            "columnName": "phoneLast4",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isShortCode",
+            "columnName": "isShortCode",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "displayNameLocal",
+            "columnName": "displayNameLocal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isInContacts",
+            "columnName": "isInContacts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trustStatus",
+            "columnName": "trustStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstSeenAtMs",
+            "columnName": "firstSeenAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSeenAtMs",
+            "columnName": "lastSeenAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riskCounter",
+            "columnName": "riskCounter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userComment",
+            "columnName": "userComment",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -25,7 +88,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '33459a923ccb780b9c7680c41de08c51')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '739027ed706d63a634600c53722434f8')"
     ]
   }
 }
