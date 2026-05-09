@@ -1,0 +1,21 @@
+{
+  "name": "Fast attack",
+  "specReference": "§13.1",
+  "anchorAt": "2026-05-08T10:00:00Z",
+  "events": [
+    {
+      "type": "Call",
+      "rawNumber": "+77001234567",
+      "direction": "INCOMING",
+      "offsetSeconds": 0,
+      "durationSec": 240,
+      "isKnownContact": false
+    },
+    {
+      "type": "Sms",
+      "sender": "BANK24",
+      "offsetSeconds": 360,
+      "body": "Halyk: code 482917 — do not share. Call us back at 7575 for help."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "Trust grooming",
+  "specReference": "§13.3",
+  "anchorAt": "2026-05-05T10:00:00Z",
+  "events": [
+    {
+      "type": "Call",
+      "rawNumber": "+77000000010",
+      "direction": "INCOMING",
+      "offsetSeconds": 0,
+      "durationSec": 90,
+      "isKnownContact": false
+    },
+    {
+      "type": "Call",
+      "rawNumber": "+77000000010",
+      "direction": "INCOMING",
+      "offsetSeconds": 86400,
+      "durationSec": 60,
+      "isKnownContact": false
+    },
+    {
+      "type": "Call",
+      "rawNumber": "+77000000011",
+      "direction": "INCOMING",
+      "offsetSeconds": 172800,
+      "durationSec": 300,
+      "isKnownContact": false
+    },
+    {
+      "type": "Sms",
+      "sender": "BANK24",
+      "offsetSeconds": 173400,
+      "body": "Halyk: code 729104 - do not share."
+    }
+  ]
+}

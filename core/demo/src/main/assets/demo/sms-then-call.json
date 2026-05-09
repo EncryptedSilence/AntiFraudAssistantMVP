@@ -1,0 +1,21 @@
+{
+  "name": "SMS first, call later",
+  "specReference": "§13.2",
+  "anchorAt": "2026-05-06T10:00:00Z",
+  "events": [
+    {
+      "type": "Sms",
+      "sender": "+77000000001",
+      "offsetSeconds": 0,
+      "body": "Verify your account at halyk-secure.example - link expires soon"
+    },
+    {
+      "type": "Call",
+      "rawNumber": "+77000000002",
+      "direction": "INCOMING",
+      "offsetSeconds": 86400,
+      "durationSec": 420,
+      "isKnownContact": false
+    }
+  ]
+}
