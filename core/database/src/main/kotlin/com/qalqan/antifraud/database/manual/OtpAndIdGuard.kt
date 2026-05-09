@@ -15,9 +15,8 @@ object OtpAndIdGuard {
 
     fun isLikelySensitive(note: String): Boolean {
         val trimmed = note.trim()
-        if (OTP.containsMatchIn(trimmed)) return true
-        if (IIN.containsMatchIn(trimmed)) return true
-        if (CARD.containsMatchIn(trimmed)) return true
-        return false
+        return OTP.containsMatchIn(trimmed) ||
+            IIN.containsMatchIn(trimmed) ||
+            CARD.containsMatchIn(trimmed)
     }
 }

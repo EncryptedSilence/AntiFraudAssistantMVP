@@ -51,20 +51,21 @@ class ManualEntry private constructor(
             val n = phone.normalize(rawNumber)
             val hash = Hashing.saltedSha256(n.normalizedE164, salt)
             val id = EventId(UUID.randomUUID().toString())
-            val ev = CallEvent(
-                id = id,
-                phoneHash = PhoneHash(hash),
-                simSlot = null,
-                direction = direction,
-                startedAt = startedAt,
-                endedAt = startedAt.plusSeconds(durationSec),
-                durationSec = durationSec,
-                isKnownContact = isKnownContact,
-                isRepeated = false,
-                callRiskScore = 0,
-                linkedSessionId = null,
-                linkedCampaignId = null,
-            )
+            val ev =
+                CallEvent(
+                    id = id,
+                    phoneHash = PhoneHash(hash),
+                    simSlot = null,
+                    direction = direction,
+                    startedAt = startedAt,
+                    endedAt = startedAt.plusSeconds(durationSec),
+                    durationSec = durationSec,
+                    isKnownContact = isKnownContact,
+                    isRepeated = false,
+                    callRiskScore = 0,
+                    linkedSessionId = null,
+                    linkedCampaignId = null,
+                )
             repos.calls.save(ev)
             return id
         }
@@ -83,22 +84,23 @@ class ManualEntry private constructor(
             val containsCode = OtpAndIdGuard.isLikelySensitive(body)
             val containsLink = body.contains("http", ignoreCase = true)
             val id = EventId(UUID.randomUUID().toString())
-            val ev = SmsEvent(
-                id = id,
-                senderHash = SenderHash(senderHash),
-                senderDisplayNameLocal = sender.trim().take(SENDER_DISPLAY_MAX_CHARS),
-                simSlot = simSlot,
-                receivedAt = receivedAt,
-                smsCategory = SmsCategory.UNKNOWN_SENDER,
-                containsCode = containsCode,
-                containsLink = containsLink,
-                containsFinancialKeyword = false,
-                containsSecurityKeyword = false,
-                bodyExcerptEnc = excerptEnc,
-                smsRiskScore = 0,
-                linkedSessionId = null,
-                linkedCampaignId = null,
-            )
+            val ev =
+                SmsEvent(
+                    id = id,
+                    senderHash = SenderHash(senderHash),
+                    senderDisplayNameLocal = sender.trim().take(SENDER_DISPLAY_MAX_CHARS),
+                    simSlot = simSlot,
+                    receivedAt = receivedAt,
+                    smsCategory = SmsCategory.UNKNOWN_SENDER,
+                    containsCode = containsCode,
+                    containsLink = containsLink,
+                    containsFinancialKeyword = false,
+                    containsSecurityKeyword = false,
+                    bodyExcerptEnc = excerptEnc,
+                    smsRiskScore = 0,
+                    linkedSessionId = null,
+                    linkedCampaignId = null,
+                )
             repos.sms.save(ev)
             return id
         }
@@ -113,17 +115,18 @@ class ManualEntry private constructor(
             require('/' !in cleaned) { "submit only the domain, not a URL" }
             val hash = Hashing.saltedSha256(cleaned, salt)
             val id = EventId(UUID.randomUUID().toString())
-            val ev = WebEvent(
-                id = id,
-                domainHash = DomainHash(hash),
-                domainDisplayLocal = cleaned,
-                visitedAt = visitedAt,
-                isNewDomain = true,
-                domainStatus = DomainStatus.NEW,
-                webRiskScore = 0,
-                linkedSessionId = null,
-                linkedCampaignId = null,
-            )
+            val ev =
+                WebEvent(
+                    id = id,
+                    domainHash = DomainHash(hash),
+                    domainDisplayLocal = cleaned,
+                    visitedAt = visitedAt,
+                    isNewDomain = true,
+                    domainStatus = DomainStatus.NEW,
+                    webRiskScore = 0,
+                    linkedSessionId = null,
+                    linkedCampaignId = null,
+                )
             repos.web.save(ev)
             return id
         }
@@ -137,22 +140,26 @@ class ManualEntry private constructor(
             createdAt: Instant,
         ): AnswerId {
             val a = AnswerId(UUID.randomUUID().toString())
-            val ans = UserAnswer(
-                id = a,
-                relatedEventId = relatedEventId,
-                relatedSessionId = null,
-                relatedCampaignId = null,
-                questionCode = questionCode,
-                answerCode = answerCode,
-                userNoteLocalEnc = null,
-                answerRiskScore = 0,
-                createdAt = createdAt,
-            )
+            val ans =
+                UserAnswer(
+                    id = a,
+                    relatedEventId = relatedEventId,
+                    relatedSessionId = null,
+                    relatedCampaignId = null,
+                    questionCode = questionCode,
+                    answerCode = answerCode,
+                    userNoteLocalEnc = null,
+                    answerRiskScore = 0,
+                    createdAt = createdAt,
+                )
             repos.answers.save(ans)
             return a
         }
 
-        suspend fun submitNote(relatedEventId: EventId, noteText: String): AnswerId {
+        suspend fun submitNote(
+            relatedEventId: EventId,
+            noteText: String,
+        ): AnswerId {
             if (OtpAndIdGuard.isLikelySensitive(noteText)) {
                 throw SensitiveNoteRejected(
                     "Note appears to contain an OTP / ID / card number; it cannot be saved.",
@@ -161,17 +168,18 @@ class ManualEntry private constructor(
             val truncated = noteText.take(UserAnswer.MAX_NOTE_CHARS)
             val enc = box.encrypt(truncated.toByteArray(Charsets.UTF_8))
             val a = AnswerId(UUID.randomUUID().toString())
-            val ans = UserAnswer(
-                id = a,
-                relatedEventId = relatedEventId,
-                relatedSessionId = null,
-                relatedCampaignId = null,
-                questionCode = QuestionCode.Q1_CALLER_OFFICIAL_CLAIM,
-                answerCode = AnswerCode.NOT_ANSWERED,
-                userNoteLocalEnc = enc,
-                answerRiskScore = 0,
-                createdAt = Instant.now(),
-            )
+            val ans =
+                UserAnswer(
+                    id = a,
+                    relatedEventId = relatedEventId,
+                    relatedSessionId = null,
+                    relatedCampaignId = null,
+                    questionCode = QuestionCode.Q1_CALLER_OFFICIAL_CLAIM,
+                    answerCode = AnswerCode.NOT_ANSWERED,
+                    userNoteLocalEnc = enc,
+                    answerRiskScore = 0,
+                    createdAt = Instant.now(),
+                )
             repos.answers.save(ans)
             return a
         }
@@ -183,7 +191,10 @@ class ManualEntry private constructor(
         private const val DEFAULT_COUNTRY_CODE = 7
         private const val SENDER_DISPLAY_MAX_CHARS = 80
 
-        fun create(context: Context, repos: Repositories): ManualEntry {
+        fun create(
+            context: Context,
+            repos: Repositories,
+        ): ManualEntry {
             val box = KeyStoreCryptoBox.create(context, alias = "antifraud.field_box")
             return create(context, repos, box)
         }
@@ -192,7 +203,11 @@ class ManualEntry private constructor(
          * Test-friendly factory: callers pass an explicit [CryptoBox] (e.g. `InMemoryCryptoBox`)
          * so unit tests can run under Robolectric, where AndroidKeyStore is unavailable.
          */
-        fun create(context: Context, repos: Repositories, box: CryptoBox): ManualEntry {
+        fun create(
+            context: Context,
+            repos: Repositories,
+            box: CryptoBox,
+        ): ManualEntry {
             val salt = obtainSalt(context, box)
             return ManualEntry(
                 repos = repos,
@@ -202,7 +217,10 @@ class ManualEntry private constructor(
             )
         }
 
-        private fun obtainSalt(context: Context, box: CryptoBox): ByteArray {
+        private fun obtainSalt(
+            context: Context,
+            box: CryptoBox,
+        ): ByteArray {
             val file = java.io.File(context.filesDir, SALT_FILE)
             if (file.exists()) return box.decrypt(file.readBytes())
             val raw = ByteArray(SALT_BYTES).also(SecureRandom()::nextBytes)

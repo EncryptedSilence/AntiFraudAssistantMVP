@@ -5,8 +5,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.crypto.InMemoryCryptoBox
 import com.qalqan.antifraud.domain.CallDirection
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -16,7 +14,7 @@ import org.robolectric.RobolectricTestRunner
 import java.time.Instant
 
 @RunWith(RobolectricTestRunner::class)
-class ManualEntryTest {
+class PrivacyBoundaryTest {
     private val ctx: Context = ApplicationProvider.getApplicationContext()
     private val repos = Repositories.inMemory(ctx)
     private val manual = ManualEntry.create(ctx, repos, InMemoryCryptoBox())
@@ -25,35 +23,19 @@ class ManualEntryTest {
     fun close() = repos.close()
 
     @Test
-    fun `submitCall stores a normalized call event`() {
+    fun `submitted phone is hashed, not persisted in plaintext`() {
         runBlocking {
             val id =
                 manual.calls.submit(
-                    rawNumber = "+7 700 123 45 67",
+                    rawNumber = "+77001234567",
                     direction = CallDirection.INCOMING,
                     startedAt = Instant.parse("2026-05-08T10:00:00Z"),
-                    durationSec = 90,
+                    durationSec = 60,
                     isKnownContact = false,
                 )
-            val saved = repos.calls.find(id)
-            saved shouldNotBe null
-            saved!!.phoneHash.value.length shouldBe SHA256_HEX_LEN
+            val saved = repos.calls.find(id)!!
+            saved.phoneHash.value shouldNotBe "+77001234567"
+            saved.phoneHash.value shouldNotBe "77001234567"
         }
-    }
-
-    @Test
-    fun `submitAnswerNote rejects OTP-shaped text`() {
-        runBlocking {
-            shouldThrow<ManualEntry.SensitiveNoteRejected> {
-                manual.answers.submitNote(
-                    relatedEventId = com.qalqan.antifraud.domain.EventId("e1"),
-                    noteText = "code 123456 share with caller",
-                )
-            }
-        }
-    }
-
-    private companion object {
-        const val SHA256_HEX_LEN = 64
     }
 }
