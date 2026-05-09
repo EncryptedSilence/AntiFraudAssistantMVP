@@ -59,13 +59,16 @@ abstract class AntifraudDatabase : RoomDatabase() {
          * Production factory — opens an encrypted SQLCipher database with a Keystore-wrapped key.
          * Spec §15.1.
          */
-        fun build(context: Context): AntifraudDatabase {
-            val keyProvider = DatabaseKeyProvider.fromContext(context)
-            return Room.databaseBuilder(context, AntifraudDatabase::class.java, NAME)
+        fun build(context: Context): AntifraudDatabase = build(context, DatabaseKeyProvider.fromContext(context))
+
+        internal fun build(
+            context: Context,
+            keyProvider: DatabaseKeyProvider,
+        ): AntifraudDatabase =
+            Room.databaseBuilder(context, AntifraudDatabase::class.java, NAME)
                 .openHelperFactory(sqlCipherFactory(keyProvider))
                 .fallbackToDestructiveMigrationOnDowngrade(true)
                 .build()
-        }
 
         /**
          * Test-only factory — opens an unencrypted in-memory Room database. Avoids loading the
