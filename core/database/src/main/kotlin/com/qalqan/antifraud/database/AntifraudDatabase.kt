@@ -5,17 +5,21 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.qalqan.antifraud.database.calls.CallEventDao
+import com.qalqan.antifraud.database.calls.CallEventEntity
 import com.qalqan.antifraud.database.contacts.ContactProfileDao
 import com.qalqan.antifraud.database.contacts.ContactProfileEntity
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
 
 @Database(
-    entities = [ContactProfileEntity::class],
+    entities = [ContactProfileEntity::class, CallEventEntity::class],
     version = 1,
     exportSchema = true,
 )
 abstract class AntifraudDatabase : RoomDatabase() {
     internal abstract fun contactProfileDao(): ContactProfileDao
+
+    internal abstract fun callEventDao(): CallEventDao
 
     companion object {
         private const val NAME = "antifraud.db"
