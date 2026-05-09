@@ -71,4 +71,16 @@ object SessionCorrelator {
 
     @Suppress("unused")
     private fun unusedCampaign(): CampaignId? = null
+
+    private val MAX_WINDOW_PLUS_GRACE: Duration = Duration.ofHours(25)
+
+    fun closeIdle(openSessions: List<RiskSession>, now: Instant): List<RiskSession> =
+        openSessions.map { s ->
+            val span = Duration.between(s.startedAt, now)
+            if (span >= MAX_WINDOW_PLUS_GRACE) {
+                s.copy(status = SessionStatus.CLOSED_AUTO, endedAt = now)
+            } else {
+                s
+            }
+        }
 }
