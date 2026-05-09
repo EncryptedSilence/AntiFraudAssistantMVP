@@ -5,6 +5,7 @@ CLAUDE.md
 
 # --- Gradle ----------------------------------------------------------------
 .gradle/
+.kotlin/
 build/
 gradle-app.setting
 gradle.properties.local

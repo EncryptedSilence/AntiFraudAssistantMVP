@@ -1,5 +1,6 @@
 package com.qalqan.antifraud.buildlogic
 
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
@@ -9,6 +10,11 @@ import org.gradle.kotlin.dsl.withType
 internal fun Project.applyQuality() {
     pluginManager.apply("org.jlleitschuh.gradle.ktlint")
     pluginManager.apply("io.gitlab.arturbosch.detekt")
+
+    extensions.configure<DetektExtension>("detekt") {
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.files("config/detekt/detekt.yml"))
+    }
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
