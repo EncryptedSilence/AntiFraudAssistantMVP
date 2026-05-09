@@ -26,6 +26,7 @@ internal fun Project.addJvmTestDependencies() {
         add("testImplementation", lib("junit-jupiter-api"))
         add("testImplementation", lib("junit-jupiter-params"))
         add("testRuntimeOnly", lib("junit-jupiter-engine"))
+        add("testRuntimeOnly", lib("junit-vintage-engine"))
         add("testImplementation", lib("kotest-assertions-core"))
         add("testImplementation", lib("mockk"))
     }
