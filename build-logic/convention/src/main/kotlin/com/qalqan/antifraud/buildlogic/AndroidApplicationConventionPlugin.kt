@@ -33,5 +33,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         }
 
         applyQuality()
+        addJvmTestDependencies()
     }
 }

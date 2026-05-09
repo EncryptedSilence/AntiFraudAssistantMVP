@@ -26,11 +26,4 @@ dependencies {
 
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
-
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.params)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testRuntimeOnly(libs.junit.vintage.engine)
-    testImplementation(libs.kotest.assertions.core)
-    testImplementation(libs.mockk)
 }

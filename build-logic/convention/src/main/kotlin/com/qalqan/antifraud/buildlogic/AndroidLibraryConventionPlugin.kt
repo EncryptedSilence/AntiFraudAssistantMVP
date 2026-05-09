@@ -3,9 +3,7 @@ package com.qalqan.antifraud.buildlogic
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -35,22 +33,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         }
 
         applyQuality()
-
-        val libs = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
-        fun lib(alias: String) = libs.findLibrary(alias).get()
-        dependencies {
-            add("testImplementation", lib("junit-jupiter-api"))
-            add("testImplementation", lib("junit-jupiter-params"))
-            add("testRuntimeOnly", lib("junit-jupiter-engine"))
-            add("testRuntimeOnly", lib("junit-vintage-engine"))
-            add("testImplementation", lib("kotest-assertions-core"))
-            add("testImplementation", lib("mockk"))
-            add("testImplementation", lib("junit4"))
-            add("testImplementation", lib("robolectric"))
-            add("testImplementation", lib("androidx-test-core"))
-            add("testImplementation", lib("androidx-test-ext-junit"))
-            add("androidTestImplementation", lib("androidx-test-runner"))
-            add("androidTestImplementation", lib("androidx-test-ext-junit"))
-        }
+        addJvmTestDependencies()
+        addAndroidTestDependencies()
     }
 }
