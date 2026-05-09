@@ -12,12 +12,15 @@ import com.qalqan.antifraud.database.contacts.ContactProfileEntity
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
 import com.qalqan.antifraud.database.sms.SmsEventDao
 import com.qalqan.antifraud.database.sms.SmsEventEntity
+import com.qalqan.antifraud.database.web.WebEventDao
+import com.qalqan.antifraud.database.web.WebEventEntity
 
 @Database(
     entities = [
         ContactProfileEntity::class,
         CallEventEntity::class,
         SmsEventEntity::class,
+        WebEventEntity::class,
     ],
     version = 1,
     exportSchema = true,
@@ -28,6 +31,8 @@ abstract class AntifraudDatabase : RoomDatabase() {
     internal abstract fun callEventDao(): CallEventDao
 
     internal abstract fun smsEventDao(): SmsEventDao
+
+    internal abstract fun webEventDao(): WebEventDao
 
     companion object {
         private const val NAME = "antifraud.db"

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7da846776738baee0fdfb603118d2f65",
+    "identityHash": "26b0526cbc4f8bc0585cf9b698adfadf",
     "entities": [
       {
         "tableName": "contact_profile",
@@ -296,11 +296,86 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_sms_event_senderHash` ON `${TABLE_NAME}` (`senderHash`)"
           }
         ]
+      },
+      {
+        "tableName": "web_event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `domainHash` TEXT NOT NULL, `domainDisplayLocal` TEXT NOT NULL, `visitedAtMs` INTEGER NOT NULL, `isNewDomain` INTEGER NOT NULL, `domainStatus` TEXT NOT NULL, `webRiskScore` INTEGER NOT NULL, `linkedSessionId` TEXT, `linkedCampaignId` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domainHash",
+            "columnName": "domainHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domainDisplayLocal",
+            "columnName": "domainDisplayLocal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visitedAtMs",
+            "columnName": "visitedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNewDomain",
+            "columnName": "isNewDomain",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domainStatus",
+            "columnName": "domainStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "webRiskScore",
+            "columnName": "webRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedSessionId",
+            "columnName": "linkedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "linkedCampaignId",
+            "columnName": "linkedCampaignId",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_web_event_visitedAtMs",
+            "unique": false,
+            "columnNames": [
+              "visitedAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_web_event_visitedAtMs` ON `${TABLE_NAME}` (`visitedAtMs`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7da846776738baee0fdfb603118d2f65')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26b0526cbc4f8bc0585cf9b698adfadf')"
     ]
   }
 }
