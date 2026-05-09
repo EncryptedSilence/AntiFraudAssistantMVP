@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f313ac4cbe58cf027ff7429539a869de",
+    "identityHash": "7da846776738baee0fdfb603118d2f65",
     "entities": [
       {
         "tableName": "contact_profile",
@@ -184,11 +184,123 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_call_event_phoneHash` ON `${TABLE_NAME}` (`phoneHash`)"
           }
         ]
+      },
+      {
+        "tableName": "sms_event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `senderHash` TEXT NOT NULL, `senderDisplayNameLocal` TEXT, `simSlot` INTEGER, `receivedAtMs` INTEGER NOT NULL, `smsCategory` TEXT NOT NULL, `containsCode` INTEGER NOT NULL, `containsLink` INTEGER NOT NULL, `containsFinancialKeyword` INTEGER NOT NULL, `containsSecurityKeyword` INTEGER NOT NULL, `bodyExcerptEnc` BLOB NOT NULL, `smsRiskScore` INTEGER NOT NULL, `linkedSessionId` TEXT, `linkedCampaignId` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "senderHash",
+            "columnName": "senderHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "senderDisplayNameLocal",
+            "columnName": "senderDisplayNameLocal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "simSlot",
+            "columnName": "simSlot",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "receivedAtMs",
+            "columnName": "receivedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsCategory",
+            "columnName": "smsCategory",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsCode",
+            "columnName": "containsCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsLink",
+            "columnName": "containsLink",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsFinancialKeyword",
+            "columnName": "containsFinancialKeyword",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsSecurityKeyword",
+            "columnName": "containsSecurityKeyword",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bodyExcerptEnc",
+            "columnName": "bodyExcerptEnc",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsRiskScore",
+            "columnName": "smsRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedSessionId",
+            "columnName": "linkedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "linkedCampaignId",
+            "columnName": "linkedCampaignId",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sms_event_receivedAtMs",
+            "unique": false,
+            "columnNames": [
+              "receivedAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sms_event_receivedAtMs` ON `${TABLE_NAME}` (`receivedAtMs`)"
+          },
+          {
+            "name": "index_sms_event_senderHash",
+            "unique": false,
+            "columnNames": [
+              "senderHash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sms_event_senderHash` ON `${TABLE_NAME}` (`senderHash`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f313ac4cbe58cf027ff7429539a869de')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7da846776738baee0fdfb603118d2f65')"
     ]
   }
 }
