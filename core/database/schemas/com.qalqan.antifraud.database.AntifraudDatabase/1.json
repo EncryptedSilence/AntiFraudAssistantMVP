@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "45d9a04ab37a8062cffeb7788bc3640e",
+    "identityHash": "df8c272cb70547e23b7204776da2fe18",
     "entities": [
       {
         "tableName": "contact_profile",
@@ -670,11 +670,58 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_risk_campaign_status` ON `${TABLE_NAME}` (`status`)"
           }
         ]
+      },
+      {
+        "tableName": "application_action_log",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `createdAtMs` INTEGER NOT NULL, `action` TEXT NOT NULL, `detailsJson` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMs",
+            "columnName": "createdAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "action",
+            "columnName": "action",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "detailsJson",
+            "columnName": "detailsJson",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_application_action_log_createdAtMs",
+            "unique": false,
+            "columnNames": [
+              "createdAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_application_action_log_createdAtMs` ON `${TABLE_NAME}` (`createdAtMs`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '45d9a04ab37a8062cffeb7788bc3640e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'df8c272cb70547e23b7204776da2fe18')"
     ]
   }
 }

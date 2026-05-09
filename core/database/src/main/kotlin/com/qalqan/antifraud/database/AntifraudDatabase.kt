@@ -16,6 +16,8 @@ import com.qalqan.antifraud.database.contacts.ContactProfileDao
 import com.qalqan.antifraud.database.contacts.ContactProfileEntity
 import com.qalqan.antifraud.database.converters.JsonListConverters
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
+import com.qalqan.antifraud.database.log.ApplicationActionLogDao
+import com.qalqan.antifraud.database.log.ApplicationActionLogEntity
 import com.qalqan.antifraud.database.sessions.RiskSessionDao
 import com.qalqan.antifraud.database.sessions.RiskSessionEntity
 import com.qalqan.antifraud.database.sms.SmsEventDao
@@ -32,6 +34,7 @@ import com.qalqan.antifraud.database.web.WebEventEntity
         UserAnswerEntity::class,
         RiskSessionEntity::class,
         RiskCampaignEntity::class,
+        ApplicationActionLogEntity::class,
     ],
     version = 1,
     exportSchema = true,
@@ -51,6 +54,8 @@ abstract class AntifraudDatabase : RoomDatabase() {
     internal abstract fun riskSessionDao(): RiskSessionDao
 
     internal abstract fun riskCampaignDao(): RiskCampaignDao
+
+    internal abstract fun applicationActionLogDao(): ApplicationActionLogDao
 
     companion object {
         private const val NAME = "antifraud.db"
