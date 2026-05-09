@@ -23,8 +23,8 @@ class ContextRiskTest {
                 LinkSignal.SMS_AFTER_CALL,
                 LinkSignal.CALL_AFTER_SMS,
                 LinkSignal.SITE_AFTER_CALL_OR_SMS,
-                LinkSignal.MULTIPLE_UNKNOWN_24H
-            )
+                LinkSignal.MULTIPLE_UNKNOWN_24H,
+            ),
         ) shouldBe 60
     }
 

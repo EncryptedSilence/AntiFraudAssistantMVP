@@ -12,7 +12,10 @@ import java.time.Instant
 class UserAnswerRiskTest {
     private val t = Instant.parse("2026-05-08T10:00:00Z")
 
-    private fun ans(q: QuestionCode, a: AnswerCode) = UserAnswer(
+    private fun ans(
+        q: QuestionCode,
+        a: AnswerCode,
+    ) = UserAnswer(
         id = AnswerId("a"),
         relatedEventId = EventId("e"),
         relatedSessionId = null,
@@ -21,7 +24,7 @@ class UserAnswerRiskTest {
         answerCode = a,
         userNoteLocalEnc = null,
         answerRiskScore = 0,
-        createdAt = t
+        createdAt = t,
     )
 
     @Test fun `Q1 yes (claimed bank or authority) is 25`() {

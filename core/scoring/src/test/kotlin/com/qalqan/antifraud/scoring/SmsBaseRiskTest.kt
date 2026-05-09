@@ -15,7 +15,7 @@ class SmsBaseRiskTest {
         category: SmsCategory = SmsCategory.UNKNOWN_SENDER,
         containsLink: Boolean = false,
         containsCode: Boolean = false,
-        containsFinancialKeyword: Boolean = false
+        containsFinancialKeyword: Boolean = false,
     ) = SmsEvent(
         id = EventId("s"),
         senderHash = SenderHash("h"),
@@ -30,7 +30,7 @@ class SmsBaseRiskTest {
         bodyExcerptEnc = byteArrayOf(),
         smsRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
     @Test fun `unknown sender contributes 10`() {

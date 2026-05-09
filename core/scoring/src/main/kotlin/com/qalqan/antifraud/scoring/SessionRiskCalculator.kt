@@ -7,7 +7,12 @@ import kotlin.math.roundToInt
  * Spec §11.3: weighted sum of the per-type max EventRisk inside the session.
  */
 object SessionRiskCalculator {
-    fun compute(callMax: Int, smsMax: Int, webMax: Int, answerMax: Int): Int {
+    fun compute(
+        callMax: Int,
+        smsMax: Int,
+        webMax: Int,
+        answerMax: Int,
+    ): Int {
         require(callMax in 0..100) { "callMax must be in 0..100" }
         require(smsMax in 0..100) { "smsMax must be in 0..100" }
         require(webMax in 0..100) { "webMax must be in 0..100" }

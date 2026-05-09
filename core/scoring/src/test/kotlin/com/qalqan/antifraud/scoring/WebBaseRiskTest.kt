@@ -13,7 +13,7 @@ class WebBaseRiskTest {
 
     private fun web(
         isNew: Boolean = true,
-        domain: String = "halykbank.kz"
+        domain: String = "halykbank.kz",
     ) = WebEvent(
         id = EventId("w"),
         domainHash = DomainHash("h"),
@@ -23,7 +23,7 @@ class WebBaseRiskTest {
         domainStatus = if (isNew) DomainStatus.NEW else DomainStatus.KNOWN,
         webRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
     @Test fun `new domain contributes 10`() {

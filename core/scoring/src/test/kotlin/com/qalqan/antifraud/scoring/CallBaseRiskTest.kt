@@ -14,7 +14,7 @@ class CallBaseRiskTest {
     private fun call(
         isKnownContact: Boolean = false,
         isRepeated: Boolean = false,
-        durationSec: Long = 60
+        durationSec: Long = 60,
     ) = CallEvent(
         id = EventId("c"),
         phoneHash = PhoneHash("h"),
@@ -27,7 +27,7 @@ class CallBaseRiskTest {
         isRepeated = isRepeated,
         callRiskScore = 0,
         linkedSessionId = null,
-        linkedCampaignId = null
+        linkedCampaignId = null,
     )
 
     @Test fun `unknown contact contributes 20`() {

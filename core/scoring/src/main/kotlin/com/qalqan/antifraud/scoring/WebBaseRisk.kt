@@ -8,7 +8,10 @@ import com.qalqan.antifraud.domain.WebEvent
  * boolean verdict.
  */
 object WebBaseRisk {
-    fun compute(web: WebEvent, lookalikeMatch: Boolean): Int {
+    fun compute(
+        web: WebEvent,
+        lookalikeMatch: Boolean,
+    ): Int {
         var score = 0
         if (web.isNewDomain) score += 10
         if (lookalikeMatch) score += 35

@@ -11,7 +11,7 @@ class SessionRiskCalculatorTest {
             callMax = 80,
             smsMax = 60,
             webMax = 40,
-            answerMax = 50
+            answerMax = 50,
         ) shouldBe 62
     }
 

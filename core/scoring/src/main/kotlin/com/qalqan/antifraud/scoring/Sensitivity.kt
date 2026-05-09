@@ -10,7 +10,8 @@ enum class Sensitivity(val eventMultiplier: Double, val thresholdOffset: Int) {
     LOW(0.7, 10),
     STANDARD(1.0, 0),
     HIGH(1.2, -10),
-    MAXIMUM(1.4, -15);
+    MAXIMUM(1.4, -15),
+    ;
 
     fun applyTo(score: Int): Int {
         require(score in 0..100) { "score must be in 0..100" }

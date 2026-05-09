@@ -21,11 +21,12 @@ object UserAnswerRisk {
     }
 
     private fun deltaFor(a: UserAnswer): Int {
-        val base = when (a.questionCode) {
-            QuestionCode.Q1_CALLER_OFFICIAL_CLAIM -> 25
-            QuestionCode.Q2_PRESSURE_OR_DONT_CONSULT -> 40
-            QuestionCode.Q3_ASKED_TO_ACT_NOW -> 50
-        }
+        val base =
+            when (a.questionCode) {
+                QuestionCode.Q1_CALLER_OFFICIAL_CLAIM -> 25
+                QuestionCode.Q2_PRESSURE_OR_DONT_CONSULT -> 40
+                QuestionCode.Q3_ASKED_TO_ACT_NOW -> 50
+            }
         return when (a.answerCode) {
             AnswerCode.YES -> base
             AnswerCode.NOT_SURE -> base / 2

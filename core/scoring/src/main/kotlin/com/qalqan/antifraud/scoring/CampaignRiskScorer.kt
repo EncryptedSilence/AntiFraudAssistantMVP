@@ -17,7 +17,7 @@ object CampaignRiskScorer {
         val eventId: EventId,
         val eventRisk: Int,
         val age: Duration,
-        val signals: Set<LinkSignal>
+        val signals: Set<LinkSignal>,
     ) {
         init {
             require(eventRisk in 0..100) { "eventRisk must be in 0..100" }
@@ -26,13 +26,14 @@ object CampaignRiskScorer {
 
     fun compute(
         contributions: List<Contribution>,
-        triggeredPatternWeights: List<Int>
+        triggeredPatternWeights: List<Int>,
     ): Int {
-        val eventSum = contributions.sumOf { c ->
-            val decay = TimeDecayTable.coefficient(c.age)
-            val link = LinkStrengthTable.combine(c.signals)
-            c.eventRisk * decay * link
-        }
+        val eventSum =
+            contributions.sumOf { c ->
+                val decay = TimeDecayTable.coefficient(c.age)
+                val link = LinkStrengthTable.combine(c.signals)
+                c.eventRisk * decay * link
+            }
         val total = eventSum + PatternRisk.compute(triggeredPatternWeights)
         return min(total.roundToInt(), 100).coerceAtLeast(0)
     }
