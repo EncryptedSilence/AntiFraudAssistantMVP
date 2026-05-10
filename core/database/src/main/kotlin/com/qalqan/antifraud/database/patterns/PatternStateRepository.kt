@@ -6,7 +6,7 @@ import java.time.Instant
  * Domain-level wrapper over [PatternStateDao]. Internal-visible.
  * Externals access via [com.qalqan.antifraud.database.Repositories.patternState].
  */
-internal class PatternStateRepository(private val dao: PatternStateDao) {
+class PatternStateRepository internal constructor(private val dao: PatternStateDao) {
     suspend fun isEnabled(patternId: String, default: Boolean): Boolean {
         val override = dao.findById(patternId) ?: return default
         return override.enabled
