@@ -12,5 +12,8 @@ import com.qalqan.antifraud.domain.RiskEvent
  * is fault-tolerant by design.
  */
 internal interface EventFieldAccessor {
-    fun lookup(event: RiskEvent, field: String): Any?
+    fun lookup(
+        event: RiskEvent,
+        field: String,
+    ): Any?
 }

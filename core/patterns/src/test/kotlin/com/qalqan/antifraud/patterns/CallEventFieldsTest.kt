@@ -11,22 +11,23 @@ import java.time.Instant
 
 class CallEventFieldsTest {
     private val t = Instant.parse("2026-05-08T10:00:00Z")
-    private val call = RiskEvent.Call(
-        CallEvent(
-            id = EventId("c1"),
-            phoneHash = PhoneHash("h"),
-            simSlot = 0,
-            direction = CallDirection.INCOMING,
-            startedAt = t,
-            endedAt = t.plusSeconds(120),
-            durationSec = 120,
-            isKnownContact = false,
-            isRepeated = true,
-            callRiskScore = 25,
-            linkedSessionId = null,
-            linkedCampaignId = null
+    private val call =
+        RiskEvent.Call(
+            CallEvent(
+                id = EventId("c1"),
+                phoneHash = PhoneHash("h"),
+                simSlot = 0,
+                direction = CallDirection.INCOMING,
+                startedAt = t,
+                endedAt = t.plusSeconds(120),
+                durationSec = 120,
+                isKnownContact = false,
+                isRepeated = true,
+                callRiskScore = 25,
+                linkedSessionId = null,
+                linkedCampaignId = null,
+            ),
         )
-    )
 
     @Test
     fun `looks up isKnownContact`() {
@@ -60,19 +61,20 @@ class CallEventFieldsTest {
 
     @Test
     fun `non-call event returns null`() {
-        val webEvent = RiskEvent.Web(
-            com.qalqan.antifraud.domain.WebEvent(
-                id = EventId("w1"),
-                domainHash = com.qalqan.antifraud.domain.DomainHash("d"),
-                domainDisplayLocal = "halykbank.kz",
-                visitedAt = t,
-                isNewDomain = false,
-                domainStatus = com.qalqan.antifraud.domain.DomainStatus.KNOWN,
-                webRiskScore = 0,
-                linkedSessionId = null,
-                linkedCampaignId = null
+        val webEvent =
+            RiskEvent.Web(
+                com.qalqan.antifraud.domain.WebEvent(
+                    id = EventId("w1"),
+                    domainHash = com.qalqan.antifraud.domain.DomainHash("d"),
+                    domainDisplayLocal = "halykbank.kz",
+                    visitedAt = t,
+                    isNewDomain = false,
+                    domainStatus = com.qalqan.antifraud.domain.DomainStatus.KNOWN,
+                    webRiskScore = 0,
+                    linkedSessionId = null,
+                    linkedCampaignId = null,
+                ),
             )
-        )
         CallEventFields.lookup(webEvent, "isKnownContact") shouldBe null
     }
 }

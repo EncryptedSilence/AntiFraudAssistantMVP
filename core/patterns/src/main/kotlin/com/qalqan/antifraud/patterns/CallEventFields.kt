@@ -7,7 +7,10 @@ import com.qalqan.antifraud.domain.RiskEvent
  * Enums are surfaced as their `name` (String) so JSON `value` strings can match.
  */
 internal object CallEventFields : EventFieldAccessor {
-    override fun lookup(event: RiskEvent, field: String): Any? {
+    override fun lookup(
+        event: RiskEvent,
+        field: String,
+    ): Any? {
         if (event !is RiskEvent.Call) return null
         val c = event.event
         return when (field) {

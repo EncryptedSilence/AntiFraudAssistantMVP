@@ -3,7 +3,10 @@ package com.qalqan.antifraud.patterns
 import com.qalqan.antifraud.domain.RiskEvent
 
 internal object WebEventFields : EventFieldAccessor {
-    override fun lookup(event: RiskEvent, field: String): Any? {
+    override fun lookup(
+        event: RiskEvent,
+        field: String,
+    ): Any? {
         if (event !is RiskEvent.Web) return null
         val w = event.event
         return when (field) {
