@@ -23,5 +23,6 @@ include(
     ":core:scoring",
     ":core:correlation",
     ":core:database",
-    ":core:demo"
+    ":core:demo",
+    ":core:patterns"
 )
