@@ -108,4 +108,4 @@ To be decided before the first public release. Until a license file is added, no
 
 ## More information
 
-See the [project wiki](https://github.com/EncryptedSilence/AntiFraudAssistantMVP/wiki) (or `wiki/Home.md` in this repository) for an architectural overview, glossary, and roadmap.
+See [`wiki/Home.md`](wiki/Home.md) for the architectural overview, glossary, roadmap, and topic pages (pattern engine, privacy boundaries, permissions, web channel, alert surface, signing, acceptance plan).
