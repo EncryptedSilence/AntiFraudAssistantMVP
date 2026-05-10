@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.io.IOException
 
 /**
  * Spec §6 / Appendix A — parses pattern JSON into typed `ScenarioPattern`.
@@ -27,6 +28,8 @@ object PatternCatalogParser {
                 ?: throw PatternParseException("pattern JSON deserialized to null")
         } catch (e: JsonDataException) {
             throw PatternParseException("malformed pattern JSON: ${e.message}", e)
+        } catch (e: IOException) {
+            throw PatternParseException("malformed pattern JSON: ${e.message}", e)
         }
         return raw.toDomain()
     }
@@ -36,6 +39,8 @@ object PatternCatalogParser {
             listAdapter.fromJson(json)
                 ?: throw PatternParseException("pattern list JSON deserialized to null")
         } catch (e: JsonDataException) {
+            throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
+        } catch (e: IOException) {
             throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
         }
         return raw.map { it.toDomain() }

@@ -102,4 +102,47 @@ class PatternCatalogParserTest {
         ex.message!! shouldContain "ContactEvent"
         ex.message!! shouldContain "not supported in Stage 2"
     }
+
+    @Test
+    fun `rejects malformed JSON`() {
+        io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+            PatternCatalogParser.fromJson("{ this is not json }")
+        }
+    }
+
+    @Test
+    fun `rejects missing required field`() {
+        val json = """
+            {
+              "patternId": "p", "category": "bankFraud",
+              "version": "1.0.0", "enabled": true, "source": "system",
+              "conditions": [
+                { "eventType": "SmsEvent", "field": "containsCode", "operator": "equals", "value": true, "weight": 30 }
+              ],
+              "warning": { "level": "medium", "title": "t", "message": "m" }
+            }
+        """.trimIndent()
+
+        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+            PatternCatalogParser.fromJson(json)
+        }
+        ex.message!! shouldContain "missing name"
+    }
+
+    @Test
+    fun `rejects pattern with empty conditions`() {
+        val json = """
+            {
+              "patternId": "p", "name": "p", "category": "bankFraud",
+              "version": "1.0.0", "enabled": true, "source": "system",
+              "conditions": [],
+              "warning": { "level": "medium", "title": "t", "message": "m" }
+            }
+        """.trimIndent()
+
+        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+            PatternCatalogParser.fromJson(json)
+        }
+        ex.message!! shouldContain "at least one condition"
+    }
 }
