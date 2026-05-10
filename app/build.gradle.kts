@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:demo"))
     implementation(project(":core:patterns"))
+    implementation(project(":feature:calls"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
