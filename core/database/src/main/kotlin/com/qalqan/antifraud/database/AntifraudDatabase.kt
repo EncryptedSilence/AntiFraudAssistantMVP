@@ -18,6 +18,9 @@ import com.qalqan.antifraud.database.converters.JsonListConverters
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
 import com.qalqan.antifraud.database.log.ApplicationActionLogDao
 import com.qalqan.antifraud.database.log.ApplicationActionLogEntity
+import com.qalqan.antifraud.database.patterns.PatternStateDao
+import com.qalqan.antifraud.database.patterns.PatternStateEntity
+import com.qalqan.antifraud.database.patterns.PatternStateMigration
 import com.qalqan.antifraud.database.sessions.RiskSessionDao
 import com.qalqan.antifraud.database.sessions.RiskSessionEntity
 import com.qalqan.antifraud.database.sms.SmsEventDao
@@ -35,8 +38,9 @@ import com.qalqan.antifraud.database.web.WebEventEntity
         RiskSessionEntity::class,
         RiskCampaignEntity::class,
         ApplicationActionLogEntity::class,
+        PatternStateEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(JsonListConverters::class)
@@ -57,6 +61,8 @@ abstract class AntifraudDatabase : RoomDatabase() {
 
     internal abstract fun applicationActionLogDao(): ApplicationActionLogDao
 
+    internal abstract fun patternStateDao(): PatternStateDao
+
     companion object {
         private const val NAME = "antifraud.db"
 
@@ -72,6 +78,7 @@ abstract class AntifraudDatabase : RoomDatabase() {
         ): AntifraudDatabase =
             Room.databaseBuilder(context, AntifraudDatabase::class.java, NAME)
                 .openHelperFactory(sqlCipherFactory(keyProvider))
+                .addMigrations(PatternStateMigration.MIGRATION_1_2)
                 .fallbackToDestructiveMigrationOnDowngrade(true)
                 .build()
 
@@ -82,6 +89,7 @@ abstract class AntifraudDatabase : RoomDatabase() {
         @VisibleForTesting
         fun inMemory(context: Context): AntifraudDatabase =
             Room.inMemoryDatabaseBuilder(context, AntifraudDatabase::class.java)
+                .addMigrations(PatternStateMigration.MIGRATION_1_2)
                 .allowMainThreadQueries()
                 .build()
     }
