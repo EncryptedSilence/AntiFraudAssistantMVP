@@ -1,0 +1,22 @@
+{
+  "patternId": "multistage_pressure_campaign_v1",
+  "name": "Multi-stage pressure campaign",
+  "description": "User reports being pressured or asked to act now after a chain of unknown events.",
+  "category": "unknownSocialEngineering",
+  "version": "1.0.0",
+  "enabled": true,
+  "userCreated": false,
+  "source": "system",
+  "conditions": [
+    { "eventType": "CallEvent",       "field": "isKnownContact", "operator": "equals", "value": false,               "weight": 15 },
+    { "eventType": "UserAnswerEvent", "field": "questionCode",   "operator": "equals", "value": "Q3_ASKED_TO_ACT_NOW", "weight": 30 },
+    { "eventType": "UserAnswerEvent", "field": "answerCode",     "operator": "equals", "value": "YES",               "weight": 15 }
+  ],
+  "correlation": { "maxCampaignAgeDays": 14, "linkStrength": 1.0 },
+  "warning": {
+    "level": "critical",
+    "title": "High-pressure social engineering",
+    "message": "You are being asked to act under pressure. Do not transfer money, do not install apps, do not enter card data. Verify through your bank's or authority's official phone number."
+  },
+  "recommendation": "Pause for 30 minutes. Call a trusted contact. If still in doubt, do nothing — pressure is itself the warning sign."
+}
