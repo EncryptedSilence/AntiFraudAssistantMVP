@@ -1,0 +1,21 @@
+{
+  "patternId": "new_lookalike_domain_visit_v1",
+  "name": "Visited a new lookalike domain",
+  "description": "User opened a new (never-seen-before) domain that resembles a known bank or service name.",
+  "category": "bankFraud",
+  "version": "1.0.0",
+  "enabled": true,
+  "userCreated": false,
+  "source": "system",
+  "conditions": [
+    { "eventType": "WebEvent", "field": "isNewDomain",        "operator": "equals",  "value": true,                                                              "weight": 20 },
+    { "eventType": "WebEvent", "field": "domainDisplayLocal", "operator": "matches", "value": "^(halyk|kaspi|forte|jusan|bcc|sberbank)[a-z0-9_-]*\\.(kz|com)$", "weight": 35 }
+  ],
+  "correlation": { "maxCampaignAgeDays": 14, "linkStrength": 0.8 },
+  "warning": {
+    "level": "high",
+    "title": "Possible lookalike bank domain",
+    "message": "This domain resembles a known bank but you have never visited it before. Do not enter your credentials."
+  },
+  "recommendation": "Always reach your bank by typing the official URL by hand or through its app."
+}
