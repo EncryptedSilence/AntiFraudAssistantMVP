@@ -25,40 +25,42 @@ class PatternMatchAcceptanceTest {
 
     @Test
     fun `bank_security pattern matches unknown call followed by OTP SMS within 24h (spec §23 #12)`() {
-        val callEvent = RiskEvent.Call(
-            CallEvent(
-                id = EventId("call-1"),
-                phoneHash = PhoneHash("h-unknown"),
-                simSlot = null,
-                direction = CallDirection.INCOMING,
-                startedAt = anchor,
-                endedAt = anchor.plusSeconds(240),
-                durationSec = 240,
-                isKnownContact = false,
-                isRepeated = false,
-                callRiskScore = 0,
-                linkedSessionId = null,
-                linkedCampaignId = null,
-            ),
-        )
-        val smsEvent = RiskEvent.Sms(
-            SmsEvent(
-                id = EventId("sms-1"),
-                senderHash = SenderHash("sender-hash"),
-                senderDisplayNameLocal = "BANK24",
-                simSlot = null,
-                receivedAt = anchor.plusSeconds(360),
-                smsCategory = SmsCategory.OTP,
-                containsCode = true,
-                containsLink = false,
-                containsFinancialKeyword = false,
-                containsSecurityKeyword = false,
-                bodyExcerptEnc = ByteArray(0),
-                smsRiskScore = 0,
-                linkedSessionId = null,
-                linkedCampaignId = null,
-            ),
-        )
+        val callEvent =
+            RiskEvent.Call(
+                CallEvent(
+                    id = EventId("call-1"),
+                    phoneHash = PhoneHash("h-unknown"),
+                    simSlot = null,
+                    direction = CallDirection.INCOMING,
+                    startedAt = anchor,
+                    endedAt = anchor.plusSeconds(240),
+                    durationSec = 240,
+                    isKnownContact = false,
+                    isRepeated = false,
+                    callRiskScore = 0,
+                    linkedSessionId = null,
+                    linkedCampaignId = null,
+                ),
+            )
+        val smsEvent =
+            RiskEvent.Sms(
+                SmsEvent(
+                    id = EventId("sms-1"),
+                    senderHash = SenderHash("sender-hash"),
+                    senderDisplayNameLocal = "BANK24",
+                    simSlot = null,
+                    receivedAt = anchor.plusSeconds(360),
+                    smsCategory = SmsCategory.OTP,
+                    containsCode = true,
+                    containsLink = false,
+                    containsFinancialKeyword = false,
+                    containsSecurityKeyword = false,
+                    bodyExcerptEnc = ByteArray(0),
+                    smsRiskScore = 0,
+                    linkedSessionId = null,
+                    linkedCampaignId = null,
+                ),
+            )
         val events: List<RiskEvent> = listOf(callEvent, smsEvent)
 
         val results = BatchPatternMatcher.matchAll(SeedPatternLoader.load(), events)

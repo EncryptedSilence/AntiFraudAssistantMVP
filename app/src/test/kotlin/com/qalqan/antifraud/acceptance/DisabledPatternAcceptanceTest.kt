@@ -39,42 +39,43 @@ class DisabledPatternAcceptanceTest {
     @Test
     fun `disabled bank_security pattern does not trigger even when events match (spec §23 #14)`() {
         runBlocking {
-            val events: List<RiskEvent> = listOf(
-                RiskEvent.Call(
-                    CallEvent(
-                        id = EventId("call-1"),
-                        phoneHash = PhoneHash("h-unknown"),
-                        simSlot = null,
-                        direction = CallDirection.INCOMING,
-                        startedAt = anchor,
-                        endedAt = anchor.plusSeconds(240),
-                        durationSec = 240,
-                        isKnownContact = false,
-                        isRepeated = false,
-                        callRiskScore = 0,
-                        linkedSessionId = null,
-                        linkedCampaignId = null,
+            val events: List<RiskEvent> =
+                listOf(
+                    RiskEvent.Call(
+                        CallEvent(
+                            id = EventId("call-1"),
+                            phoneHash = PhoneHash("h-unknown"),
+                            simSlot = null,
+                            direction = CallDirection.INCOMING,
+                            startedAt = anchor,
+                            endedAt = anchor.plusSeconds(240),
+                            durationSec = 240,
+                            isKnownContact = false,
+                            isRepeated = false,
+                            callRiskScore = 0,
+                            linkedSessionId = null,
+                            linkedCampaignId = null,
+                        ),
                     ),
-                ),
-                RiskEvent.Sms(
-                    SmsEvent(
-                        id = EventId("sms-1"),
-                        senderHash = SenderHash("sender-hash"),
-                        senderDisplayNameLocal = "BANK24",
-                        simSlot = null,
-                        receivedAt = anchor.plusSeconds(360),
-                        smsCategory = SmsCategory.OTP,
-                        containsCode = true,
-                        containsLink = false,
-                        containsFinancialKeyword = false,
-                        containsSecurityKeyword = false,
-                        bodyExcerptEnc = ByteArray(0),
-                        smsRiskScore = 0,
-                        linkedSessionId = null,
-                        linkedCampaignId = null,
+                    RiskEvent.Sms(
+                        SmsEvent(
+                            id = EventId("sms-1"),
+                            senderHash = SenderHash("sender-hash"),
+                            senderDisplayNameLocal = "BANK24",
+                            simSlot = null,
+                            receivedAt = anchor.plusSeconds(360),
+                            smsCategory = SmsCategory.OTP,
+                            containsCode = true,
+                            containsLink = false,
+                            containsFinancialKeyword = false,
+                            containsSecurityKeyword = false,
+                            bodyExcerptEnc = ByteArray(0),
+                            smsRiskScore = 0,
+                            linkedSessionId = null,
+                            linkedCampaignId = null,
+                        ),
                     ),
-                ),
-            )
+                )
 
             repos.patternState.setEnabled(
                 patternId = "bank_security_otp_after_call_v1",
@@ -82,10 +83,11 @@ class DisabledPatternAcceptanceTest {
                 at = anchor,
             )
 
-            val patterns = SeedPatternLoader.load().map { p ->
-                val isEnabled = repos.patternState.isEnabled(p.patternId.value, default = p.enabled)
-                p.copy(enabled = isEnabled)
-            }
+            val patterns =
+                SeedPatternLoader.load().map { p ->
+                    val isEnabled = repos.patternState.isEnabled(p.patternId.value, default = p.enabled)
+                    p.copy(enabled = isEnabled)
+                }
 
             val results = BatchPatternMatcher.matchAll(patterns, events)
 

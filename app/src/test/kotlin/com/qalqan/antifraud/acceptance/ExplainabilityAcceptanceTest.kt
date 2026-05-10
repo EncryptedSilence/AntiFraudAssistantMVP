@@ -14,9 +14,7 @@ import com.qalqan.antifraud.patterns.Explanation
 import com.qalqan.antifraud.patterns.PatternExplainer
 import com.qalqan.antifraud.patterns.SeedPatternLoader
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeBlank
 import org.junit.Test
 import java.time.Instant
@@ -29,39 +27,40 @@ class ExplainabilityAcceptanceTest {
     private val anchor = Instant.parse("2026-05-08T10:00:00Z")
 
     @Test
-    fun `multistage_pressure pattern triggers all 3 conditions and explanation has at least 3 reasons (spec §23 #17)`() {
+    fun `multistage_pressure triggers all conditions and explanation has at least 3 reasons (spec §23 #17)`() {
         val callEventId = EventId("call-1")
-        val events: List<RiskEvent> = listOf(
-            RiskEvent.Call(
-                CallEvent(
-                    id = callEventId,
-                    phoneHash = PhoneHash("h-unknown"),
-                    simSlot = null,
-                    direction = CallDirection.INCOMING,
-                    startedAt = anchor,
-                    endedAt = anchor.plusSeconds(120),
-                    durationSec = 120,
-                    isKnownContact = false,
-                    isRepeated = false,
-                    callRiskScore = 0,
-                    linkedSessionId = null,
-                    linkedCampaignId = null,
+        val events: List<RiskEvent> =
+            listOf(
+                RiskEvent.Call(
+                    CallEvent(
+                        id = callEventId,
+                        phoneHash = PhoneHash("h-unknown"),
+                        simSlot = null,
+                        direction = CallDirection.INCOMING,
+                        startedAt = anchor,
+                        endedAt = anchor.plusSeconds(120),
+                        durationSec = 120,
+                        isKnownContact = false,
+                        isRepeated = false,
+                        callRiskScore = 0,
+                        linkedSessionId = null,
+                        linkedCampaignId = null,
+                    ),
                 ),
-            ),
-            RiskEvent.Answer(
-                UserAnswer(
-                    id = AnswerId("ans-1"),
-                    relatedEventId = callEventId,
-                    relatedSessionId = null,
-                    relatedCampaignId = null,
-                    questionCode = QuestionCode.Q3_ASKED_TO_ACT_NOW,
-                    answerCode = AnswerCode.YES,
-                    userNoteLocalEnc = null,
-                    answerRiskScore = 0,
-                    createdAt = anchor.plusSeconds(60),
+                RiskEvent.Answer(
+                    UserAnswer(
+                        id = AnswerId("ans-1"),
+                        relatedEventId = callEventId,
+                        relatedSessionId = null,
+                        relatedCampaignId = null,
+                        questionCode = QuestionCode.Q3_ASKED_TO_ACT_NOW,
+                        answerCode = AnswerCode.YES,
+                        userNoteLocalEnc = null,
+                        answerRiskScore = 0,
+                        createdAt = anchor.plusSeconds(60),
+                    ),
                 ),
-            ),
-        )
+            )
 
         val patterns = SeedPatternLoader.load()
         val results = BatchPatternMatcher.matchAll(patterns, events)
@@ -81,24 +80,25 @@ class ExplainabilityAcceptanceTest {
 
     @Test
     fun `when only one condition fires explanation has exactly one reason`() {
-        val events: List<RiskEvent> = listOf(
-            RiskEvent.Call(
-                CallEvent(
-                    id = EventId("call-only"),
-                    phoneHash = PhoneHash("h-unknown"),
-                    simSlot = null,
-                    direction = CallDirection.INCOMING,
-                    startedAt = anchor,
-                    endedAt = anchor.plusSeconds(60),
-                    durationSec = 60,
-                    isKnownContact = false,
-                    isRepeated = false,
-                    callRiskScore = 0,
-                    linkedSessionId = null,
-                    linkedCampaignId = null,
+        val events: List<RiskEvent> =
+            listOf(
+                RiskEvent.Call(
+                    CallEvent(
+                        id = EventId("call-only"),
+                        phoneHash = PhoneHash("h-unknown"),
+                        simSlot = null,
+                        direction = CallDirection.INCOMING,
+                        startedAt = anchor,
+                        endedAt = anchor.plusSeconds(60),
+                        durationSec = 60,
+                        isKnownContact = false,
+                        isRepeated = false,
+                        callRiskScore = 0,
+                        linkedSessionId = null,
+                        linkedCampaignId = null,
+                    ),
                 ),
-            ),
-        )
+            )
 
         val patterns = SeedPatternLoader.load()
         val results = BatchPatternMatcher.matchAll(patterns, events)
@@ -114,37 +114,38 @@ class ExplainabilityAcceptanceTest {
     @Test
     fun `all explanation reasons have non-blank text`() {
         val callEventId = EventId("call-reasons")
-        val events: List<RiskEvent> = listOf(
-            RiskEvent.Call(
-                CallEvent(
-                    id = callEventId,
-                    phoneHash = PhoneHash("h-unknown"),
-                    simSlot = null,
-                    direction = CallDirection.INCOMING,
-                    startedAt = anchor,
-                    endedAt = anchor.plusSeconds(120),
-                    durationSec = 120,
-                    isKnownContact = false,
-                    isRepeated = false,
-                    callRiskScore = 0,
-                    linkedSessionId = null,
-                    linkedCampaignId = null,
+        val events: List<RiskEvent> =
+            listOf(
+                RiskEvent.Call(
+                    CallEvent(
+                        id = callEventId,
+                        phoneHash = PhoneHash("h-unknown"),
+                        simSlot = null,
+                        direction = CallDirection.INCOMING,
+                        startedAt = anchor,
+                        endedAt = anchor.plusSeconds(120),
+                        durationSec = 120,
+                        isKnownContact = false,
+                        isRepeated = false,
+                        callRiskScore = 0,
+                        linkedSessionId = null,
+                        linkedCampaignId = null,
+                    ),
                 ),
-            ),
-            RiskEvent.Answer(
-                UserAnswer(
-                    id = AnswerId("ans-reasons"),
-                    relatedEventId = callEventId,
-                    relatedSessionId = null,
-                    relatedCampaignId = null,
-                    questionCode = QuestionCode.Q3_ASKED_TO_ACT_NOW,
-                    answerCode = AnswerCode.YES,
-                    userNoteLocalEnc = null,
-                    answerRiskScore = 0,
-                    createdAt = anchor.plusSeconds(60),
+                RiskEvent.Answer(
+                    UserAnswer(
+                        id = AnswerId("ans-reasons"),
+                        relatedEventId = callEventId,
+                        relatedSessionId = null,
+                        relatedCampaignId = null,
+                        questionCode = QuestionCode.Q3_ASKED_TO_ACT_NOW,
+                        answerCode = AnswerCode.YES,
+                        userNoteLocalEnc = null,
+                        answerRiskScore = 0,
+                        createdAt = anchor.plusSeconds(60),
+                    ),
                 ),
-            ),
-        )
+            )
 
         val patterns = SeedPatternLoader.load()
         val results = BatchPatternMatcher.matchAll(patterns, events)
