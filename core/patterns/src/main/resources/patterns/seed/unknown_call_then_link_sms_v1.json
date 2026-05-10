@@ -1,0 +1,21 @@
+{
+  "patternId": "unknown_call_then_link_sms_v1",
+  "name": "Unknown call followed by a link SMS",
+  "description": "Unknown caller and a follow-up SMS containing a link within 24 hours.",
+  "category": "deliveryScam",
+  "version": "1.0.0",
+  "enabled": true,
+  "userCreated": false,
+  "source": "system",
+  "conditions": [
+    { "eventType": "CallEvent", "field": "isKnownContact", "operator": "equals", "value": false, "weight": 20 },
+    { "eventType": "SmsEvent",  "field": "containsLink",   "operator": "equals", "value": true,  "timeWindowHours": 24, "weight": 25 }
+  ],
+  "correlation": { "maxCampaignAgeDays": 14, "linkStrength": 0.9 },
+  "warning": {
+    "level": "high",
+    "title": "Possible delivery / phishing scheme",
+    "message": "An unknown call is followed by an SMS with a link. Do not open the link unless you trust the source."
+  },
+  "recommendation": "Verify by contacting the courier or service through their official app."
+}
