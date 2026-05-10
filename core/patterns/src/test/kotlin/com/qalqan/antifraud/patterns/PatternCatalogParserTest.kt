@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test
 class PatternCatalogParserTest {
     @Test
     fun `parses Appendix A example`() {
-        val json = """
+        val json =
+            """
             {
               "patternId": "bank_security_otp_after_call_v1",
               "name": "Bank security service / OTP after a call",
@@ -24,7 +25,7 @@ class PatternCatalogParserTest {
               "correlation": { "maxCampaignAgeDays": 14, "linkStrength": 0.9 },
               "warning": { "level": "high", "title": "Possible fraud scheme", "message": "Do not share the code." }
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val pattern = PatternCatalogParser.fromJson(json)
 
@@ -37,7 +38,8 @@ class PatternCatalogParserTest {
 
     @Test
     fun `parses a list of patterns`() {
-        val json = """
+        val json =
+            """
             [
               {
                 "patternId": "p1", "name": "p1", "category": "bankFraud",
@@ -56,7 +58,7 @@ class PatternCatalogParserTest {
                 "warning": { "level": "high", "title": "t", "message": "m" }
               }
             ]
-        """.trimIndent()
+            """.trimIndent()
 
         val patterns = PatternCatalogParser.listFromJson(json)
         patterns.size shouldBe 2
@@ -66,7 +68,8 @@ class PatternCatalogParserTest {
 
     @Test
     fun `rejects unknown operator`() {
-        val json = """
+        val json =
+            """
             {
               "patternId": "p", "name": "p", "category": "bankFraud",
               "version": "1.0.0", "enabled": true, "source": "system",
@@ -75,17 +78,19 @@ class PatternCatalogParserTest {
               ],
               "warning": { "level": "medium", "title": "t", "message": "m" }
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
-            PatternCatalogParser.fromJson(json)
-        }
+        val ex =
+            io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+                PatternCatalogParser.fromJson(json)
+            }
         ex.message!! shouldContain "unknown operator 'regex'"
     }
 
     @Test
     fun `rejects unsupported event type`() {
-        val json = """
+        val json =
+            """
             {
               "patternId": "p", "name": "p", "category": "bankFraud",
               "version": "1.0.0", "enabled": true, "source": "system",
@@ -94,11 +99,12 @@ class PatternCatalogParserTest {
               ],
               "warning": { "level": "medium", "title": "t", "message": "m" }
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
-            PatternCatalogParser.fromJson(json)
-        }
+        val ex =
+            io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+                PatternCatalogParser.fromJson(json)
+            }
         ex.message!! shouldContain "ContactEvent"
         ex.message!! shouldContain "not supported in Stage 2"
     }
@@ -112,7 +118,8 @@ class PatternCatalogParserTest {
 
     @Test
     fun `rejects missing required field`() {
-        val json = """
+        val json =
+            """
             {
               "patternId": "p", "category": "bankFraud",
               "version": "1.0.0", "enabled": true, "source": "system",
@@ -121,28 +128,31 @@ class PatternCatalogParserTest {
               ],
               "warning": { "level": "medium", "title": "t", "message": "m" }
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
-            PatternCatalogParser.fromJson(json)
-        }
+        val ex =
+            io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+                PatternCatalogParser.fromJson(json)
+            }
         ex.message!! shouldContain "missing name"
     }
 
     @Test
     fun `rejects pattern with empty conditions`() {
-        val json = """
+        val json =
+            """
             {
               "patternId": "p", "name": "p", "category": "bankFraud",
               "version": "1.0.0", "enabled": true, "source": "system",
               "conditions": [],
               "warning": { "level": "medium", "title": "t", "message": "m" }
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
-            PatternCatalogParser.fromJson(json)
-        }
+        val ex =
+            io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+                PatternCatalogParser.fromJson(json)
+            }
         ex.message!! shouldContain "at least one condition"
     }
 }

@@ -22,27 +22,31 @@ object PatternCatalogParser {
     private val listAdapter: JsonAdapter<List<RawPattern>> =
         moshi.adapter(Types.newParameterizedType(List::class.java, RawPattern::class.java))
 
+    @Suppress("ThrowsCount")
     fun fromJson(json: String): ScenarioPattern {
-        val raw = try {
-            singleAdapter.fromJson(json)
-                ?: throw PatternParseException("pattern JSON deserialized to null")
-        } catch (e: JsonDataException) {
-            throw PatternParseException("malformed pattern JSON: ${e.message}", e)
-        } catch (e: IOException) {
-            throw PatternParseException("malformed pattern JSON: ${e.message}", e)
-        }
+        val raw =
+            try {
+                singleAdapter.fromJson(json)
+                    ?: throw PatternParseException("pattern JSON deserialized to null")
+            } catch (e: JsonDataException) {
+                throw PatternParseException("malformed pattern JSON: ${e.message}", e)
+            } catch (e: IOException) {
+                throw PatternParseException("malformed pattern JSON: ${e.message}", e)
+            }
         return raw.toDomain()
     }
 
+    @Suppress("ThrowsCount")
     fun listFromJson(json: String): List<ScenarioPattern> {
-        val raw = try {
-            listAdapter.fromJson(json)
-                ?: throw PatternParseException("pattern list JSON deserialized to null")
-        } catch (e: JsonDataException) {
-            throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
-        } catch (e: IOException) {
-            throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
-        }
+        val raw =
+            try {
+                listAdapter.fromJson(json)
+                    ?: throw PatternParseException("pattern list JSON deserialized to null")
+            } catch (e: JsonDataException) {
+                throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
+            } catch (e: IOException) {
+                throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
+            }
         return raw.map { it.toDomain() }
     }
 }
@@ -61,14 +65,18 @@ private data class RawPattern(
     val warning: RawWarning?,
     val recommendation: String? = null,
 ) {
+    @Suppress("ThrowsCount")
     fun toDomain(): ScenarioPattern {
         val pid = patternId ?: throw PatternParseException("missing patternId")
-        val resolvedCategory = ScenarioCategoryMapping.fromJson(category)
-            ?: throw PatternParseException("unknown or missing category for pattern '$pid'")
-        val resolvedWarning = warning?.toDomain(pid)
-            ?: throw PatternParseException("missing warning for pattern '$pid'")
-        val resolvedConditions = conditions?.mapIndexed { i, c -> c.toDomain(pid, i) }
-            ?: throw PatternParseException("missing conditions for pattern '$pid'")
+        val resolvedCategory =
+            ScenarioCategoryMapping.fromJson(category)
+                ?: throw PatternParseException("unknown or missing category for pattern '$pid'")
+        val resolvedWarning =
+            warning?.toDomain(pid)
+                ?: throw PatternParseException("missing warning for pattern '$pid'")
+        val resolvedConditions =
+            conditions?.mapIndexed { i, c -> c.toDomain(pid, i) }
+                ?: throw PatternParseException("missing conditions for pattern '$pid'")
         return try {
             ScenarioPattern(
                 patternId = PatternId(pid),
@@ -98,13 +106,19 @@ private data class RawCondition(
     val weight: Int?,
     val timeWindowHours: Int? = null,
 ) {
-    fun toDomain(patternId: String, index: Int): PatternCondition {
+    @Suppress("ThrowsCount")
+    fun toDomain(
+        patternId: String,
+        index: Int,
+    ): PatternCondition {
         val et = eventType ?: throw PatternParseException("missing eventType in pattern '$patternId' condition $index")
-        val resolvedEventType = EventType.fromJson(et)
-            ?: throw PatternParseException("unknown eventType '$et' in pattern '$patternId' condition $index")
+        val resolvedEventType =
+            EventType.fromJson(et)
+                ?: throw PatternParseException("unknown eventType '$et' in pattern '$patternId' condition $index")
         val op = operator ?: throw PatternParseException("missing operator in pattern '$patternId' condition $index")
-        val resolvedOperator = Operator.fromJson(op)
-            ?: throw PatternParseException("unknown operator '$op' in pattern '$patternId' condition $index")
+        val resolvedOperator =
+            Operator.fromJson(op)
+                ?: throw PatternParseException("unknown operator '$op' in pattern '$patternId' condition $index")
         val v = value ?: throw PatternParseException("missing value in pattern '$patternId' condition $index")
         val w = weight ?: throw PatternParseException("missing weight in pattern '$patternId' condition $index")
         return try {
@@ -126,10 +140,11 @@ private data class RawCorrelation(
     val maxCampaignAgeDays: Int? = null,
     val linkStrength: Double? = null,
 ) {
-    fun toDomain(): Correlation = Correlation(
-        maxCampaignAgeDays = maxCampaignAgeDays ?: Correlation.DEFAULT_MAX_AGE_DAYS,
-        linkStrength = linkStrength ?: 0.0,
-    )
+    fun toDomain(): Correlation =
+        Correlation(
+            maxCampaignAgeDays = maxCampaignAgeDays ?: Correlation.DEFAULT_MAX_AGE_DAYS,
+            linkStrength = linkStrength ?: 0.0,
+        )
 }
 
 private data class RawWarning(
@@ -137,10 +152,12 @@ private data class RawWarning(
     val title: String?,
     val message: String?,
 ) {
+    @Suppress("ThrowsCount")
     fun toDomain(patternId: String): Warning {
         val l = level ?: throw PatternParseException("missing warning.level for pattern '$patternId'")
-        val resolvedLevel = WarningLevel.fromJson(l)
-            ?: throw PatternParseException("unknown warning.level '$l' for pattern '$patternId'")
+        val resolvedLevel =
+            WarningLevel.fromJson(l)
+                ?: throw PatternParseException("unknown warning.level '$l' for pattern '$patternId'")
         return try {
             Warning(
                 level = resolvedLevel,
@@ -154,14 +171,15 @@ private data class RawWarning(
 }
 
 private object ScenarioCategoryMapping {
-    private val byJson: Map<String, ScenarioCategory> = mapOf(
-        "bankFraud" to ScenarioCategory.BANK_FRAUD,
-        "authoritySpoof" to ScenarioCategory.AUTHORITY_SPOOF,
-        "investmentScheme" to ScenarioCategory.INVESTMENT_SCHEME,
-        "deliveryScam" to ScenarioCategory.DELIVERY_SCAM,
-        "techSupportScam" to ScenarioCategory.TECH_SUPPORT_SCAM,
-        "unknownSocialEngineering" to ScenarioCategory.UNKNOWN_SOCIAL_ENGINEERING,
-    )
+    private val byJson: Map<String, ScenarioCategory> =
+        mapOf(
+            "bankFraud" to ScenarioCategory.BANK_FRAUD,
+            "authoritySpoof" to ScenarioCategory.AUTHORITY_SPOOF,
+            "investmentScheme" to ScenarioCategory.INVESTMENT_SCHEME,
+            "deliveryScam" to ScenarioCategory.DELIVERY_SCAM,
+            "techSupportScam" to ScenarioCategory.TECH_SUPPORT_SCAM,
+            "unknownSocialEngineering" to ScenarioCategory.UNKNOWN_SOCIAL_ENGINEERING,
+        )
 
     fun fromJson(value: String?): ScenarioCategory? = value?.let { byJson[it] }
 }
