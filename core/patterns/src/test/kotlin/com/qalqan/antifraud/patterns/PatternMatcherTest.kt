@@ -121,4 +121,48 @@ class PatternMatcherTest {
         val result = PatternMatcher.match(p, listOf(unknownCall("c1")))
         result.matched shouldBe false
     }
+
+    @Test
+    fun `time-window-bounded condition ignores out-of-window events`() {
+        val p =
+            pattern(
+                listOf(
+                    PatternCondition(EventType.CALL_EVENT, "isKnownContact", Operator.EQUALS, false, weight = 20),
+                    PatternCondition(
+                        EventType.SMS_EVENT,
+                        "containsCode",
+                        Operator.EQUALS,
+                        true,
+                        weight = 30,
+                        timeWindowHours = 6,
+                    ),
+                ),
+            )
+        val newest = unknownCall("c1", at = t)
+        val oldSms = smsWithCode("s1", at = t.minusSeconds(7 * 3600)) // 7h before newest, outside 6h window
+        val result = PatternMatcher.match(p, listOf(newest, oldSms))
+        result.matched shouldBe false
+    }
+
+    @Test
+    fun `time-window includes the boundary`() {
+        val p =
+            pattern(
+                listOf(
+                    PatternCondition(EventType.CALL_EVENT, "isKnownContact", Operator.EQUALS, false, weight = 20),
+                    PatternCondition(
+                        EventType.SMS_EVENT,
+                        "containsCode",
+                        Operator.EQUALS,
+                        true,
+                        weight = 30,
+                        timeWindowHours = 6,
+                    ),
+                ),
+            )
+        val newest = unknownCall("c1", at = t)
+        val edgeSms = smsWithCode("s1", at = t.minusSeconds(6 * 3600)) // exactly 6h before
+        val result = PatternMatcher.match(p, listOf(newest, edgeSms))
+        result.matched shouldBe true
+    }
 }
