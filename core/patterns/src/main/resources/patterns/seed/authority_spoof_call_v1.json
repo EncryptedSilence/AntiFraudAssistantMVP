@@ -1,0 +1,22 @@
+{
+  "patternId": "authority_spoof_call_v1",
+  "name": "Authority impersonation by phone",
+  "description": "Unknown caller plus a user answer indicating the caller claimed to be from a bank or government authority.",
+  "category": "authoritySpoof",
+  "version": "1.0.0",
+  "enabled": true,
+  "userCreated": false,
+  "source": "system",
+  "conditions": [
+    { "eventType": "CallEvent",       "field": "isKnownContact", "operator": "equals", "value": false,                    "weight": 20 },
+    { "eventType": "UserAnswerEvent", "field": "questionCode",   "operator": "equals", "value": "Q1_CALLER_OFFICIAL_CLAIM", "weight": 25 },
+    { "eventType": "UserAnswerEvent", "field": "answerCode",     "operator": "equals", "value": "YES",                    "weight": 0  }
+  ],
+  "correlation": { "maxCampaignAgeDays": 14, "linkStrength": 0.9 },
+  "warning": {
+    "level": "high",
+    "title": "Possible authority impersonation",
+    "message": "The caller claimed to be from a bank or authority. Hang up and call back via the official number on the back of your card or the agency's official website."
+  },
+  "recommendation": "Real authorities never ask for verification codes or money transfers by phone."
+}
