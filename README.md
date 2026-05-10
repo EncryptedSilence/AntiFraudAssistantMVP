@@ -66,19 +66,24 @@ Stage 1 (local core) and Stage 2 (pattern engine) are complete on `main`. Stage 
 │   └── wrapper/
 ├── build-logic/                     (composite build — convention plugins)
 ├── config/detekt/                   (detekt rules)
-├── app/                             (Android application — Compose status screen)
+├── app/                             (Android application — Compose status screen, demo importer, pattern-warning surface)
 ├── core/
 │   ├── domain/                      (JVM — entities per spec §16)
-│   ├── scoring/                     (JVM — risk math per §11–12)
-│   ├── correlation/                 (JVM — skeleton; Phase 4 fills it)
-│   ├── database/                    (Android library — skeleton; Phase 5 wires Room + SQLCipher)
-│   └── demo/                        (Android library — skeleton; Phase 8 imports demo fixtures)
-├── docs/
-│   ├── instructions/                (dev-setup-windows.md, test-instructions.md)
-│   ├── plans/stage{1..9}/           (per-stage implementation plans + reports)
-│   └── specs/                       (v1 historical, v2 authoritative)
-└── wiki/
-    └── Home.md
+│   ├── scoring/                     (JVM — risk math per §11–12 + Appendix B)
+│   ├── correlation/                 (JVM — session + campaign correlators, 14-day horizon, pattern-provider integration)
+│   ├── database/                    (Android library — Room v2 + SQLCipher, manual entry, action log, retention purger, pattern_state)
+│   ├── demo/                        (Android library — JSON fixture importer for §13 scenarios)
+│   └── patterns/                    (JVM — declarative pattern engine: Moshi parser, condition evaluator, matcher, explainer, 5 in-APK seeds)
+├── docs/                            (private — gitignored — plans, specs, instructions)
+└── wiki/                            (architectural overview + topic pages)
+    ├── Home.md
+    ├── Pattern-engine.md
+    ├── Privacy-boundaries.md
+    ├── Permissions-and-onboarding.md
+    ├── Real-time-alert-surface.md
+    ├── Update-packages-and-signing.md
+    ├── Web-channel.md
+    └── Acceptance-test-plan.md
 ```
 
 ## Building
