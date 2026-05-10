@@ -6,7 +6,7 @@ The app does not use AI of any kind. It does not record audio. It does not read 
 
 ## Status
 
-Stage 1 (local core) is complete on `main`. All nine phases have landed: project scaffolding, domain entities, deterministic scoring engine, correlation engine, SQLCipher-encrypted Room database, manual-entry fallback path, application action log, demo-data import, and the Stage-1 subset of the §23 acceptance criteria. Stages 2–9 (patterns, calls, SMS, web, sync, export, UX, real-time intervention) follow. See [docs/plans/stage1/IMPLEMENTATION_REPORT.md](docs/plans/stage1/IMPLEMENTATION_REPORT.md) for the per-phase log.
+Stage 1 (local core) and Stage 2 (pattern engine) are complete on `main`. Stage 1 delivered project scaffolding, domain entities, deterministic scoring engine, correlation engine, SQLCipher-encrypted Room database, manual-entry fallback path, application action log, and demo-data import. Stage 2 added the declarative scenario-pattern engine: typed pattern model, Moshi parser, condition evaluator, AND-of-conditions matcher, ≥3-reasons explainability, pattern state storage (Room schema v2), five in-APK seed patterns, orchestrator integration, and §23 #12 / #14 / #17 acceptance tests. Stages 3–9 (calls, SMS, web, sync, export, UX, real-time intervention) follow. See [docs/plans/stage1/IMPLEMENTATION_REPORT.md](docs/plans/stage1/IMPLEMENTATION_REPORT.md) and [docs/plans/stage2/IMPLEMENTATION_REPORT.md](docs/plans/stage2/IMPLEMENTATION_REPORT.md) for the per-phase logs.
 
 ## What it does
 
