@@ -31,7 +31,7 @@ object PatternCatalogParser {
             } catch (e: JsonDataException) {
                 throw PatternParseException("malformed pattern JSON: ${e.message}", e)
             } catch (e: IOException) {
-                throw PatternParseException("malformed pattern JSON: ${e.message}", e)
+                throw PatternParseException("malformed pattern JSON: ${e.message ?: e.toString()}", e)
             }
         return raw.toDomain()
     }
@@ -45,7 +45,7 @@ object PatternCatalogParser {
             } catch (e: JsonDataException) {
                 throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
             } catch (e: IOException) {
-                throw PatternParseException("malformed pattern list JSON: ${e.message}", e)
+                throw PatternParseException("malformed pattern list JSON: ${e.message ?: e.toString()}", e)
             }
         return raw.map { it.toDomain() }
     }
@@ -102,6 +102,8 @@ private data class RawCondition(
     val eventType: String?,
     val field: String?,
     val operator: String?,
+    // `value` arrives as Boolean/Number/String/List depending on the operator; type validation
+    // is deferred to ConditionEvaluator/EventFieldAccessor in Phase 4.
     val value: Any?,
     val weight: Int?,
     val timeWindowHours: Int? = null,
