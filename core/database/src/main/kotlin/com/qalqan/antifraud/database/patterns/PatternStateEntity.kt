@@ -8,5 +8,6 @@ import androidx.room.PrimaryKey
 internal data class PatternStateEntity(
     @PrimaryKey @ColumnInfo(name = "pattern_id") val patternId: String,
     @ColumnInfo(name = "enabled") val enabled: Boolean,
-    @ColumnInfo(name = "updated_at") val updatedAt: String, // ISO-8601 Instant
+    // ISO-8601 Instant
+    @ColumnInfo(name = "updated_at") val updatedAt: String,
 )

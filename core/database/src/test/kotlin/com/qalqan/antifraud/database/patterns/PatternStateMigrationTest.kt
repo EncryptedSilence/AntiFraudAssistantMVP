@@ -22,8 +22,9 @@ class PatternStateMigrationTest {
 
     @Test
     fun `pattern_state table is present in v2 schema`() {
-        val cursor = db.openHelper.readableDatabase
-            .query("SELECT name FROM sqlite_master WHERE type='table' AND name='pattern_state'")
+        val cursor =
+            db.openHelper.readableDatabase
+                .query("SELECT name FROM sqlite_master WHERE type='table' AND name='pattern_state'")
         cursor.use {
             it.moveToFirst() shouldBe true
             it.getString(0) shouldBe "pattern_state"
