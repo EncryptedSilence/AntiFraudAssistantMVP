@@ -25,9 +25,13 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start,
         ) {
-            Text("AntiFraud Assistant — Stage 1 status board", style = MaterialTheme.typography.titleLarge)
+            Text("AntiFraud Assistant — Stage 2 status board", style = MaterialTheme.typography.titleLarge)
             Text("Calls captured: ${state.calls}")
             Text("SMS captured: ${state.sms}")
+            Text("Patterns enabled: ${state.patternsEnabledCount}")
+            state.latestWarningLevel?.let { level ->
+                Text("Latest warning: ${level.jsonValue.uppercase()} — ${state.latestWarningReason ?: ""}")
+            }
             Button(onClick = { viewModel.runDemo() }) { Text("Run demo (Fast attack)") }
             Button(onClick = { viewModel.wipe() }) { Text("Wipe all data") }
         }

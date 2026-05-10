@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":core:correlation"))
     implementation(project(":core:database"))
     implementation(project(":core:demo"))
+    implementation(project(":core:patterns"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
