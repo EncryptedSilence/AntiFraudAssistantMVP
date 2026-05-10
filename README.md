@@ -6,7 +6,7 @@ The app does not use AI of any kind. It does not record audio. It does not read 
 
 ## Status
 
-Pre-implementation. The repository will be populated with the Kotlin / Jetpack Compose codebase as development progresses. The detailed technical specification is currently kept off the public repo.
+Stage 1 (local core) is complete on `main`. All nine phases have landed: project scaffolding, domain entities, deterministic scoring engine, correlation engine, SQLCipher-encrypted Room database, manual-entry fallback path, application action log, demo-data import, and the Stage-1 subset of the §23 acceptance criteria. Stages 2–9 (patterns, calls, SMS, web, sync, export, UX, real-time intervention) follow. See [docs/plans/stage1/IMPLEMENTATION_REPORT.md](docs/plans/stage1/IMPLEMENTATION_REPORT.md) for the per-phase log.
 
 ## What it does
 
@@ -53,26 +53,45 @@ Pre-implementation. The repository will be populated with the Kotlin / Jetpack C
 
 ```
 .
+├── .editorconfig
 ├── .gitignore
+├── CLAUDE.md                        (agent-facing project instructions)
 ├── README.md
+├── settings.gradle.kts              (Gradle root + module includes)
+├── build.gradle.kts                 (root — clean + checkAll only)
+├── gradle.properties
+├── gradlew, gradlew.bat
+├── gradle/
+│   ├── libs.versions.toml           (single source of dependency versions)
+│   └── wrapper/
+├── build-logic/                     (composite build — convention plugins)
+├── config/detekt/                   (detekt rules)
+├── app/                             (Android application — Compose status screen)
+├── core/
+│   ├── domain/                      (JVM — entities per spec §16)
+│   ├── scoring/                     (JVM — risk math per §11–12)
+│   ├── correlation/                 (JVM — skeleton; Phase 4 fills it)
+│   ├── database/                    (Android library — skeleton; Phase 5 wires Room + SQLCipher)
+│   └── demo/                        (Android library — skeleton; Phase 8 imports demo fixtures)
+├── docs/
+│   ├── instructions/                (dev-setup-windows.md, test-instructions.md)
+│   ├── plans/stage{1..9}/           (per-stage implementation plans + reports)
+│   └── specs/                       (v1 historical, v2 authoritative)
 └── wiki/
     └── Home.md
 ```
 
-The `docs/` directory holding the technical specification is intentionally excluded from this public repository while the spec is in active revision. Once stabilized, the relevant parts will be promoted into the GitHub wiki.
-
 ## Building
 
-The Gradle project will be added in a later commit. Once present, the canonical build commands will be:
-
 ```bash
+./gradlew checkAll              # local quality gate: ktlintCheck + detekt + JVM test + Android testDebugUnitTest
 ./gradlew assembleDebug         # build the debug APK
-./gradlew test                  # JVM unit tests
-./gradlew connectedAndroidTest  # device / emulator tests
-./gradlew lint ktlintCheck detekt
+./gradlew test                  # JVM unit tests across :core:* modules
+./gradlew testDebugUnitTest     # Android unit tests (Robolectric)
+./gradlew connectedAndroidTest  # device / emulator tests (none yet — used from Stage 3)
 ```
 
-Until the codebase lands, this section is a placeholder.
+Windows-equivalent commands and one-time environment setup live in [docs/instructions/dev-setup-windows.md](docs/instructions/dev-setup-windows.md). Test layers and conventions are described in [docs/instructions/test-instructions.md](docs/instructions/test-instructions.md).
 
 ## Distribution
 
