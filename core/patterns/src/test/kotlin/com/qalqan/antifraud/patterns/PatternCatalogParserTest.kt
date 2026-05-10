@@ -2,6 +2,7 @@ package com.qalqan.antifraud.patterns
 
 import com.qalqan.antifraud.domain.ScenarioCategory
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 
 class PatternCatalogParserTest {
@@ -61,5 +62,44 @@ class PatternCatalogParserTest {
         patterns.size shouldBe 2
         patterns[0].patternId.value shouldBe "p1"
         patterns[1].enabled shouldBe false
+    }
+
+    @Test
+    fun `rejects unknown operator`() {
+        val json = """
+            {
+              "patternId": "p", "name": "p", "category": "bankFraud",
+              "version": "1.0.0", "enabled": true, "source": "system",
+              "conditions": [
+                { "eventType": "SmsEvent", "field": "x", "operator": "regex", "value": "y", "weight": 10 }
+              ],
+              "warning": { "level": "medium", "title": "t", "message": "m" }
+            }
+        """.trimIndent()
+
+        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+            PatternCatalogParser.fromJson(json)
+        }
+        ex.message!! shouldContain "unknown operator 'regex'"
+    }
+
+    @Test
+    fun `rejects unsupported event type`() {
+        val json = """
+            {
+              "patternId": "p", "name": "p", "category": "bankFraud",
+              "version": "1.0.0", "enabled": true, "source": "system",
+              "conditions": [
+                { "eventType": "ContactEvent", "field": "x", "operator": "equals", "value": "y", "weight": 10 }
+              ],
+              "warning": { "level": "medium", "title": "t", "message": "m" }
+            }
+        """.trimIndent()
+
+        val ex = io.kotest.assertions.throwables.shouldThrow<PatternParseException> {
+            PatternCatalogParser.fromJson(json)
+        }
+        ex.message!! shouldContain "ContactEvent"
+        ex.message!! shouldContain "not supported in Stage 2"
     }
 }
