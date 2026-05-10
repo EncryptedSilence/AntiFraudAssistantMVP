@@ -165,4 +165,19 @@ class PatternMatcherTest {
         val result = PatternMatcher.match(p, listOf(newest, edgeSms))
         result.matched shouldBe true
     }
+
+    @Test
+    fun `triggered weight is capped at 60`() {
+        val p =
+            pattern(
+                listOf(
+                    PatternCondition(EventType.CALL_EVENT, "isKnownContact", Operator.EQUALS, false, weight = 30),
+                    PatternCondition(EventType.SMS_EVENT, "containsCode", Operator.EQUALS, true, weight = 30),
+                    PatternCondition(EventType.SMS_EVENT, "smsCategory", Operator.EQUALS, "OTP", weight = 30),
+                ),
+            )
+        val result = PatternMatcher.match(p, listOf(unknownCall("c1"), smsWithCode("s1")))
+        result.matched shouldBe true
+        result.triggeredWeight shouldBe 60
+    }
 }
