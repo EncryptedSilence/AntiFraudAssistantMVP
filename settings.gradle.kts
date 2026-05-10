@@ -24,5 +24,6 @@ include(
     ":core:correlation",
     ":core:database",
     ":core:demo",
-    ":core:patterns"
+    ":core:patterns",
+    ":feature:calls"
 )
