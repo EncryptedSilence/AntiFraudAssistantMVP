@@ -46,6 +46,7 @@ class Repositories private constructor(
         db.riskCampaignDao().deleteAll()
         db.contactProfileDao().deleteAll()
         db.applicationActionLogDao().deleteAll()
+        db.patternStateDao().deleteAll()
         onWipe()
     }
 

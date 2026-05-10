@@ -7,6 +7,7 @@ import com.qalqan.antifraud.domain.CallEvent
 import com.qalqan.antifraud.domain.EventId
 import com.qalqan.antifraud.domain.PhoneHash
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -41,8 +42,10 @@ class WipeAllTest {
                     linkedCampaignId = null,
                 ),
             )
+            repos.patternState.setEnabled("p1", enabled = false, at = Instant.parse("2026-05-08T10:00:00Z"))
             repos.wipeAll()
             repos.calls.listSince(Instant.EPOCH).shouldBeEmpty()
+            repos.patternState.isEnabled("p1", default = true) shouldBe true
         }
     }
 }
