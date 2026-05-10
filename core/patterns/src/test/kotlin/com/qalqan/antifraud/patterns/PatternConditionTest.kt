@@ -11,7 +11,7 @@ class PatternConditionTest {
         operator: Operator = Operator.EQUALS,
         value: Any = true,
         weight: Int = 30,
-        timeWindowHours: Int? = null
+        timeWindowHours: Int? = null,
     ) = PatternCondition(eventType, field, operator, value, weight, timeWindowHours)
 
     @Test

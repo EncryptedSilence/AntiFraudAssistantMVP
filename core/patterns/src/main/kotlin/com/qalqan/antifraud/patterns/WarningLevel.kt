@@ -7,7 +7,8 @@ package com.qalqan.antifraud.patterns
 enum class WarningLevel(val jsonValue: String) {
     MEDIUM("medium"),
     HIGH("high"),
-    CRITICAL("critical");
+    CRITICAL("critical"),
+    ;
 
     companion object {
         fun fromJson(value: String): WarningLevel? = entries.firstOrNull { it.jsonValue == value }

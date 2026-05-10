@@ -15,7 +15,7 @@ data class PatternCondition(
     val operator: Operator,
     val value: Any,
     val weight: Int,
-    val timeWindowHours: Int? = null
+    val timeWindowHours: Int? = null,
 ) {
     init {
         require(eventType.supportedInStage2) {

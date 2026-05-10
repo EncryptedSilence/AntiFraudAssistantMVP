@@ -9,7 +9,8 @@ enum class Operator(val jsonValue: String) {
     GREATER_THAN("greaterThan"),
     LESS_THAN("lessThan"),
     CONTAINS("contains"),
-    MATCHES("matches");
+    MATCHES("matches"),
+    ;
 
     companion object {
         fun fromJson(value: String): Operator? = entries.firstOrNull { it.jsonValue == value }

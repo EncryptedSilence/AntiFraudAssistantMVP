@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test
 class OperatorTest {
     @Test
     fun `operators match Appendix A enum values`() {
-        Operator.entries.map { it.jsonValue }.toSet() shouldBe setOf(
-            "equals", "in", "greaterThan", "lessThan", "contains", "matches"
-        )
+        Operator.entries.map { it.jsonValue }.toSet() shouldBe
+            setOf(
+                "equals", "in", "greaterThan", "lessThan", "contains", "matches",
+            )
     }
 
     @Test

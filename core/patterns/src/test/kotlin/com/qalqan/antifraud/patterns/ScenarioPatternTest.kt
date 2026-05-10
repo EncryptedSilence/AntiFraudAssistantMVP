@@ -8,18 +8,19 @@ import org.junit.jupiter.api.Test
 
 class ScenarioPatternTest {
     private val warning = Warning(WarningLevel.HIGH, "title", "message")
-    private val condition = PatternCondition(
-        eventType = EventType.SMS_EVENT,
-        field = "containsCode",
-        operator = Operator.EQUALS,
-        value = true,
-        weight = 30
-    )
+    private val condition =
+        PatternCondition(
+            eventType = EventType.SMS_EVENT,
+            field = "containsCode",
+            operator = Operator.EQUALS,
+            value = true,
+            weight = 30,
+        )
 
     private fun pattern(
         patternId: PatternId = PatternId("test_pattern_v1"),
         version: String = "1.0.0",
-        conditions: List<PatternCondition> = listOf(condition)
+        conditions: List<PatternCondition> = listOf(condition),
     ) = ScenarioPattern(
         patternId = patternId,
         name = "Test pattern",
@@ -32,7 +33,7 @@ class ScenarioPatternTest {
         conditions = conditions,
         correlation = Correlation(),
         warning = warning,
-        recommendation = null
+        recommendation = null,
     )
 
     @Test

@@ -6,7 +6,7 @@ package com.qalqan.antifraud.patterns
  */
 data class Correlation(
     val maxCampaignAgeDays: Int = DEFAULT_MAX_AGE_DAYS,
-    val linkStrength: Double = 0.0
+    val linkStrength: Double = 0.0,
 ) {
     init {
         require(maxCampaignAgeDays in MIN_MAX_AGE_DAYS..DEFAULT_MAX_AGE_DAYS) {

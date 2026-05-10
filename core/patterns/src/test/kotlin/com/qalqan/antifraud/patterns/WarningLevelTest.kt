@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test
 class WarningLevelTest {
     @Test
     fun `warning levels match Appendix A enum values`() {
-        WarningLevel.entries.map { it.jsonValue }.toSet() shouldBe setOf(
-            "medium", "high", "critical"
-        )
+        WarningLevel.entries.map { it.jsonValue }.toSet() shouldBe
+            setOf(
+                "medium", "high", "critical",
+            )
     }
 
     @Test

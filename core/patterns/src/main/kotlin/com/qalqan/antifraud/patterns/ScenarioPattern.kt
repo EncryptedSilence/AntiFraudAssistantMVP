@@ -21,7 +21,7 @@ data class ScenarioPattern(
     val conditions: List<PatternCondition>,
     val correlation: Correlation,
     val warning: Warning,
-    val recommendation: String?
+    val recommendation: String?,
 ) {
     init {
         require(name.isNotBlank()) { "name must not be blank" }

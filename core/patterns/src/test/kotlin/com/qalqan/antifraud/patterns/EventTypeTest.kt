@@ -6,17 +6,19 @@ import org.junit.jupiter.api.Test
 class EventTypeTest {
     @Test
     fun `event types match Appendix A enum values`() {
-        EventType.entries.map { it.jsonValue }.toSet() shouldBe setOf(
-            "CallEvent", "SmsEvent", "WebEvent",
-            "ContactEvent", "UserAnswerEvent", "ManualEvent", "PatternEvent"
-        )
+        EventType.entries.map { it.jsonValue }.toSet() shouldBe
+            setOf(
+                "CallEvent", "SmsEvent", "WebEvent",
+                "ContactEvent", "UserAnswerEvent", "ManualEvent", "PatternEvent",
+            )
     }
 
     @Test
     fun `supported event types are the four Stage 2 ships`() {
-        EventType.entries.filter { it.supportedInStage2 }.map { it.jsonValue }.toSet() shouldBe setOf(
-            "CallEvent", "SmsEvent", "WebEvent", "UserAnswerEvent"
-        )
+        EventType.entries.filter { it.supportedInStage2 }.map { it.jsonValue }.toSet() shouldBe
+            setOf(
+                "CallEvent", "SmsEvent", "WebEvent", "UserAnswerEvent",
+            )
     }
 
     @Test

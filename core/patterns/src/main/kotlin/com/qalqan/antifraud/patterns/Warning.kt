@@ -6,7 +6,7 @@ package com.qalqan.antifraud.patterns
 data class Warning(
     val level: WarningLevel,
     val title: String,
-    val message: String
+    val message: String,
 ) {
     init {
         require(title.isNotBlank()) { "title must not be blank" }

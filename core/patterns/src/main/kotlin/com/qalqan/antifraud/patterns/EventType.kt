@@ -14,7 +14,8 @@ enum class EventType(val jsonValue: String, val supportedInStage2: Boolean) {
     USER_ANSWER_EVENT("UserAnswerEvent", true),
     CONTACT_EVENT("ContactEvent", false),
     MANUAL_EVENT("ManualEvent", false),
-    PATTERN_EVENT("PatternEvent", false);
+    PATTERN_EVENT("PatternEvent", false),
+    ;
 
     companion object {
         fun fromJson(value: String): EventType? = entries.firstOrNull { it.jsonValue == value }
