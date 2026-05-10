@@ -12,22 +12,29 @@ object PatternExplainer {
         val triggered = matches.filter { (_, r) -> r.matched }
         require(triggered.isNotEmpty()) { "explain called with no triggered patterns" }
 
-        val maxLevel = triggered
-            .map { (p, _) -> p.warning.level }
-            .maxBy { it.severityRank() }
+        val maxLevel =
+            triggered
+                .map { (p, _) -> p.warning.level }
+                .maxBy { it.severityRank() }
 
-        val reasons = triggered.flatMap { (pattern, _) ->
-            pattern.conditions.map { cond ->
-                Reason(pattern.patternId, ConditionPhraser.phrase(cond))
-            }
-        }.distinctBy { it.text }
+        val reasons =
+            triggered.flatMap { (pattern, _) ->
+                pattern.conditions.map { cond ->
+                    Reason(pattern.patternId, ConditionPhraser.phrase(cond))
+                }
+            }.distinctBy { it.text }
 
         return Explanation(level = maxLevel, reasons = reasons)
     }
 
-    private fun WarningLevel.severityRank(): Int = when (this) {
-        WarningLevel.MEDIUM -> 1
-        WarningLevel.HIGH -> 2
-        WarningLevel.CRITICAL -> 3
-    }
+    private fun WarningLevel.severityRank(): Int =
+        when (this) {
+            WarningLevel.MEDIUM -> RANK_MEDIUM
+            WarningLevel.HIGH -> RANK_HIGH
+            WarningLevel.CRITICAL -> RANK_CRITICAL
+        }
+
+    private const val RANK_MEDIUM: Int = 1
+    private const val RANK_HIGH: Int = 2
+    private const val RANK_CRITICAL: Int = 3
 }

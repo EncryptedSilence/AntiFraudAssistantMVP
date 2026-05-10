@@ -16,7 +16,7 @@ data class Reason(val patternId: PatternId, val text: String) {
 
 data class Explanation(
     val level: WarningLevel,
-    val reasons: List<Reason>
+    val reasons: List<Reason>,
 ) {
     init {
         require(reasons.isNotEmpty()) { "Explanation must have at least one reason" }

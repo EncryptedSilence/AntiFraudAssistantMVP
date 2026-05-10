@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Test
 class ExplanationTest {
     @Test
     fun `valid explanation accepted`() {
-        val e = Explanation(
-            level = WarningLevel.HIGH,
-            reasons = listOf(
-                Reason(PatternId("p1"), "An unknown call happened."),
-                Reason(PatternId("p1"), "An SMS with a code arrived within 24h.")
+        val e =
+            Explanation(
+                level = WarningLevel.HIGH,
+                reasons =
+                    listOf(
+                        Reason(PatternId("p1"), "An unknown call happened."),
+                        Reason(PatternId("p1"), "An SMS with a code arrived within 24h."),
+                    ),
             )
-        )
         e.reasons.size shouldBe 2
     }
 
