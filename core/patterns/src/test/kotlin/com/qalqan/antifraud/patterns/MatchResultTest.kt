@@ -9,12 +9,13 @@ import org.junit.jupiter.api.Test
 class MatchResultTest {
     @Test
     fun `valid match accepted`() {
-        val r = MatchResult(
-            patternId = PatternId("p"),
-            matched = true,
-            triggeredWeight = 50,
-            triggeringEventIds = listOf(EventId("e1"), EventId("e2"))
-        )
+        val r =
+            MatchResult(
+                patternId = PatternId("p"),
+                matched = true,
+                triggeredWeight = 50,
+                triggeringEventIds = listOf(EventId("e1"), EventId("e2")),
+            )
         r.matched shouldBe true
     }
 
