@@ -16,14 +16,14 @@ class TelephonyCallStateListener(
     private val subscriptionId: Int?,
     private val callback: CallStateListenerCallback,
 ) : TelephonyCallback(), TelephonyCallback.CallStateListener {
-
     override fun onCallStateChanged(state: Int) {
-        val mapped = when (state) {
-            TelephonyManager.CALL_STATE_RINGING -> CallTransition.State.RINGING
-            TelephonyManager.CALL_STATE_OFFHOOK -> CallTransition.State.OFFHOOK
-            TelephonyManager.CALL_STATE_IDLE -> CallTransition.State.IDLE
-            else -> return
-        }
+        val mapped =
+            when (state) {
+                TelephonyManager.CALL_STATE_RINGING -> CallTransition.State.RINGING
+                TelephonyManager.CALL_STATE_OFFHOOK -> CallTransition.State.OFFHOOK
+                TelephonyManager.CALL_STATE_IDLE -> CallTransition.State.IDLE
+                else -> return
+            }
         callback.onTransition(
             CallTransition(state = mapped, subscriptionId = subscriptionId, occurredAt = Instant.now()),
         )

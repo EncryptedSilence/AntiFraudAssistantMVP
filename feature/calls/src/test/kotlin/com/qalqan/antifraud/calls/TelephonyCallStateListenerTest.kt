@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicReference
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.S]) // Android 12
 class TelephonyCallStateListenerTest {
-
     @Test
     fun `forwards CALL_STATE_RINGING as RINGING`() {
         val seen = AtomicReference<CallTransition?>()

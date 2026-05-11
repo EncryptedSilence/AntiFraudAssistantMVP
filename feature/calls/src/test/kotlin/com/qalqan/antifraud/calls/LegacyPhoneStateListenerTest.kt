@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicReference
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.R]) // Android 11
 class LegacyPhoneStateListenerTest {
-
     @Test
     fun `legacy listener maps CALL_STATE_RINGING`() {
         val seen = AtomicReference<CallTransition?>()

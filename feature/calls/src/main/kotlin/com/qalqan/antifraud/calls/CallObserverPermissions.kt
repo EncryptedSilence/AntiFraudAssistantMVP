@@ -22,9 +22,10 @@ class CallObserverPermissions(private val context: Context) {
     }
 
     companion object {
-        val REQUIRED: List<String> = listOf(
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_CALL_LOG,
-        )
+        val REQUIRED: List<String> =
+            listOf(
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.READ_CALL_LOG,
+            )
     }
 }

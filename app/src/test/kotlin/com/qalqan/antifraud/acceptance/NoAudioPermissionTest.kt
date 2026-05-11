@@ -18,10 +18,11 @@ class NoAudioPermissionTest {
 
     @Test
     fun `merged manifest does not request RECORD_AUDIO`() {
-        val perms = context.packageManager.getPackageInfo(
-            context.packageName,
-            PackageManager.GET_PERMISSIONS,
-        ).requestedPermissions?.toList() ?: emptyList()
+        val perms =
+            context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.GET_PERMISSIONS,
+            ).requestedPermissions?.toList() ?: emptyList()
         perms shouldNotContain android.Manifest.permission.RECORD_AUDIO
     }
 }

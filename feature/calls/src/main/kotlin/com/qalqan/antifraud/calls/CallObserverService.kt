@@ -19,7 +19,6 @@ import androidx.core.app.NotificationCompat
  * with the §17.0.3 passive-transparency copy. Phase 5 wires CallLog read on IDLE.
  */
 class CallObserverService : Service() {
-
     private var router: CallStateRouter? = null
 
     override fun onCreate() {
@@ -29,7 +28,11 @@ class CallObserverService : Service() {
         router = CallStateRouter(this) { transition -> onTransition(transition) }.also { it.register() }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int = START_STICKY
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -39,7 +42,9 @@ class CallObserverService : Service() {
         super.onDestroy()
     }
 
-    private fun onTransition(@Suppress("UNUSED_PARAMETER") transition: CallTransition) {
+    private fun onTransition(
+        @Suppress("UNUSED_PARAMETER") transition: CallTransition,
+    ) {
         // Phase 5 attaches the CallLog reader here.
     }
 

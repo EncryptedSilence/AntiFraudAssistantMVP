@@ -2,7 +2,6 @@ package com.qalqan.antifraud.calls
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import androidx.test.core.app.ApplicationProvider
 import io.kotest.matchers.shouldBe
 import org.junit.Test

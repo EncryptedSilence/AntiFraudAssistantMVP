@@ -16,15 +16,18 @@ class LegacyPhoneStateListener(
     private val subscriptionId: Int?,
     private val callback: CallStateListenerCallback,
 ) : PhoneStateListener() {
-
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onCallStateChanged(state: Int, incomingNumber: String?) {
-        val mapped = when (state) {
-            TelephonyManager.CALL_STATE_RINGING -> CallTransition.State.RINGING
-            TelephonyManager.CALL_STATE_OFFHOOK -> CallTransition.State.OFFHOOK
-            TelephonyManager.CALL_STATE_IDLE -> CallTransition.State.IDLE
-            else -> return
-        }
+    override fun onCallStateChanged(
+        state: Int,
+        incomingNumber: String?,
+    ) {
+        val mapped =
+            when (state) {
+                TelephonyManager.CALL_STATE_RINGING -> CallTransition.State.RINGING
+                TelephonyManager.CALL_STATE_OFFHOOK -> CallTransition.State.OFFHOOK
+                TelephonyManager.CALL_STATE_IDLE -> CallTransition.State.IDLE
+                else -> return
+            }
         callback.onTransition(
             CallTransition(state = mapped, subscriptionId = subscriptionId, occurredAt = Instant.now()),
         )
