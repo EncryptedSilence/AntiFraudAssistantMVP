@@ -27,6 +27,19 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
         ) {
             Text("AntiFraud Assistant — Stage 2 status board", style = MaterialTheme.typography.titleLarge)
             Text("Calls captured: ${state.calls}")
+            val permissionBanner: String =
+                when (state.callPermissionsState) {
+                    com.qalqan.antifraud.calls.CallObserverPermissions.State.GRANTED -> "Auto call capture: on"
+                    com.qalqan.antifraud.calls.CallObserverPermissions.State.PARTIAL -> "Auto call capture: partial — some permissions missing"
+                    com.qalqan.antifraud.calls.CallObserverPermissions.State.DENIED -> "Auto call capture: off — manual entry only"
+                }
+            Text(permissionBanner, style = MaterialTheme.typography.bodyLarge)
+            if (!state.batteryOptimizationExempt) {
+                Text(
+                    "Battery optimization is on; call observation may be killed in the background.",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
             Text("SMS captured: ${state.sms}")
             Text("Patterns enabled: ${state.patternsEnabledCount}")
             state.latestWarningLevel?.let { level ->

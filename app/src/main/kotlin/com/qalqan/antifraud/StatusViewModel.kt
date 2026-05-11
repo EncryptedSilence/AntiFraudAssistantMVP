@@ -34,6 +34,9 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val patternsEnabledCount: Int = 0,
         val latestWarningLevel: WarningLevel? = null,
         val latestWarningReason: String? = null,
+        val callPermissionsState: com.qalqan.antifraud.calls.CallObserverPermissions.State =
+            com.qalqan.antifraud.calls.CallObserverPermissions.State.DENIED,
+        val batteryOptimizationExempt: Boolean = false,
     )
 
     fun runDemo() {
@@ -64,6 +67,8 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
                 patternsEnabledCount = enabledPatterns.size,
                 latestWarningLevel = warningLevel,
                 latestWarningReason = warningReason,
+                callPermissionsState = com.qalqan.antifraud.calls.CallObserverPermissions(getApplication<Application>()).state(),
+                batteryOptimizationExempt = com.qalqan.antifraud.calls.BatteryOptimizationPrompt.isExempt(getApplication<Application>()),
             )
     }
 
