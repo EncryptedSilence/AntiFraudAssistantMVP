@@ -1,3 +1,5 @@
+@file:Suppress("ReturnCount")
+
 package com.qalqan.antifraud.calls
 
 import android.content.Context
@@ -12,8 +14,9 @@ import android.telephony.SubscriptionManager
 class SimEnumerator(private val context: Context) {
     fun slotsBySubscriptionId(): Map<Int, Int> {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return emptyMap()
-        val sm = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as? SubscriptionManager
-            ?: return emptyMap()
+        val sm =
+            context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as? SubscriptionManager
+                ?: return emptyMap()
         val infos = runCatching { sm.activeSubscriptionInfoList }.getOrNull() ?: return emptyMap()
         return infos.associate { it.subscriptionId to it.simSlotIndex }
     }

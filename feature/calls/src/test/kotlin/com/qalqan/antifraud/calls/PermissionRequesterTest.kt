@@ -12,7 +12,6 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 class PermissionRequesterTest {
-
     @Test
     @Config(sdk = [Build.VERSION_CODES.TIRAMISU]) // Android 13
     fun `requestList includes POST_NOTIFICATIONS on Android 13+`() {
@@ -34,22 +33,25 @@ class PermissionRequesterTest {
 
     @Test
     fun `summarize maps grant maps to a tri-state`() {
-        val granted = mapOf(
-            Manifest.permission.READ_PHONE_STATE to true,
-            Manifest.permission.READ_CALL_LOG to true,
-        )
+        val granted =
+            mapOf(
+                Manifest.permission.READ_PHONE_STATE to true,
+                Manifest.permission.READ_CALL_LOG to true,
+            )
         PermissionRequester.summarize(granted) shouldBe CallObserverPermissions.State.GRANTED
 
-        val partial = mapOf(
-            Manifest.permission.READ_PHONE_STATE to true,
-            Manifest.permission.READ_CALL_LOG to false,
-        )
+        val partial =
+            mapOf(
+                Manifest.permission.READ_PHONE_STATE to true,
+                Manifest.permission.READ_CALL_LOG to false,
+            )
         PermissionRequester.summarize(partial) shouldBe CallObserverPermissions.State.PARTIAL
 
-        val denied = mapOf(
-            Manifest.permission.READ_PHONE_STATE to false,
-            Manifest.permission.READ_CALL_LOG to false,
-        )
+        val denied =
+            mapOf(
+                Manifest.permission.READ_PHONE_STATE to false,
+                Manifest.permission.READ_CALL_LOG to false,
+            )
         PermissionRequester.summarize(denied) shouldBe CallObserverPermissions.State.DENIED
     }
 }

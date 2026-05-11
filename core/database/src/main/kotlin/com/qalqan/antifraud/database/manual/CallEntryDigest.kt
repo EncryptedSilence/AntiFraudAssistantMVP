@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package com.qalqan.antifraud.database.manual
 
 import android.content.Context
@@ -17,16 +19,14 @@ class CallEntryDigest internal constructor(
     private val phone: PhoneNormalizer,
     private val salt: ByteArray,
 ) {
-    fun hash(rawNumber: String): PhoneHash =
-        PhoneHash(Hashing.saltedSha256(phone.normalize(rawNumber).normalizedE164, salt))
+    fun hash(rawNumber: String): PhoneHash = PhoneHash(Hashing.saltedSha256(phone.normalize(rawNumber).normalizedE164, salt))
 
     companion object {
         private const val SALT_FILE = "antifraud.hash.salt"
         private const val SALT_BYTES = 16
         private const val DEFAULT_COUNTRY_CODE = 7
 
-        fun create(context: Context): CallEntryDigest =
-            create(context, KeyStoreCryptoBox.create(context, alias = "antifraud.field_box"))
+        fun create(context: Context): CallEntryDigest = create(context, KeyStoreCryptoBox.create(context, alias = "antifraud.field_box"))
 
         fun create(
             context: Context,

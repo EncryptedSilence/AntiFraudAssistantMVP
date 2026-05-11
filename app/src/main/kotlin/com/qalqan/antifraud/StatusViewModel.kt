@@ -70,6 +70,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val smsCount = repos.sms.listSince(Instant.EPOCH).size
         val enabledPatterns = loadEnabledPatterns()
         val (warningLevel, warningReason) = computeWarning(enabledPatterns)
+        val app = getApplication<Application>()
         _state.value =
             State(
                 calls = callsCount,
@@ -79,8 +80,8 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
                 patternsEnabledCount = enabledPatterns.size,
                 latestWarningLevel = warningLevel,
                 latestWarningReason = warningReason,
-                callPermissionsState = com.qalqan.antifraud.calls.CallObserverPermissions(getApplication<Application>()).state(),
-                batteryOptimizationExempt = com.qalqan.antifraud.calls.BatteryOptimizationPrompt.isExempt(getApplication<Application>()),
+                callPermissionsState = com.qalqan.antifraud.calls.CallObserverPermissions(app).state(),
+                batteryOptimizationExempt = com.qalqan.antifraud.calls.BatteryOptimizationPrompt.isExempt(app),
             )
     }
 

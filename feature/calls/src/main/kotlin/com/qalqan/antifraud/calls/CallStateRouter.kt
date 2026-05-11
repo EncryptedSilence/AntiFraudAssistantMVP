@@ -32,8 +32,7 @@ class CallStateRouter(
 
     private val legacyListeners = mutableListOf<PhoneStateListener>()
 
-    fun path(): Path =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) Path.MODERN else Path.LEGACY
+    fun path(): Path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) Path.MODERN else Path.LEGACY
 
     /**
      * Register one listener per subscription ID. Pass an empty list (or null entry) to

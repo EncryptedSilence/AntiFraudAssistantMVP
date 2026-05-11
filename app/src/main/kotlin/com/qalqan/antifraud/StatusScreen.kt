@@ -29,9 +29,12 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             Text("Calls captured: ${state.calls}")
             val permissionBanner: String =
                 when (state.callPermissionsState) {
-                    com.qalqan.antifraud.calls.CallObserverPermissions.State.GRANTED -> "Auto call capture: on"
-                    com.qalqan.antifraud.calls.CallObserverPermissions.State.PARTIAL -> "Auto call capture: partial — some permissions missing"
-                    com.qalqan.antifraud.calls.CallObserverPermissions.State.DENIED -> "Auto call capture: off — manual entry only"
+                    com.qalqan.antifraud.calls.CallObserverPermissions.State.GRANTED ->
+                        "Auto call capture: on"
+                    com.qalqan.antifraud.calls.CallObserverPermissions.State.PARTIAL ->
+                        "Auto call capture: partial — some permissions missing"
+                    com.qalqan.antifraud.calls.CallObserverPermissions.State.DENIED ->
+                        "Auto call capture: off — manual entry only"
                 }
             Text(permissionBanner, style = MaterialTheme.typography.bodyLarge)
             if (!state.batteryOptimizationExempt) {

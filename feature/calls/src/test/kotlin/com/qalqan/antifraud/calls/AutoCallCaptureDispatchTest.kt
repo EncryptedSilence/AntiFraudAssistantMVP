@@ -37,23 +37,26 @@ class AutoCallCaptureDispatchTest {
 
     @Test
     fun `onCaptured callback fires once with the persisted CallEvent`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         val seen = AtomicReference<CallEvent?>()
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-                onCaptured = { ev -> seen.set(ev) },
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                    onCaptured = { ev -> seen.set(ev) },
+                )
             capture.onIdle(simSlot = null)
         }
         seen.get()?.durationSec shouldBe 30L

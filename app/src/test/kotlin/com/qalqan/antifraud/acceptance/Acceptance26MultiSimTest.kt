@@ -32,7 +32,9 @@ class Acceptance26MultiSimTest {
     private val repos = Repositories.inMemory(context)
     private val box = InMemoryCryptoBox()
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     private fun roboCursor(vararg rows: Array<Any?>): RoboCursor =
         RoboCursor().also { c ->
@@ -42,21 +44,24 @@ class Acceptance26MultiSimTest {
 
     @Test
     fun `slot 0 propagates into persisted CallEvent`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             capture.onIdle(simSlot = 0)
             repos.calls.listSince(Instant.EPOCH).single().simSlot shouldBe 0
         }
@@ -64,21 +69,24 @@ class Acceptance26MultiSimTest {
 
     @Test
     fun `slot 1 propagates into persisted CallEvent`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             capture.onIdle(simSlot = 1)
             repos.calls.listSince(Instant.EPOCH).single().simSlot shouldBe 1
         }

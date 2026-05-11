@@ -31,26 +31,41 @@ class Acceptance25AutoCaptureTest {
     private val repos = Repositories.inMemory(context)
     private val box = InMemoryCryptoBox()
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `auto-captured call lands in the repo with correct fields under 2s budget`() {
-        val cursor = RoboCursor().apply {
-            setColumnNames(CallLogReader.PROJECTION.toList())
-            setResults(arrayOf(arrayOf<Any?>("+71112223344", CallLog.Calls.INCOMING_TYPE, 1_700_000_000_000L, 73L, null)))
-        }
+        val cursor =
+            RoboCursor().apply {
+                setColumnNames(CallLogReader.PROJECTION.toList())
+                setResults(
+                    arrayOf(
+                        arrayOf<Any?>(
+                            "+71112223344",
+                            CallLog.Calls.INCOMING_TYPE,
+                            1_700_000_000_000L,
+                            73L,
+                            null,
+                        ),
+                    ),
+                )
+            }
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
 
             val t0 = System.nanoTime()
             capture.onIdle(simSlot = null)

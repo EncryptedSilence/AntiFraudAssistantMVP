@@ -13,7 +13,6 @@ import android.provider.Settings
  * we never bypass the user. `isExempt` reports the post-decision state.
  */
 object BatteryOptimizationPrompt {
-
     @SuppressLint("BatteryLife")
     fun intent(context: Context): Intent =
         Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)

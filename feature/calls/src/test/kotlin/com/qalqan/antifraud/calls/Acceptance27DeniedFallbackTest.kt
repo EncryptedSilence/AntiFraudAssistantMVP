@@ -38,10 +38,11 @@ class Acceptance27DeniedFallbackTest {
 
     @Test
     fun `summarize maps a denied response to DENIED`() {
-        val granted = mapOf(
-            Manifest.permission.READ_PHONE_STATE to false,
-            Manifest.permission.READ_CALL_LOG to false,
-        )
+        val granted =
+            mapOf(
+                Manifest.permission.READ_PHONE_STATE to false,
+                Manifest.permission.READ_CALL_LOG to false,
+            )
         PermissionRequester.summarize(granted) shouldBe CallObserverPermissions.State.DENIED
     }
 }

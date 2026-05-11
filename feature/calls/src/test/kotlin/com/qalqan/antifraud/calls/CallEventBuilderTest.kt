@@ -20,11 +20,12 @@ class CallEventBuilderTest {
     private val repos = Repositories.inMemory(context)
     private val box = InMemoryCryptoBox()
     private val digest = CallEntryDigest.create(context, box)
-    private val builder = CallEventBuilder(
-        digest = digest,
-        contacts = IsKnownContactResolver(repos.contacts),
-        repeats = RepeatCallDetector(repos.calls),
-    )
+    private val builder =
+        CallEventBuilder(
+            digest = digest,
+            contacts = IsKnownContactResolver(repos.contacts),
+            repeats = RepeatCallDetector(repos.calls),
+        )
 
     @After
     fun tearDown() {
@@ -34,13 +35,14 @@ class CallEventBuilderTest {
     @Test
     fun `builds CallEvent from CallLogRow with correct direction and duration`() {
         runBlocking {
-            val row = CallLogRow(
-                rawNumber = "+71112223344",
-                direction = CallLogRow.Direction.INCOMING,
-                startedAtMs = 1_700_000_000_000L,
-                durationSec = 73L,
-                phoneAccountId = null,
-            )
+            val row =
+                CallLogRow(
+                    rawNumber = "+71112223344",
+                    direction = CallLogRow.Direction.INCOMING,
+                    startedAtMs = 1_700_000_000_000L,
+                    durationSec = 73L,
+                    phoneAccountId = null,
+                )
             val ev = builder.build(row, simSlot = null)
             ev.direction shouldBe CallDirection.INCOMING
             ev.durationSec shouldBe 73L

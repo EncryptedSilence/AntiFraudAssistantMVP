@@ -44,21 +44,24 @@ class Acceptance25LatencyTest {
 
     @Test
     fun `IDLE-to-persistence completes in well under 2s for a single call`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1_700_000_000_000L, 73L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1_700_000_000_000L, 73L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             val t0 = System.nanoTime()
             capture.onIdle(simSlot = null)
             val elapsedMs = (System.nanoTime() - t0) / 1_000_000

@@ -17,7 +17,9 @@ class Stage3ActionLogTest {
     private val context = ApplicationProvider.getApplicationContext<android.content.Context>()
     private val repos = Repositories.inMemory(context)
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `observer start, permission grant, and observer stop produce three entries with no phone numbers`() {

@@ -71,7 +71,10 @@ class RiskCounterUpdaterTest {
         }
     }
 
-    private fun sampleCall(hash: String, isKnown: Boolean): CallEvent =
+    private fun sampleCall(
+        hash: String,
+        isKnown: Boolean,
+    ): CallEvent =
         CallEvent(
             id = EventId(UUID.randomUUID().toString()),
             phoneHash = PhoneHash(hash),

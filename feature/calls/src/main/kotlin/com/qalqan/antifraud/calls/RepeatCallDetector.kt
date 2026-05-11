@@ -12,7 +12,10 @@ import java.time.Instant
  * value can be tightened in Stage 8 sensitivity settings.
  */
 class RepeatCallDetector(private val calls: CallEventRepository) {
-    suspend fun isRepeated(hash: PhoneHash, now: Instant): Boolean {
+    suspend fun isRepeated(
+        hash: PhoneHash,
+        now: Instant,
+    ): Boolean {
         val cutoff = now.minusSeconds(SECONDS_PER_DAY)
         return calls.listSince(cutoff).any { it.phoneHash == hash }
     }

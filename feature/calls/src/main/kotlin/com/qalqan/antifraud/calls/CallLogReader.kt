@@ -1,4 +1,4 @@
-@file:Suppress("MultipleTopLevelClassesInFile")
+@file:Suppress("MultipleTopLevelClassesInFile", "ReturnCount", "MagicNumber")
 
 package com.qalqan.antifraud.calls
 

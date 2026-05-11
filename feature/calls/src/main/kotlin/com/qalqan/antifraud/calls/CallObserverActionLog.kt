@@ -9,15 +9,19 @@ import com.qalqan.antifraud.domain.AppAction
  * `ApplicationActionLogEntry` invariants already reject the forbidden detail keys.
  */
 class CallObserverActionLog(private val logger: ApplicationActionLogger) {
-    suspend fun grant(permission: String) =
-        logger.log(AppAction.PERMISSION_GRANTED, mapOf("permission" to permission))
+    suspend fun grant(permission: String) = logger.log(AppAction.PERMISSION_GRANTED, mapOf("permission" to permission))
 
-    suspend fun deny(permission: String) =
-        logger.log(AppAction.PERMISSION_DENIED, mapOf("permission" to permission))
+    suspend fun deny(permission: String) = logger.log(AppAction.PERMISSION_DENIED, mapOf("permission" to permission))
 
     suspend fun observerStarted() =
-        logger.log(AppAction.SETTING_CHANGED, mapOf("setting" to "auto_call_capture", "state" to "running"))
+        logger.log(
+            AppAction.SETTING_CHANGED,
+            mapOf("setting" to "auto_call_capture", "state" to "running"),
+        )
 
     suspend fun observerStopped() =
-        logger.log(AppAction.SETTING_CHANGED, mapOf("setting" to "auto_call_capture", "state" to "stopped"))
+        logger.log(
+            AppAction.SETTING_CHANGED,
+            mapOf("setting" to "auto_call_capture", "state" to "stopped"),
+        )
 }

@@ -18,16 +18,20 @@ class CallEventBuilder(
     private val contacts: IsKnownContactResolver,
     private val repeats: RepeatCallDetector,
 ) {
-    suspend fun build(row: CallLogRow, simSlot: Int?): CallEvent {
+    suspend fun build(
+        row: CallLogRow,
+        simSlot: Int?,
+    ): CallEvent {
         val hash = digest.hash(row.rawNumber)
         val startedAt = Instant.ofEpochMilli(row.startedAtMs)
         val endedAt = startedAt.plusSeconds(row.durationSec)
-        val direction = when (row.direction) {
-            CallLogRow.Direction.INCOMING -> CallDirection.INCOMING
-            CallLogRow.Direction.OUTGOING -> CallDirection.OUTGOING
-            CallLogRow.Direction.MISSED -> CallDirection.MISSED
-            CallLogRow.Direction.UNKNOWN -> CallDirection.INCOMING
-        }
+        val direction =
+            when (row.direction) {
+                CallLogRow.Direction.INCOMING -> CallDirection.INCOMING
+                CallLogRow.Direction.OUTGOING -> CallDirection.OUTGOING
+                CallLogRow.Direction.MISSED -> CallDirection.MISSED
+                CallLogRow.Direction.UNKNOWN -> CallDirection.INCOMING
+            }
         return CallEvent(
             id = EventId(UUID.randomUUID().toString()),
             phoneHash = hash,

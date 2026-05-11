@@ -43,21 +43,24 @@ class AutoCallCaptureTest {
 
     @Test
     fun `onIdle reads the latest CallLog row and persists a CallEvent`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1_700_000_000_000L, 73L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1_700_000_000_000L, 73L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             capture.onIdle(simSlot = null)
 
             val saved = repos.calls.listSince(Instant.EPOCH)
@@ -71,15 +74,17 @@ class AutoCallCaptureTest {
     @Test
     fun `onIdle is a no-op when CallLog is empty`() {
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             capture.onIdle(simSlot = null)
             repos.calls.listSince(Instant.EPOCH).isEmpty() shouldBe true
         }

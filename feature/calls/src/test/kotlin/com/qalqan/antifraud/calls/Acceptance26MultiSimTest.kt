@@ -45,21 +45,24 @@ class Acceptance26MultiSimTest {
 
     @Test
     fun `simSlot of 0 propagates from subscription 1 into the persisted CallEvent`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             capture.onIdle(simSlot = 0)
             repos.calls.listSince(Instant.EPOCH).single().simSlot shouldBe 0
         }
@@ -67,21 +70,24 @@ class Acceptance26MultiSimTest {
 
     @Test
     fun `simSlot of 1 propagates from subscription 2`() {
-        val cursor = roboCursor(
-            arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf("+71112223344", CallLog.Calls.INCOMING_TYPE, 1L, 30L, null),
+            )
         shadowOf(context.contentResolver).setCursor(CallLog.Calls.CONTENT_URI, cursor)
 
         runBlocking {
-            val capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context, box),
-                    contacts = IsKnownContactResolver(repos.contacts),
-                    repeats = RepeatCallDetector(repos.calls),
-                ),
-                calls = repos.calls,
-            )
+            val capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context, box),
+                            contacts = IsKnownContactResolver(repos.contacts),
+                            repeats = RepeatCallDetector(repos.calls),
+                        ),
+                    calls = repos.calls,
+                )
             capture.onIdle(simSlot = 1)
             repos.calls.listSince(Instant.EPOCH).single().simSlot shouldBe 1
         }

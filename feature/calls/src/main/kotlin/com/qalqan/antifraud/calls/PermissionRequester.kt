@@ -12,14 +12,14 @@ import android.os.Build
  * `:app` UI uses to drive the §17.7 banner.
  */
 object PermissionRequester {
-
-    fun requestList(): List<String> = buildList {
-        add(Manifest.permission.READ_PHONE_STATE)
-        add(Manifest.permission.READ_CALL_LOG)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            add(Manifest.permission.POST_NOTIFICATIONS)
+    fun requestList(): List<String> =
+        buildList {
+            add(Manifest.permission.READ_PHONE_STATE)
+            add(Manifest.permission.READ_CALL_LOG)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
-    }
 
     fun summarize(granted: Map<String, Boolean>): CallObserverPermissions.State {
         val phone = granted[Manifest.permission.READ_PHONE_STATE] == true

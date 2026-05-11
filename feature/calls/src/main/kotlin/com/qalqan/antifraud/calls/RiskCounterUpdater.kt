@@ -21,23 +21,24 @@ class RiskCounterUpdater(private val contacts: ContactProfileRepository) {
         if (call.isKnownContact) return
         val now = Instant.now()
         val existing = contacts.findByHash(call.phoneHash)
-        val updated = existing?.copy(
-            lastSeenAt = now,
-            riskCounter = existing.riskCounter + 1,
-        ) ?: ContactProfile(
-            id = UUID.randomUUID().toString(),
-            phoneNormalizedEnc = ByteArray(0),
-            phoneHash = call.phoneHash,
-            phoneLast4 = null,
-            isShortCode = false,
-            displayNameLocal = null,
-            isInContacts = false,
-            trustStatus = TrustStatus.NEUTRAL,
-            firstSeenAt = now,
-            lastSeenAt = now,
-            riskCounter = 1,
-            userComment = null,
-        )
+        val updated =
+            existing?.copy(
+                lastSeenAt = now,
+                riskCounter = existing.riskCounter + 1,
+            ) ?: ContactProfile(
+                id = UUID.randomUUID().toString(),
+                phoneNormalizedEnc = ByteArray(0),
+                phoneHash = call.phoneHash,
+                phoneLast4 = null,
+                isShortCode = false,
+                displayNameLocal = null,
+                isInContacts = false,
+                trustStatus = TrustStatus.NEUTRAL,
+                firstSeenAt = now,
+                lastSeenAt = now,
+                riskCounter = 1,
+                userComment = null,
+            )
         contacts.save(updated)
     }
 }

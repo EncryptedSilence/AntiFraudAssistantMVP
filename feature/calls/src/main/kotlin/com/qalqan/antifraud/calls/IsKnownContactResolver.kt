@@ -9,6 +9,5 @@ import com.qalqan.antifraud.domain.PhoneHash
  * for a number the user has only labeled (e.g., suspicious) but never added to contacts.
  */
 class IsKnownContactResolver(private val contacts: ContactProfileRepository) {
-    suspend fun isKnown(hash: PhoneHash): Boolean =
-        contacts.findByHash(hash)?.isInContacts == true
+    suspend fun isKnown(hash: PhoneHash): Boolean = contacts.findByHash(hash)?.isInContacts == true
 }

@@ -25,7 +25,6 @@ import kotlinx.coroutines.runBlocking
  * a CallEvent, persists it via Repositories.
  */
 class CallObserverService : Service() {
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var router: CallStateRouter? = null
     private var capture: AutoCallCapture? = null
@@ -38,10 +37,11 @@ class CallObserverService : Service() {
         captureFactory(applicationContext)
         val sims = SimEnumerator(applicationContext)
         val slotsById = sims.slotsBySubscriptionId()
-        router = CallStateRouter(this) { transition ->
-            val mappedSlot = transition.subscriptionId?.let(slotsById::get)
-            scope.launch { onTransition(transition.copy(subscriptionId = mappedSlot)) }
-        }.also { it.register(subscriptionIds = slotsById.keys.toList()) }
+        router =
+            CallStateRouter(this) { transition ->
+                val mappedSlot = transition.subscriptionId?.let(slotsById::get)
+                scope.launch { onTransition(transition.copy(subscriptionId = mappedSlot)) }
+            }.also { it.register(subscriptionIds = slotsById.keys.toList()) }
     }
 
     private fun captureFactory(context: Context) {
@@ -49,18 +49,22 @@ class CallObserverService : Service() {
             val r = repositoriesFactory(context)
             repos = r
             val updater = RiskCounterUpdater(r.contacts)
-            capture = AutoCallCapture(
-                reader = CallLogReader(context.contentResolver),
-                builder = CallEventBuilder(
-                    digest = CallEntryDigest.create(context),
-                    contacts = IsKnownContactResolver(r.contacts),
-                    repeats = RepeatCallDetector(r.calls),
-                ),
-                calls = r.calls,
-                onCaptured = { event -> updater.bump(event) },
-            )
+            capture =
+                AutoCallCapture(
+                    reader = CallLogReader(context.contentResolver),
+                    builder =
+                        CallEventBuilder(
+                            digest = CallEntryDigest.create(context),
+                            contacts = IsKnownContactResolver(r.contacts),
+                            repeats = RepeatCallDetector(r.calls),
+                        ),
+                    calls = r.calls,
+                    onCaptured = { event -> updater.bump(event) },
+                )
             scope.launch { CallObserverActionLog(r.actionLogger).observerStarted() }
-        } catch (e: Exception) {
+        } catch (
+            @Suppress("TooGenericExceptionCaught") e: Exception,
+        ) {
             // AndroidKeyStore is unavailable in unit-test environments (Robolectric).
             // In production this path is never taken; capture stays null and onIdle is a no-op.
             android.util.Log.e(TAG, "AutoCallCapture init failed; IDLE events will be dropped", e)
