@@ -26,10 +26,11 @@ class CallObserverNotificationsTest {
 
     @Test
     fun `build returns an ongoing notification with §17_0_3 copy`() {
-        val notif = CallObserverNotifications.build(
-            context,
-            PassiveNotificationCopy(eventsLast24h = 2, alertsLast24h = 0),
-        )
+        val notif =
+            CallObserverNotifications.build(
+                context,
+                PassiveNotificationCopy(eventsLast24h = 2, alertsLast24h = 0),
+            )
         val title = notif.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)?.toString()
         val text = notif.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)?.toString()
         title shouldBe "Watching for fraud signals"

@@ -46,10 +46,11 @@ class CallObserverService : Service() {
     }
 
     private fun startForegroundCompat() {
-        val notif: Notification = CallObserverNotifications.build(
-            this,
-            PassiveNotificationCopy(eventsLast24h = 0, alertsLast24h = 0),
-        )
+        val notif: Notification =
+            CallObserverNotifications.build(
+                this,
+                PassiveNotificationCopy(eventsLast24h = 0, alertsLast24h = 0),
+            )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NOTIFICATION_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL)
         } else {

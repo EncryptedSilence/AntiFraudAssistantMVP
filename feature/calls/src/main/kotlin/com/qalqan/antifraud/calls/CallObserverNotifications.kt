@@ -8,7 +8,6 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 
 object CallObserverNotifications {
-
     fun ensureChannel(context: Context) {
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -28,7 +27,10 @@ object CallObserverNotifications {
         }
     }
 
-    fun build(context: Context, copy: PassiveNotificationCopy): Notification =
+    fun build(
+        context: Context,
+        copy: PassiveNotificationCopy,
+    ): Notification =
         NotificationCompat.Builder(context, CallObserverService.CHANNEL_ID)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
