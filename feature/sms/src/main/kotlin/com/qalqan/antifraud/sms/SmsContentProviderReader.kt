@@ -1,4 +1,4 @@
-@file:Suppress("MultipleTopLevelClassesInFile", "ReturnCount")
+@file:Suppress("MultipleTopLevelClassesInFile", "ReturnCount", "MagicNumber")
 
 package com.qalqan.antifraud.sms
 
@@ -12,18 +12,18 @@ import android.provider.Telephony
  * The allowlist is the privacy boundary and is pinned by `SmsColumnAllowlistTest` (T19).
  */
 class SmsContentProviderReader(private val resolver: ContentResolver) {
-
     fun readSince(sinceMs: Long): List<InboxRow> {
-        val cursor = resolver.query(
-            Telephony.Sms.Inbox.CONTENT_URI,
-            PROJECTION,
-            // selection
-            "${Telephony.Sms.DATE} >= ?",
-            // selectionArgs
-            arrayOf(sinceMs.toString()),
-            // sortOrder
-            "${Telephony.Sms.DATE} ASC",
-        ) ?: return emptyList()
+        val cursor =
+            resolver.query(
+                Telephony.Sms.Inbox.CONTENT_URI,
+                PROJECTION,
+                // selection
+                "${Telephony.Sms.DATE} >= ?",
+                // selectionArgs
+                arrayOf(sinceMs.toString()),
+                // sortOrder
+                "${Telephony.Sms.DATE} ASC",
+            ) ?: return emptyList()
         val out = mutableListOf<InboxRow>()
         cursor.use {
             while (it.moveToNext()) {
@@ -42,13 +42,14 @@ class SmsContentProviderReader(private val resolver: ContentResolver) {
     }
 
     companion object {
-        val PROJECTION: Array<String> = arrayOf(
-            Telephony.Sms.ADDRESS,
-            Telephony.Sms.BODY,
-            Telephony.Sms.DATE,
-            Telephony.Sms.SUBSCRIPTION_ID,
-            Telephony.Sms._ID,
-        )
+        val PROJECTION: Array<String> =
+            arrayOf(
+                Telephony.Sms.ADDRESS,
+                Telephony.Sms.BODY,
+                Telephony.Sms.DATE,
+                Telephony.Sms.SUBSCRIPTION_ID,
+                Telephony.Sms._ID,
+            )
     }
 }
 

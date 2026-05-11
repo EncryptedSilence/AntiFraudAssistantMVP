@@ -47,10 +47,11 @@ class SmsContentProviderSweeperTest {
     @Test
     fun `sweepSince does not duplicate against rows already in the repo (via AutoSmsCapture dedup)`() {
         stubInboxWithTwoRows(context)
-        val sweeper = SmsContentProviderSweeper(
-            reader = SmsContentProviderReader(context.contentResolver),
-            capture = capture,
-        )
+        val sweeper =
+            SmsContentProviderSweeper(
+                reader = SmsContentProviderReader(context.contentResolver),
+                capture = capture,
+            )
         runBlocking {
             sweeper.sweepSince(0L)
             // Second sweep over the same inbox rows: dedup should drop the duplicates.
@@ -60,27 +61,28 @@ class SmsContentProviderSweeperTest {
     }
 
     private fun stubInboxWithTwoRows(context: Context) {
-        val cursor = RoboCursor().apply {
-            setColumnNames(SmsContentProviderReader.PROJECTION.toList())
-            setResults(
-                arrayOf(
-                    arrayOf<Any?>(
-                        "+71112223344",
-                        "Hello",
-                        1_700_000_000_000L,
-                        1,
-                        42L,
+        val cursor =
+            RoboCursor().apply {
+                setColumnNames(SmsContentProviderReader.PROJECTION.toList())
+                setResults(
+                    arrayOf(
+                        arrayOf<Any?>(
+                            "+71112223344",
+                            "Hello",
+                            1_700_000_000_000L,
+                            1,
+                            42L,
+                        ),
+                        arrayOf<Any?>(
+                            "1414",
+                            "Citizen alert",
+                            1_700_000_001_000L,
+                            0,
+                            43L,
+                        ),
                     ),
-                    arrayOf<Any?>(
-                        "1414",
-                        "Citizen alert",
-                        1_700_000_001_000L,
-                        0,
-                        43L,
-                    ),
-                ),
-            )
-        }
+                )
+            }
         shadowOf(context.contentResolver).setCursor(Telephony.Sms.Inbox.CONTENT_URI, cursor)
     }
 }

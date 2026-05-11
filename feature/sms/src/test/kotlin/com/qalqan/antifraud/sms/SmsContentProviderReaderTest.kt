@@ -2,7 +2,6 @@
 
 package com.qalqan.antifraud.sms
 
-import android.content.ContentResolver
 import android.content.Context
 import android.provider.Telephony
 import androidx.test.core.app.ApplicationProvider
@@ -25,10 +24,11 @@ class SmsContentProviderReaderTest {
 
     @Test
     fun `readSince maps rows to InboxRow`() {
-        val cursor = roboCursor(
-            arrayOf<Any?>("+71112223344", "Hello", 1_700_000_000_000L, /*sub_id*/ 1, /*_id*/ 42L),
-            arrayOf<Any?>("1414", "Citizen alert", 1_700_000_001_000L, 0, 43L),
-        )
+        val cursor =
+            roboCursor(
+                arrayOf<Any?>("+71112223344", "Hello", 1_700_000_000_000L, 1, 42L),
+                arrayOf<Any?>("1414", "Citizen alert", 1_700_000_001_000L, 0, 43L),
+            )
         shadowOf(context.contentResolver).setCursor(Telephony.Sms.Inbox.CONTENT_URI, cursor)
 
         val rows = SmsContentProviderReader(context.contentResolver).readSince(sinceMs = 0L)

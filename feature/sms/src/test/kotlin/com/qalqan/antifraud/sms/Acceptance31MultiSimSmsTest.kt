@@ -52,23 +52,25 @@ class Acceptance31MultiSimSmsTest {
             ),
         )
 
-        val cursor = RoboCursor().apply {
-            setColumnNames(SmsContentProviderReader.PROJECTION.toList())
-            setResults(
-                arrayOf(
-                    arrayOf<Any?>("S1", "Body A", 1L, /* sub=1 */ 1, 1L),
-                    arrayOf<Any?>("S2", "Body B", 2L, /* sub=2 */ 2, 2L),
-                ),
-            )
-        }
+        val cursor =
+            RoboCursor().apply {
+                setColumnNames(SmsContentProviderReader.PROJECTION.toList())
+                setResults(
+                    arrayOf(
+                        arrayOf<Any?>("S1", "Body A", 1L, 1, 1L),
+                        arrayOf<Any?>("S2", "Body B", 2L, 2, 2L),
+                    ),
+                )
+            }
         shadowOf(context.contentResolver).setCursor(Telephony.Sms.Inbox.CONTENT_URI, cursor)
 
         runBlocking {
-            val sweeper = SmsContentProviderSweeper(
-                reader = SmsContentProviderReader(context.contentResolver),
-                capture = AutoSmsCapture(SmsEventBuilder(digest, box), repos.sms),
-                sims = SimEnumerator(context),
-            )
+            val sweeper =
+                SmsContentProviderSweeper(
+                    reader = SmsContentProviderReader(context.contentResolver),
+                    capture = AutoSmsCapture(SmsEventBuilder(digest, box), repos.sms),
+                    sims = SimEnumerator(context),
+                )
             sweeper.sweepSince(0L)
 
             val events = repos.sms.listSince(Instant.EPOCH).sortedBy { it.receivedAt }

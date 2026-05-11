@@ -14,16 +14,16 @@ import org.junit.Test
  * the spec must justify it.
  */
 class SmsColumnAllowlistTest {
-
     @Test
     fun `projection contains exactly the five allowlisted columns`() {
-        SmsContentProviderReader.PROJECTION.toList() shouldContainExactlyInAnyOrder listOf(
-            Telephony.Sms.ADDRESS,
-            Telephony.Sms.BODY,
-            Telephony.Sms.DATE,
-            Telephony.Sms.SUBSCRIPTION_ID,
-            Telephony.Sms._ID,
-        )
+        SmsContentProviderReader.PROJECTION.toList() shouldContainExactlyInAnyOrder
+            listOf(
+                Telephony.Sms.ADDRESS,
+                Telephony.Sms.BODY,
+                Telephony.Sms.DATE,
+                Telephony.Sms.SUBSCRIPTION_ID,
+                Telephony.Sms._ID,
+            )
     }
 
     @Test

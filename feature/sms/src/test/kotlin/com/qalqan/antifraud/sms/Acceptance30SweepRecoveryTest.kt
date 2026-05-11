@@ -36,20 +36,21 @@ class Acceptance30SweepRecoveryTest {
 
     @Test
     fun `inbox row missed during standby is recovered on next sweep`() {
-        val cursor = RoboCursor().apply {
-            setColumnNames(SmsContentProviderReader.PROJECTION.toList())
-            setResults(
-                arrayOf(
-                    arrayOf<Any?>(
-                        "HALYKBANK",
-                        "Перевод 5000 KZT",
-                        1_700_000_000_000L,
-                        0,
-                        42L,
+        val cursor =
+            RoboCursor().apply {
+                setColumnNames(SmsContentProviderReader.PROJECTION.toList())
+                setResults(
+                    arrayOf(
+                        arrayOf<Any?>(
+                            "HALYKBANK",
+                            "Перевод 5000 KZT",
+                            1_700_000_000_000L,
+                            0,
+                            42L,
+                        ),
                     ),
-                ),
-            )
-        }
+                )
+            }
         shadowOf(context.contentResolver).setCursor(Telephony.Sms.Inbox.CONTENT_URI, cursor)
 
         runBlocking {
@@ -57,10 +58,11 @@ class Acceptance30SweepRecoveryTest {
             repos.sms.listSince(Instant.EPOCH).isEmpty() shouldBe true
 
             val capture = AutoSmsCapture(SmsEventBuilder(digest, box), repos.sms)
-            val sweeper = SmsContentProviderSweeper(
-                reader = SmsContentProviderReader(context.contentResolver),
-                capture = capture,
-            )
+            val sweeper =
+                SmsContentProviderSweeper(
+                    reader = SmsContentProviderReader(context.contentResolver),
+                    capture = capture,
+                )
             sweeper.sweepSince(0L)
 
             // Post-sweep: the missed SMS is persisted.
