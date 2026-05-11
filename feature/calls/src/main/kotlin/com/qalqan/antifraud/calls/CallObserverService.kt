@@ -35,9 +35,12 @@ class CallObserverService : Service() {
         ensureChannel()
         startForegroundCompat()
         captureFactory(applicationContext)
+        val sims = SimEnumerator(applicationContext)
+        val slotsById = sims.slotsBySubscriptionId()
         router = CallStateRouter(this) { transition ->
-            scope.launch { onTransition(transition) }
-        }.also { it.register() }
+            val mappedSlot = transition.subscriptionId?.let(slotsById::get)
+            scope.launch { onTransition(transition.copy(subscriptionId = mappedSlot)) }
+        }.also { it.register(subscriptionIds = slotsById.keys.toList()) }
     }
 
     private fun captureFactory(context: Context) {

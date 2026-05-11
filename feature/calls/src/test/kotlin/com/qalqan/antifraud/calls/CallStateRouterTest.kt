@@ -33,4 +33,11 @@ class CallStateRouterTest {
         router.register()
         router.unregister() // must be idempotent
     }
+
+    @Test
+    fun `register accepts a list of subscription IDs without throwing`() {
+        val router = CallStateRouter(context) {}
+        router.register(subscriptionIds = listOf(1, 2))
+        router.unregister()
+    }
 }
