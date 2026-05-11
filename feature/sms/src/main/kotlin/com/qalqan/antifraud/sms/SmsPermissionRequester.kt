@@ -8,11 +8,11 @@ import android.Manifest
  * transparency notification.
  */
 object SmsPermissionRequester {
-
-    fun requestList(): List<String> = listOf(
-        Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.READ_SMS,
-    )
+    fun requestList(): List<String> =
+        listOf(
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_SMS,
+        )
 
     fun summarize(granted: Map<String, Boolean>): SmsObserverPermissions.State {
         val receive = granted[Manifest.permission.RECEIVE_SMS] == true

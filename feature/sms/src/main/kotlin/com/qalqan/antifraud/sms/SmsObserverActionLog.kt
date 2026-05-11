@@ -9,11 +9,9 @@ import com.qalqan.antifraud.domain.AppAction
  * `ApplicationActionLogEntry` invariants already reject the forbidden detail keys.
  */
 class SmsObserverActionLog(private val logger: ApplicationActionLogger) {
-    suspend fun grant(permission: String) =
-        logger.log(AppAction.PERMISSION_GRANTED, mapOf("permission" to permission))
+    suspend fun grant(permission: String) = logger.log(AppAction.PERMISSION_GRANTED, mapOf("permission" to permission))
 
-    suspend fun deny(permission: String) =
-        logger.log(AppAction.PERMISSION_DENIED, mapOf("permission" to permission))
+    suspend fun deny(permission: String) = logger.log(AppAction.PERMISSION_DENIED, mapOf("permission" to permission))
 
     suspend fun sweepStarted() =
         logger.log(

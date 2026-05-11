@@ -37,10 +37,11 @@ class Acceptance32DeniedFallbackTest {
 
     @Test
     fun `summarize maps a denied response to DENIED`() {
-        val granted = mapOf(
-            Manifest.permission.RECEIVE_SMS to false,
-            Manifest.permission.READ_SMS to false,
-        )
+        val granted =
+            mapOf(
+                Manifest.permission.RECEIVE_SMS to false,
+                Manifest.permission.READ_SMS to false,
+            )
         SmsPermissionRequester.summarize(granted) shouldBe SmsObserverPermissions.State.DENIED
     }
 }
