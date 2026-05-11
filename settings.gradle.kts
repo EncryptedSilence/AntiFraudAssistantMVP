@@ -25,5 +25,6 @@ include(
     ":core:database",
     ":core:demo",
     ":core:patterns",
-    ":feature:calls"
+    ":feature:calls",
+    ":feature:sms"
 )
