@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- §4.2.2 runtime permissions -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+
+    <application>
+        <!--
+            Spec §4.2.2 — SMS_RECEIVED_ACTION is delivered to every app with RECEIVE_SMS,
+            not just the default-SMS app. We do NOT declare SMS_DELIVER_ACTION (that would
+            make us the default SMS app per §23 #33). android:exported="true" is required
+            because the system delivers the broadcast. android:permission gates which
+            senders may deliver — only the system holds BROADCAST_SMS, so only the system
+            telephony stack can fire this receiver.
+        -->
+        <receiver
+            android:name=".SmsBroadcastReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
