@@ -22,12 +22,13 @@ class SmsEventBuilderTest {
     @Test
     fun `builds SmsEvent from SmsBroadcast with correct fields`() {
         val now = Instant.parse("2026-01-01T12:00:00Z")
-        val b = SmsBroadcast(
-            rawSender = "1414",
-            body = "Hello citizen, code 123456",
-            receivedAt = now,
-            simSlot = 0,
-        )
+        val b =
+            SmsBroadcast(
+                rawSender = "1414",
+                body = "Hello citizen, code 123456",
+                receivedAt = now,
+                simSlot = 0,
+            )
         val ev = builder.build(b)
         ev.senderHash.value shouldHaveLength 64 // SHA-256 hex
         ev.senderDisplayNameLocal shouldBe "1414"

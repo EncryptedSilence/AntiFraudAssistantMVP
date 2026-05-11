@@ -27,10 +27,11 @@ class SmsBroadcastReceiverTest {
         digest = SmsEntryDigest.create(context, box)
         SmsBroadcastReceiver.captureProvider = { _ ->
             SmsBroadcastReceiver.CaptureHandle(
-                capture = AutoSmsCapture(
-                    builder = SmsEventBuilder(digest = digest, box = box),
-                    sms = repos.sms,
-                ),
+                capture =
+                    AutoSmsCapture(
+                        builder = SmsEventBuilder(digest = digest, box = box),
+                        sms = repos.sms,
+                    ),
                 close = { /* repos is closed in tearDown */ },
             )
         }

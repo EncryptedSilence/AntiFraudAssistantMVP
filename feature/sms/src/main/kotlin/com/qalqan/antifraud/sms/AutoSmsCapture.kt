@@ -29,11 +29,12 @@ class AutoSmsCapture(
         return sms.listSince(cutoff).any {
             it.senderHash == candidate.senderHash &&
                 Math.abs(it.receivedAt.toEpochMilli() - candidate.receivedAt.toEpochMilli()) <=
-                DEDUP_WINDOW_SEC * 1000L
+                DEDUP_WINDOW_SEC * MILLIS_PER_SECOND
         }
     }
 
     private companion object {
         const val DEDUP_WINDOW_SEC = 10L
+        const val MILLIS_PER_SECOND = 1000L
     }
 }

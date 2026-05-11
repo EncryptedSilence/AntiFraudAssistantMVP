@@ -25,8 +25,10 @@ import kotlinx.coroutines.launch
  * Robolectric 4.13; full intent-decoding is covered by `SmsParserTest` (T10).
  */
 class SmsBroadcastReceiver : BroadcastReceiver() {
-
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val broadcast = SmsParser.extractFromIntent(intent) ?: return
         val pendingResult = goAsync()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -40,16 +42,20 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     }
 
     @VisibleForTesting
-    internal suspend fun onSmsReceived(context: Context, broadcast: SmsBroadcast) {
-        val handle = try {
-            captureProvider(context)
-        } catch (
-            @Suppress("TooGenericExceptionCaught") e: Exception,
-        ) {
-            // AndroidKeyStore unavailable or DB init failed; production should not hit this.
-            android.util.Log.e(TAG, "SMS capture init failed; broadcast dropped", e)
-            return
-        }
+    internal suspend fun onSmsReceived(
+        context: Context,
+        broadcast: SmsBroadcast,
+    ) {
+        val handle =
+            try {
+                captureProvider(context)
+            } catch (
+                @Suppress("TooGenericExceptionCaught") e: Exception,
+            ) {
+                // AndroidKeyStore unavailable or DB init failed; production should not hit this.
+                android.util.Log.e(TAG, "SMS capture init failed; broadcast dropped", e)
+                return
+            }
         try {
             val mappedSlot = mapSimSlot(context, broadcast.simSlot)
             handle.capture.accept(broadcast.copy(simSlot = mappedSlot))
@@ -58,7 +64,10 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun mapSimSlot(context: Context, raw: Int?): Int? {
+    private fun mapSimSlot(
+        context: Context,
+        raw: Int?,
+    ): Int? {
         if (raw == null) return null
         val slots = SimEnumerator(context).slotsBySubscriptionId()
         return slots[raw] ?: raw
@@ -82,10 +91,11 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
             val digest = SmsEntryDigest.create(ctx)
             val box = KeyStoreCryptoBox.create(ctx, alias = "antifraud.field_box")
             CaptureHandle(
-                capture = AutoSmsCapture(
-                    builder = SmsEventBuilder(digest = digest, box = box),
-                    sms = r.sms,
-                ),
+                capture =
+                    AutoSmsCapture(
+                        builder = SmsEventBuilder(digest = digest, box = box),
+                        sms = r.sms,
+                    ),
                 close = { r.close() },
             )
         }
