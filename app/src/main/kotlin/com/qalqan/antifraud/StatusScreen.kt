@@ -63,6 +63,9 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             Button(onClick = { viewModel.recordSuspiciousCallStub() }) {
                 Text("I had a suspicious call")
             }
+            Button(onClick = { viewModel.recordSuspiciousSmsStub() }) {
+                Text("I had a suspicious SMS")
+            }
         }
     }
 }

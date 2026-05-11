@@ -67,6 +67,18 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun recordSuspiciousSmsStub() {
+        viewModelScope.launch {
+            // Spec §17.1.2 — fallback button that opens the manual-SMS sheet.
+            // Stage 4 ships only the wiring: a no-op insert that proves the button reaches
+            // the manual path. The full sheet UI lands in Stage 8.
+            repos.actionLogger.log(
+                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                mapOf("setting" to "manual_sms_button", "state" to "tapped"),
+            )
+        }
+    }
+
     private suspend fun refresh() {
         val callsCount = repos.calls.listSince(Instant.EPOCH).size
         val smsCount = repos.sms.listSince(Instant.EPOCH).size
