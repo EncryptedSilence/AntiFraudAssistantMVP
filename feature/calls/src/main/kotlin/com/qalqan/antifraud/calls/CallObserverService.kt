@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * Spec §4.2.1 — a foreground service of type `phoneCall` that owns the telephony listener.
@@ -47,6 +48,7 @@ class CallObserverService : Service() {
         try {
             val r = repositoriesFactory(context)
             repos = r
+            val updater = RiskCounterUpdater(r.contacts)
             capture = AutoCallCapture(
                 reader = CallLogReader(context.contentResolver),
                 builder = CallEventBuilder(
@@ -55,7 +57,9 @@ class CallObserverService : Service() {
                     repeats = RepeatCallDetector(r.calls),
                 ),
                 calls = r.calls,
+                onCaptured = { event -> updater.bump(event) },
             )
+            scope.launch { CallObserverActionLog(r.actionLogger).observerStarted() }
         } catch (e: Exception) {
             // AndroidKeyStore is unavailable in unit-test environments (Robolectric).
             // In production this path is never taken; capture stays null and onIdle is a no-op.
@@ -74,6 +78,9 @@ class CallObserverService : Service() {
     override fun onDestroy() {
         router?.unregister()
         router = null
+        repos?.actionLogger?.let { logger ->
+            runBlocking { CallObserverActionLog(logger).observerStopped() }
+        }
         scope.cancel()
         repos?.close()
         repos = null
