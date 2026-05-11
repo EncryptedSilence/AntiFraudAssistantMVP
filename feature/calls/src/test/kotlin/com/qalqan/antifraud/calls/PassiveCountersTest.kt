@@ -41,4 +41,35 @@ class PassiveCountersTest {
         val counters = PassiveCounters(repos)
         counters.alertsLast24h(Instant.now()) shouldBe 0
     }
+
+    @Test
+    fun `smsLast24h counts only the last 24 hours of SMS`() {
+        runBlocking {
+            val now = Instant.now()
+            manual.sms.submit("S", now.minusSeconds(36 * 3600), "B1")
+            manual.sms.submit("S", now.minusSeconds(2 * 3600), "B2")
+            manual.sms.submit("S", now.minusSeconds(60), "B3")
+            val counters = PassiveCounters(repos)
+            counters.smsLast24h(now) shouldBe 2
+        }
+    }
+
+    @Test
+    fun `eventsLast24h sums calls and SMS in the window`() {
+        runBlocking {
+            val now = Instant.now()
+            manual.calls.submit("+71112223344", CallDirection.INCOMING, now.minusSeconds(60), 30, false)
+            manual.sms.submit("S", now.minusSeconds(60), "B")
+            PassiveCounters(repos).eventsLast24h(now) shouldBe 2
+        }
+    }
+
+    @Test
+    fun `callsLast24h is unchanged from Stage 3 behavior`() {
+        runBlocking {
+            val now = Instant.now()
+            manual.calls.submit("+71112223344", CallDirection.INCOMING, now.minusSeconds(60), 30, false)
+            PassiveCounters(repos).callsLast24h(now) shouldBe 1
+        }
+    }
 }

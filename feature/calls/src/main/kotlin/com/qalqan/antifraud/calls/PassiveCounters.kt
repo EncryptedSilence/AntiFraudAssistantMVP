@@ -5,13 +5,21 @@ import java.time.Instant
 
 /**
  * Spec §17.0.3 — supplies the 24-h counts for the ongoing notification copy.
- * Stage 3 only counts CallEvent rows. SMS counts arrive in Stage 4 and the
- * alert counter wires up in Stage 9 (full-screen alert pipeline).
+ * Stage 4 adds SMS counts; `eventsLast24h` now reflects calls + SMS. The alert
+ * counter wires up in Stage 9 (full-screen alert pipeline).
  */
 class PassiveCounters(private val repos: Repositories) {
     suspend fun eventsLast24h(now: Instant): Int {
         val cutoff = now.minusSeconds(SECONDS_PER_DAY)
-        return repos.calls.listSince(cutoff).size
+        return repos.calls.listSince(cutoff).size + repos.sms.listSince(cutoff).size
+    }
+
+    suspend fun callsLast24h(now: Instant): Int {
+        return repos.calls.listSince(now.minusSeconds(SECONDS_PER_DAY)).size
+    }
+
+    suspend fun smsLast24h(now: Instant): Int {
+        return repos.sms.listSince(now.minusSeconds(SECONDS_PER_DAY)).size
     }
 
     @Suppress("UNUSED_PARAMETER", "FunctionOnlyReturningConstant")
