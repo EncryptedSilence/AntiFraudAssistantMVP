@@ -47,6 +47,9 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             }
             Button(onClick = { viewModel.runDemo() }) { Text("Run demo (Fast attack)") }
             Button(onClick = { viewModel.wipe() }) { Text("Wipe all data") }
+            Button(onClick = { viewModel.recordSuspiciousCallStub() }) {
+                Text("I had a suspicious call")
+            }
         }
     }
 }
