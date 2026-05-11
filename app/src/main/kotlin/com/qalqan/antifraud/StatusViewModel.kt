@@ -36,6 +36,8 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val latestWarningReason: String? = null,
         val callPermissionsState: com.qalqan.antifraud.calls.CallObserverPermissions.State =
             com.qalqan.antifraud.calls.CallObserverPermissions.State.DENIED,
+        val smsPermissionsState: com.qalqan.antifraud.sms.SmsObserverPermissions.State =
+            com.qalqan.antifraud.sms.SmsObserverPermissions.State.DENIED,
         val batteryOptimizationExempt: Boolean = false,
     )
 
@@ -81,6 +83,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
                 latestWarningLevel = warningLevel,
                 latestWarningReason = warningReason,
                 callPermissionsState = com.qalqan.antifraud.calls.CallObserverPermissions(app).state(),
+                smsPermissionsState = com.qalqan.antifraud.sms.SmsObserverPermissions(app).state(),
                 batteryOptimizationExempt = com.qalqan.antifraud.calls.BatteryOptimizationPrompt.isExempt(app),
             )
     }

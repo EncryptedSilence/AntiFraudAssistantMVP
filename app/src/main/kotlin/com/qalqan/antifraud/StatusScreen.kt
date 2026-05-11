@@ -37,6 +37,16 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
                         "Auto call capture: off — manual entry only"
                 }
             Text(permissionBanner, style = MaterialTheme.typography.bodyLarge)
+            val smsBanner: String =
+                when (state.smsPermissionsState) {
+                    com.qalqan.antifraud.sms.SmsObserverPermissions.State.GRANTED ->
+                        "Auto SMS capture: on"
+                    com.qalqan.antifraud.sms.SmsObserverPermissions.State.PARTIAL ->
+                        "Auto SMS capture: partial — some permissions missing"
+                    com.qalqan.antifraud.sms.SmsObserverPermissions.State.DENIED ->
+                        "Auto SMS capture: off — manual paste only"
+                }
+            Text(smsBanner, style = MaterialTheme.typography.bodyLarge)
             if (!state.batteryOptimizationExempt) {
                 Text(
                     "Battery optimization is on; call observation may be killed in the background.",
