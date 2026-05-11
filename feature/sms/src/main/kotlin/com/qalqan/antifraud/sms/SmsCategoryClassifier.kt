@@ -20,8 +20,10 @@ import com.qalqan.antifraud.domain.SmsCategory
  * the post-MVP §19.16 format-authenticity module.
  */
 object SmsCategoryClassifier {
-
-    fun classify(rawSender: String, body: String): SmsCategory =
+    fun classify(
+        rawSender: String,
+        body: String,
+    ): SmsCategory =
         when {
             SmsKeywordDetector.isAuthorityShortCode(rawSender) -> SmsCategory.AUTHORITY_SHORTCODE
             SmsKeywordDetector.containsSecurityKeyword(body) -> SmsCategory.SECURITY_WARNING

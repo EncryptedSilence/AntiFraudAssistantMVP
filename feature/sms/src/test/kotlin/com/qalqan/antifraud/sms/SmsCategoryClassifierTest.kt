@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldBe
 import org.junit.Test
 
 class SmsCategoryClassifierTest {
-
     @Test
     fun `authority short code maps to AUTHORITY_SHORTCODE`() {
         SmsCategoryClassifier.classify("1414", "Hello citizen") shouldBe SmsCategory.AUTHORITY_SHORTCODE

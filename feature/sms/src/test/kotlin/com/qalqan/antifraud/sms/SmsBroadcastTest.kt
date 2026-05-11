@@ -8,12 +8,13 @@ class SmsBroadcastTest {
     @Test
     fun `holds sender, body, receivedAt, simSlot`() {
         val now = Instant.now()
-        val b = SmsBroadcast(
-            rawSender = "1414",
-            body = "Hello",
-            receivedAt = now,
-            simSlot = 0,
-        )
+        val b =
+            SmsBroadcast(
+                rawSender = "1414",
+                body = "Hello",
+                receivedAt = now,
+                simSlot = 0,
+            )
         b.rawSender shouldBe "1414"
         b.body shouldBe "Hello"
         b.receivedAt shouldBe now

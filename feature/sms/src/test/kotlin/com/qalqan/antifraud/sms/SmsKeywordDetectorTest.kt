@@ -4,7 +4,6 @@ import io.kotest.matchers.shouldBe
 import org.junit.Test
 
 class SmsKeywordDetectorTest {
-
     @Test
     fun `containsFinancialKeyword fires on common KZ financial terms`() {
         SmsKeywordDetector.containsFinancialKeyword("Перевод на сумму 5000 KZT") shouldBe true

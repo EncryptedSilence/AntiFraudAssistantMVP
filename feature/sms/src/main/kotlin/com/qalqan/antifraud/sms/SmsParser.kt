@@ -14,23 +14,26 @@ import java.time.Instant
  * `originatingAddress` as the sender (all parts of a multi-part SMS share the same sender).
  */
 object SmsParser {
-
+    @Suppress("ReturnCount")
     fun extractFromIntent(intent: Intent): SmsBroadcast? {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return null
-        val messages = runCatching { Telephony.Sms.Intents.getMessagesFromIntent(intent) }
-            .getOrNull()
-            ?: return null
+        val messages =
+            runCatching { Telephony.Sms.Intents.getMessagesFromIntent(intent) }
+                .getOrNull()
+                ?: return null
         if (messages.isEmpty()) return null
 
         val sender = messages.firstOrNull()?.originatingAddress ?: return null
         val body = messages.joinToString(separator = "") { it.messageBody ?: "" }
-        val receivedAtMs = messages.firstOrNull()?.timestampMillis
-            ?: System.currentTimeMillis()
-        val simSlot = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            intent.getIntExtra(SUB_ID_EXTRA, -1).takeIf { it >= 0 }
-        } else {
-            null
-        }
+        val receivedAtMs =
+            messages.firstOrNull()?.timestampMillis
+                ?: System.currentTimeMillis()
+        val simSlot =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                intent.getIntExtra(SUB_ID_EXTRA, -1).takeIf { it >= 0 }
+            } else {
+                null
+            }
         return SmsBroadcast(
             rawSender = sender,
             body = body,

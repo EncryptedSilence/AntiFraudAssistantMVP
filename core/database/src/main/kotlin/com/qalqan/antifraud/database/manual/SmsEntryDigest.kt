@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package com.qalqan.antifraud.database.manual
 
 import android.content.Context
@@ -18,15 +20,13 @@ import java.security.SecureRandom
 class SmsEntryDigest internal constructor(
     private val salt: ByteArray,
 ) {
-    fun hash(rawSender: String): SenderHash =
-        SenderHash(Hashing.saltedSha256(rawSender.trim(), salt))
+    fun hash(rawSender: String): SenderHash = SenderHash(Hashing.saltedSha256(rawSender.trim(), salt))
 
     companion object {
         private const val SALT_FILE = "antifraud.hash.salt"
         private const val SALT_BYTES = 16
 
-        fun create(context: Context): SmsEntryDigest =
-            create(context, KeyStoreCryptoBox.create(context, alias = "antifraud.field_box"))
+        fun create(context: Context): SmsEntryDigest = create(context, KeyStoreCryptoBox.create(context, alias = "antifraud.field_box"))
 
         fun create(
             context: Context,
