@@ -6,7 +6,7 @@ The app does not use AI of any kind. It does not record audio. It does not read 
 
 ## Status
 
-Stage 1 (local core) and Stage 2 (pattern engine) are complete on `main`. Stage 1 delivered project scaffolding, domain entities, deterministic scoring engine, correlation engine, SQLCipher-encrypted Room database, manual-entry fallback path, application action log, and demo-data import. Stage 2 added the declarative scenario-pattern engine: typed pattern model, Moshi parser, condition evaluator, AND-of-conditions matcher, ≥3-reasons explainability, pattern state storage (Room schema v2), five in-APK seed patterns, orchestrator integration, and §23 #12 / #14 / #17 acceptance tests. Stages 3–9 (calls, SMS, web, sync, export, UX, real-time intervention) follow. See [docs/plans/stage1/IMPLEMENTATION_REPORT.md](docs/plans/stage1/IMPLEMENTATION_REPORT.md) and [docs/plans/stage2/IMPLEMENTATION_REPORT.md](docs/plans/stage2/IMPLEMENTATION_REPORT.md) for the per-phase logs.
+Stages 1–3 complete on `main`. Stage 1 (local core) delivered project scaffolding, domain entities, deterministic scoring engine, correlation engine, SQLCipher-encrypted Room database, manual-entry fallback path, application action log, and demo-data import. Stage 2 (pattern engine) added the declarative scenario-pattern engine: typed pattern model, Moshi parser, condition evaluator, AND-of-conditions matcher, ≥3-reasons explainability, pattern state storage (Room schema v2), five in-APK seed patterns, orchestrator integration, and §23 #12 / #14 / #17 acceptance tests. Stage 3 (auto call observer) shipped `:feature:calls`: foreground service of type `phoneCall`, modern (`TelephonyCallback`, API 31+) + legacy (`PhoneStateListener`) listeners, per-`SubscriptionId` multi-SIM registration on Android 12+, `CallLog` reader with five-column allowlisted projection, `CallEventBuilder` reusing the §5.1 normalize-then-salt-hash path shared with `ManualEntry`, `RiskCounterUpdater` for `ContactProfile.riskCounter`, §17.0.3 ongoing transparency notification, permission flow (§4.2.1 runtime pair + `POST_NOTIFICATIONS` on API 33+) and battery-optimization-exemption prompt, with `:app` integration. §23 #25–#28 + §23 #22 (no `RECORD_AUDIO`) + §17.0.3 + §23 #45 + §20.1 all have passing acceptance tests. Stages 4–9 (SMS, web, sync, export, UX, real-time intervention) follow. See [docs/plans/stage1/IMPLEMENTATION_REPORT.md](docs/plans/stage1/IMPLEMENTATION_REPORT.md), [docs/plans/stage2/IMPLEMENTATION_REPORT.md](docs/plans/stage2/IMPLEMENTATION_REPORT.md), and [docs/plans/stage3/IMPLEMENTATION_REPORT.md](docs/plans/stage3/IMPLEMENTATION_REPORT.md) for the per-phase logs.
 
 ## What it does
 
@@ -66,25 +66,20 @@ Stage 1 (local core) and Stage 2 (pattern engine) are complete on `main`. Stage 
 │   └── wrapper/
 ├── build-logic/                     (composite build — convention plugins)
 ├── config/detekt/                   (detekt rules)
-├── app/                             (Android application — Compose status screen, demo importer, pattern-warning surface)
+├── app/                             (Android application — Compose status screen, demo importer, pattern-warning surface, §17.7 permission banner)
 ├── core/
 │   ├── domain/                      (JVM — entities per spec §16)
 │   ├── scoring/                     (JVM — risk math per §11–12 + Appendix B)
 │   ├── correlation/                 (JVM — session + campaign correlators, 14-day horizon, pattern-provider integration)
-│   ├── database/                    (Android library — Room v2 + SQLCipher, manual entry, action log, retention purger, pattern_state)
+│   ├── database/                    (Android library — Room v2 + SQLCipher, manual entry, action log, retention purger, pattern_state, CallEntryDigest)
 │   ├── demo/                        (Android library — JSON fixture importer for §13 scenarios)
 │   └── patterns/                    (JVM — declarative pattern engine: Moshi parser, condition evaluator, matcher, explainer, 5 in-APK seeds)
-├── docs/                            (private — gitignored — plans, specs, instructions)
-└── wiki/                            (architectural overview + topic pages)
-    ├── Home.md
-    ├── Pattern-engine.md
-    ├── Privacy-boundaries.md
-    ├── Permissions-and-onboarding.md
-    ├── Real-time-alert-surface.md
-    ├── Update-packages-and-signing.md
-    ├── Web-channel.md
-    └── Acceptance-test-plan.md
+├── feature/
+│   └── calls/                       (Android library — auto call observer: foreground service `phoneCall`, telephony listeners, CallLog reader, multi-SIM, action log)
+└── docs/                            (private — gitignored — plans, specs, instructions)
 ```
+
+(Wiki pages live in a separate repository; see `docs/plans/stage3/WIKI_UPDATES.md` for the Stage 3 updates that need to land there.)
 
 ## Building
 
@@ -108,4 +103,4 @@ To be decided before the first public release. Until a license file is added, no
 
 ## More information
 
-See [`wiki/Home.md`](wiki/Home.md) for the architectural overview, glossary, roadmap, and topic pages (pattern engine, privacy boundaries, permissions, web channel, alert surface, signing, acceptance plan).
+Wiki pages (architectural overview, glossary, roadmap, and topic pages) live in a separate repository.
