@@ -1,15 +1,12 @@
 package com.qalqan.antifraud.calls
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
 
 /**
  * Spec §4.2.1 — a foreground service of type `phoneCall` that owns the telephony listener.
@@ -49,14 +46,10 @@ class CallObserverService : Service() {
     }
 
     private fun startForegroundCompat() {
-        val notif: Notification =
-            NotificationCompat.Builder(this, CHANNEL_ID)
-                .setOngoing(true)
-                .setContentTitle("AntiFraud")
-                .setContentText("Watching for fraud signals.")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build()
+        val notif: Notification = CallObserverNotifications.build(
+            this,
+            PassiveNotificationCopy(eventsLast24h = 0, alertsLast24h = 0),
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NOTIFICATION_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL)
         } else {
@@ -66,17 +59,7 @@ class CallObserverService : Service() {
     }
 
     private fun ensureChannel() {
-        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_ID) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL_ID, "AntiFraud passive observer", NotificationManager.IMPORTANCE_LOW)
-                    .apply {
-                        description = "Shows that AntiFraud is watching for calls. Low priority, no sound."
-                        enableVibration(false)
-                        setSound(null, null)
-                    },
-            )
-        }
+        CallObserverNotifications.ensureChannel(this)
     }
 
     companion object {
