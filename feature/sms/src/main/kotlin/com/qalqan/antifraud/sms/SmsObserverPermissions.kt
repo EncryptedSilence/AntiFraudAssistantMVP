@@ -13,9 +13,10 @@ class SmsObserverPermissions(private val context: Context) {
     enum class State { DENIED, PARTIAL, GRANTED }
 
     fun state(): State {
-        val granted = REQUIRED.count {
-            context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
-        }
+        val granted =
+            REQUIRED.count {
+                context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+            }
         return when (granted) {
             REQUIRED.size -> State.GRANTED
             0 -> State.DENIED
@@ -24,9 +25,10 @@ class SmsObserverPermissions(private val context: Context) {
     }
 
     companion object {
-        val REQUIRED: List<String> = listOf(
-            Manifest.permission.RECEIVE_SMS,
-            Manifest.permission.READ_SMS,
-        )
+        val REQUIRED: List<String> =
+            listOf(
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS,
+            )
     }
 }
