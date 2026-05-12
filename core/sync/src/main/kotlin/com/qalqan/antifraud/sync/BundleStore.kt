@@ -47,6 +47,18 @@ class BundleStore(context: Context) {
         Unit
     }
 
+    fun rollback(): Result<Unit> = runCatching {
+        if (!previousDir.exists()) {
+            throw BundleStoreError.NoPreviousBundle
+        }
+        val swapDir = File(root, "current.swap")
+        swapDir.deleteRecursively()
+        check(currentDir.renameTo(swapDir)) { "failed to move current aside for rollback" }
+        check(previousDir.renameTo(currentDir)) { "failed to promote previous to current" }
+        check(swapDir.renameTo(previousDir)) { "failed to move former current into previous" }
+        Unit
+    }
+
     private fun writeAndFsync(file: File, bytes: ByteArray) {
         FileOutputStream(file).use { fos ->
             fos.write(bytes)

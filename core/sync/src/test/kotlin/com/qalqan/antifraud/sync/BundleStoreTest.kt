@@ -87,4 +87,44 @@ class BundleStoreTest {
         val previous = File(context.filesDir, "sync/previous")
         File(previous, "bundle.afpkg").readBytes().contentEquals(raw2) shouldBe true
     }
+
+    @Test
+    fun `rollback after two activates swaps current and previous`() {
+        val store = BundleStore(context)
+        val (raw1, v1) = verified(version = "v1", patterns = "patterns-v1".toByteArray())
+        val (raw2, v2) = verified(version = "v2", patterns = "patterns-v2".toByteArray())
+
+        store.activate(raw1, v1).isSuccess shouldBe true
+        store.activate(raw2, v2).isSuccess shouldBe true
+        store.rollback().isSuccess shouldBe true
+
+        val current = File(context.filesDir, "sync/current")
+        val previous = File(context.filesDir, "sync/previous")
+        File(current, "bundle.afpkg").readBytes().contentEquals(raw1) shouldBe true
+        File(previous, "bundle.afpkg").readBytes().contentEquals(raw2) shouldBe true
+    }
+
+    @Test
+    fun `rollback when previous is absent fails with NoPreviousBundle`() {
+        val store = BundleStore(context)
+        val (raw1, v1) = verified()
+        store.activate(raw1, v1).isSuccess shouldBe true
+
+        val r = store.rollback()
+        r.isFailure shouldBe true
+        (r.exceptionOrNull() is BundleStoreError.NoPreviousBundle) shouldBe true
+    }
+
+    @Test
+    fun `rollback twice — second rollback restores the original previous`() {
+        val store = BundleStore(context)
+        val (raw1, v1) = verified(version = "v1", patterns = "patterns-v1".toByteArray())
+        val (raw2, v2) = verified(version = "v2", patterns = "patterns-v2".toByteArray())
+        store.activate(raw1, v1)
+        store.activate(raw2, v2)
+        store.rollback()
+        store.rollback()
+        val current = File(context.filesDir, "sync/current")
+        File(current, "bundle.afpkg").readBytes().contentEquals(raw2) shouldBe true
+    }
 }
