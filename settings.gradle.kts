@@ -30,4 +30,5 @@ include(
     ":feature:calls",
     ":feature:sms",
     ":feature:web",
+    ":feature:export",
 )
