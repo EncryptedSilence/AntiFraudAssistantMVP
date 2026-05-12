@@ -30,6 +30,15 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
     private val repos = Repositories.build(application)
     private val manual = ManualEntry.create(application, repos)
     private val importer = DemoImporter(manual)
+    private val exportOrchestrator: ExportOrchestrator by lazy {
+        ExportOrchestrator(
+            gatherer = ExportGatherer.default(getApplication()),
+            pipeline = RedactionPipeline.default(),
+            contentResolver = getApplication<Application>().contentResolver,
+            clock = { Instant.now() },
+            actionLogger = repos.actionLogger,
+        )
+    }
 
     private val _state = MutableStateFlow(State())
     val state = _state.asStateFlow()
@@ -253,33 +262,14 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    suspend fun generateExportPreview(request: ExportRequest): Result<ExportOrchestrator.Preview> {
-        val orchestrator =
-            ExportOrchestrator(
-                gatherer = ExportGatherer.default(getApplication()),
-                pipeline = RedactionPipeline.default(),
-                contentResolver = getApplication<Application>().contentResolver,
-                clock = { Instant.now() },
-                actionLogger = repos.actionLogger,
-            )
-        return orchestrator.preview(request, repos)
-    }
+    suspend fun generateExportPreview(request: ExportRequest): Result<ExportOrchestrator.Preview> =
+        exportOrchestrator.preview(request, repos)
 
     suspend fun writeExport(
         request: ExportRequest,
         uri: Uri,
         previewToken: String,
-    ): Result<Unit> {
-        val orchestrator =
-            ExportOrchestrator(
-                gatherer = ExportGatherer.default(getApplication()),
-                pipeline = RedactionPipeline.default(),
-                contentResolver = getApplication<Application>().contentResolver,
-                clock = { Instant.now() },
-                actionLogger = repos.actionLogger,
-            )
-        return orchestrator.write(request, repos, uri, previewToken)
-    }
+    ): Result<Unit> = exportOrchestrator.write(request, repos, uri, previewToken)
 
     override fun onCleared() {
         super.onCleared()
