@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":feature:web"))
     implementation(project(":core:crypto"))
     implementation(project(":core:sync"))
+    implementation(project(":feature:export"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
