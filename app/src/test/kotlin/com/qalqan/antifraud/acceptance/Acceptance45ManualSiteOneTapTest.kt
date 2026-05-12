@@ -21,7 +21,9 @@ class Acceptance45ManualSiteOneTapTest {
     private val context = ApplicationProvider.getApplicationContext<android.content.Context>()
     private val repos = Repositories.inMemory(context)
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `recording the manual-site-button tap logs SETTING_CHANGED with state tapped`() {

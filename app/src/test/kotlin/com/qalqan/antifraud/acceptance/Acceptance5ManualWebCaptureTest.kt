@@ -32,19 +32,22 @@ class Acceptance5ManualWebCaptureTest {
     private val repos = Repositories.inMemory(context)
     private val digest = WebEntryDigest.create(context, InMemoryCryptoBox())
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `https URL with path persists as eTLD plus 1 only with expected fields`() {
         runBlocking {
-            val capture = WebManualCapture(
-                normalizer = DomainNormalizer(),
-                detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
-                seenChecker = DomainSeenChecker(repos.web),
-                builder = WebEventBuilder(digest),
-                repo = repos.web,
-                actionLog = WebObserverActionLog(repos.actionLogger),
-            )
+            val capture =
+                WebManualCapture(
+                    normalizer = DomainNormalizer(),
+                    detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
+                    seenChecker = DomainSeenChecker(repos.web),
+                    builder = WebEventBuilder(digest),
+                    repo = repos.web,
+                    actionLog = WebObserverActionLog(repos.actionLogger),
+                )
             val visitedAt = Instant.parse("2026-05-12T10:00:00Z")
             val r = capture.submit("https://www.HalykBank.kz/login?next=x#a", visitedAt)
             r.shouldBeInstanceOf<WebCaptureOutcome.Saved>()

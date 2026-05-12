@@ -26,7 +26,9 @@ class Acceptance18PostSiteQuestionGateTest {
     private val log = WebObserverActionLog(repos.actionLogger)
     private val trigger = PostSiteQuestionTrigger(log)
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `no question is triggered at low risk (score 10)`() {

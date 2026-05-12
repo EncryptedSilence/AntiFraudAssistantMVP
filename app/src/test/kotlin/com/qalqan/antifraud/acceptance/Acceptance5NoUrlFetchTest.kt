@@ -22,51 +22,59 @@ class Acceptance5NoUrlFetchTest {
 
     @Test
     fun `no Kotlin source opens a URL via Intent ACTION_VIEW`() {
-        val violations = scanFor(
-            forbiddenLiterals = listOf(
-                "Intent.ACTION_VIEW",
-                "android.intent.action.VIEW",
-                "Intent(Intent.ACTION_VIEW,",
-            ),
-        )
+        val violations =
+            scanFor(
+                forbiddenLiterals =
+                    listOf(
+                        "Intent.ACTION_VIEW",
+                        "android.intent.action.VIEW",
+                        "Intent(Intent.ACTION_VIEW,",
+                    ),
+            )
         violations.size shouldBe 0
     }
 
     @Test
     fun `no Kotlin source fetches HTTP via the standard JVM clients`() {
-        val violations = scanFor(
-            forbiddenLiterals = listOf(
-                "HttpURLConnection",
-                "URL(",
-                "OkHttpClient",
-                "Retrofit",
-                "Volley",
-            ),
-        )
+        val violations =
+            scanFor(
+                forbiddenLiterals =
+                    listOf(
+                        "HttpURLConnection",
+                        "URL(",
+                        "OkHttpClient",
+                        "Retrofit",
+                        "Volley",
+                    ),
+            )
         violations.size shouldBe 0
     }
 
     @Test
     fun `no Kotlin source instantiates WebView`() {
-        val violations = scanFor(
-            forbiddenLiterals = listOf(
-                "WebView(",
-                "WebViewClient",
-                "loadUrl(",
-                "loadData(",
-            ),
-        )
+        val violations =
+            scanFor(
+                forbiddenLiterals =
+                    listOf(
+                        "WebView(",
+                        "WebViewClient",
+                        "loadUrl(",
+                        "loadData(",
+                    ),
+            )
         violations.size shouldBe 0
     }
 
     private fun kotlinSources(): List<File> {
-        val roots = listOf(
-            projectRoot.resolve("feature/web/src"),
-            projectRoot.resolve("app/src"),
-        )
+        val roots =
+            listOf(
+                projectRoot.resolve("feature/web/src"),
+                projectRoot.resolve("app/src"),
+            )
         return roots.flatMap { root ->
-            if (!root.exists()) emptyList()
-            else
+            if (!root.exists()) {
+                emptyList()
+            } else {
                 root.walkTopDown()
                     .filter { it.isFile && it.extension == "kt" }
                     .filter {
@@ -74,6 +82,7 @@ class Acceptance5NoUrlFetchTest {
                         "/src/test/" !in p && "/src/androidTest/" !in p && "/build/" !in p
                     }
                     .toList()
+            }
         }
     }
 

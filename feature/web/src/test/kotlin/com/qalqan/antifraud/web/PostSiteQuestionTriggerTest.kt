@@ -27,7 +27,9 @@ class PostSiteQuestionTriggerTest {
     private val trigger = PostSiteQuestionTrigger(log)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `score below HIGH_THRESHOLD does NOT log a question_triggered entry`() {

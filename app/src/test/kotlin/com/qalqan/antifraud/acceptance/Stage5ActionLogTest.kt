@@ -31,36 +31,41 @@ class Stage5ActionLogTest {
     private val repos = Repositories.inMemory(context)
     private val digest = WebEntryDigest.create(context, InMemoryCryptoBox())
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `lookalike + high-score path writes setting+state markers without forbidden keys`() {
         runBlocking {
             val log = WebObserverActionLog(repos.actionLogger)
-            val capture = WebManualCapture(
-                normalizer = DomainNormalizer(),
-                detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
-                seenChecker = DomainSeenChecker(repos.web),
-                builder = WebEventBuilder(digest),
-                repo = repos.web,
-                actionLog = log,
-            )
+            val capture =
+                WebManualCapture(
+                    normalizer = DomainNormalizer(),
+                    detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
+                    seenChecker = DomainSeenChecker(repos.web),
+                    builder = WebEventBuilder(digest),
+                    repo = repos.web,
+                    actionLog = log,
+                )
             // 1-edit-distance lookalike of halykbank.kz.
             capture.submit("halykbamk.kz", Instant.now())
             PostSiteQuestionTrigger(log).maybeRecord(score = 80)
 
             val entries = repos.actionLog.recent(10)
-            entries.map { it.details["setting"] } shouldBe listOf(
-                "post_site_question",
-                "lookalike_match",
-                "manual_site_submitted",
-            )
-            val forbidden = setOf(
-                "domain", "domainHash", "url", "seed", "input",
-                "phone", "phoneNumber", "phoneNormalized",
-                "sender", "senderId", "smsBody", "body", "messageBody",
-                "otp", "code", "userNote", "userText",
-            )
+            entries.map { it.details["setting"] } shouldBe
+                listOf(
+                    "post_site_question",
+                    "lookalike_match",
+                    "manual_site_submitted",
+                )
+            val forbidden =
+                setOf(
+                    "domain", "domainHash", "url", "seed", "input",
+                    "phone", "phoneNumber", "phoneNormalized",
+                    "sender", "senderId", "smsBody", "body", "messageBody",
+                    "otp", "code", "userNote", "userText",
+                )
             entries.flatMap { it.details.keys }.forEach { k ->
                 (k in forbidden) shouldBe false
             }

@@ -22,7 +22,9 @@ class WebActionLogBoundaryTest {
     private val log = WebObserverActionLog(repos.actionLogger)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `Stage 5 action-log entries never carry forbidden detail keys`() {
@@ -33,12 +35,13 @@ class WebActionLogBoundaryTest {
 
             val entries = repos.actionLog.recent(10)
             entries.size shouldBe 3
-            val forbidden = setOf(
-                "domain", "domainHash", "url", "seed", "input",
-                "phone", "phoneNumber", "phoneNormalized",
-                "sender", "senderId", "smsBody", "body", "messageBody",
-                "otp", "code", "userNote", "userText",
-            )
+            val forbidden =
+                setOf(
+                    "domain", "domainHash", "url", "seed", "input",
+                    "phone", "phoneNumber", "phoneNormalized",
+                    "sender", "senderId", "smsBody", "body", "messageBody",
+                    "otp", "code", "userNote", "userText",
+                )
             entries.flatMap { it.details.keys }.forEach { k ->
                 (k in forbidden) shouldBe false
             }

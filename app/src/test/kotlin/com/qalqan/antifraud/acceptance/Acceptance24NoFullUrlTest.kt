@@ -30,27 +30,31 @@ class Acceptance24NoFullUrlTest {
     private val repos = Repositories.inMemory(context)
     private val digest = WebEntryDigest.create(context, InMemoryCryptoBox())
 
-    @After fun tearDown() { repos.close() }
+    @After fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `every persisted row has only eTLD plus 1 in domainDisplayLocal`() {
-        val inputs = listOf(
-            "https://halykbank.kz/login?next=x#anchor",
-            "http://www.kaspi.kz/profile",
-            "https://forte.kz:8443/api?token=secret",
-            "https://user:pass@bcc.kz/admin",
-            "bereke.kz/path/with/slashes",
-            "freedombank.kz?q=1",
-        )
-        runBlocking {
-            val capture = WebManualCapture(
-                normalizer = DomainNormalizer(),
-                detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
-                seenChecker = DomainSeenChecker(repos.web),
-                builder = WebEventBuilder(digest),
-                repo = repos.web,
-                actionLog = WebObserverActionLog(repos.actionLogger),
+        val inputs =
+            listOf(
+                "https://halykbank.kz/login?next=x#anchor",
+                "http://www.kaspi.kz/profile",
+                "https://forte.kz:8443/api?token=secret",
+                "https://user:pass@bcc.kz/admin",
+                "bereke.kz/path/with/slashes",
+                "freedombank.kz?q=1",
             )
+        runBlocking {
+            val capture =
+                WebManualCapture(
+                    normalizer = DomainNormalizer(),
+                    detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
+                    seenChecker = DomainSeenChecker(repos.web),
+                    builder = WebEventBuilder(digest),
+                    repo = repos.web,
+                    actionLog = WebObserverActionLog(repos.actionLogger),
+                )
             inputs.forEach { capture.submit(it, Instant.now()) }
 
             val rows = repos.web.listSince(Instant.EPOCH)
