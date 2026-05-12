@@ -31,20 +31,22 @@ class Acceptance4ZeroEgressDefaultTest {
         settings.enabled shouldBe false
 
         var callCount = 0
-        val throwingDownloader = object : SyncDownloader {
-            override suspend fun fetchLatest(url: String): Result<ByteArray> {
-                callCount += 1
-                error("downloader must NOT be called when sync is disabled")
+        val throwingDownloader =
+            object : SyncDownloader {
+                override suspend fun fetchLatest(url: String): Result<ByteArray> {
+                    callCount += 1
+                    error("downloader must NOT be called when sync is disabled")
+                }
             }
-        }
-        val orchestrator = SyncOrchestrator(
-            settings = settings,
-            downloader = throwingDownloader,
-            archiveReader = BundleArchiveReader(),
-            verifier = BundleVerifier(Ed25519SignatureVerifier(), ByteArray(32)),
-            store = BundleStore(context),
-            actionLogger = null,
-        )
+        val orchestrator =
+            SyncOrchestrator(
+                settings = settings,
+                downloader = throwingDownloader,
+                archiveReader = BundleArchiveReader(),
+                verifier = BundleVerifier(Ed25519SignatureVerifier(), ByteArray(32)),
+                store = BundleStore(context),
+                actionLogger = null,
+            )
 
         runBlocking {
             val outcome = orchestrator.runOnce("https://example.invalid/")

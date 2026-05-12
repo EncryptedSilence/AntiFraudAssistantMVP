@@ -6,22 +6,24 @@ import org.junit.Test
 import java.time.Instant
 
 class BundleManifestTest {
-    private fun validContents(): Map<String, String> = mapOf(
-        "data/patterns.json" to "sha256:" + "a".repeat(64),
-    )
+    private fun validContents(): Map<String, String> =
+        mapOf(
+            "data/patterns.json" to "sha256:" + "a".repeat(64),
+        )
 
     @Test
     fun `valid manifest is constructible`() {
-        val m = BundleManifest(
-            version = "2026.05.12-001",
-            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-            source = "stable",
-            schemaVersion = 1,
-            minAppVersion = 1,
-            priority = BundlePriority.NORMAL,
-            previousPackageId = null,
-            contents = validContents(),
-        )
+        val m =
+            BundleManifest(
+                version = "2026.05.12-001",
+                createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+                source = "stable",
+                schemaVersion = 1,
+                minAppVersion = 1,
+                priority = BundlePriority.NORMAL,
+                previousPackageId = null,
+                contents = validContents(),
+            )
         m.version shouldBe "2026.05.12-001"
         m.priority shouldBe BundlePriority.NORMAL
         m.contents.size shouldBe 1

@@ -6,20 +6,22 @@ import java.time.Instant
 
 class BundleManifestCanonicalJsonTest {
     private fun fixture(
-        contents: Map<String, String> = mapOf(
-            "data/patterns.json" to "sha256:" + "a".repeat(64),
-            "data/domains.json" to "sha256:" + "b".repeat(64),
-        ),
-    ): BundleManifest = BundleManifest(
-        version = "2026.05.12-001",
-        createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-        source = "stable",
-        schemaVersion = 1,
-        minAppVersion = 1,
-        priority = BundlePriority.NORMAL,
-        previousPackageId = null,
-        contents = contents,
-    )
+        contents: Map<String, String> =
+            mapOf(
+                "data/patterns.json" to "sha256:" + "a".repeat(64),
+                "data/domains.json" to "sha256:" + "b".repeat(64),
+            ),
+    ): BundleManifest =
+        BundleManifest(
+            version = "2026.05.12-001",
+            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+            source = "stable",
+            schemaVersion = 1,
+            minAppVersion = 1,
+            priority = BundlePriority.NORMAL,
+            previousPackageId = null,
+            contents = contents,
+        )
 
     @Test
     fun `canonical json contains alphabetically sorted contents keys`() {
@@ -33,14 +35,16 @@ class BundleManifestCanonicalJsonTest {
     @Test
     fun `two semantically equal manifests produce byte-identical canonical json`() {
         val a = BundleManifestJson.toCanonicalJson(fixture())
-        val b = BundleManifestJson.toCanonicalJson(
-            fixture(
-                contents = linkedMapOf(
-                    "data/patterns.json" to "sha256:" + "a".repeat(64),
-                    "data/domains.json" to "sha256:" + "b".repeat(64),
+        val b =
+            BundleManifestJson.toCanonicalJson(
+                fixture(
+                    contents =
+                        linkedMapOf(
+                            "data/patterns.json" to "sha256:" + "a".repeat(64),
+                            "data/domains.json" to "sha256:" + "b".repeat(64),
+                        ),
                 ),
-            ),
-        )
+            )
         a.contentEquals(b) shouldBe true
     }
 

@@ -1,3 +1,5 @@
+@file:Suppress("ReturnCount")
+
 package com.qalqan.antifraud.crypto
 
 /**
@@ -17,12 +19,16 @@ class BundleVerifier(
     private val signatureVerifier: Ed25519SignatureVerifier,
     private val publicKey: ByteArray,
 ) {
-    fun verify(archive: BundleArchive, appVersionCode: Int): Result<VerifiedBundle> {
-        val sigOk = signatureVerifier.verify(
-            message = archive.manifestBytes,
-            signature = archive.signature,
-            publicKey = publicKey,
-        )
+    fun verify(
+        archive: BundleArchive,
+        appVersionCode: Int,
+    ): Result<VerifiedBundle> {
+        val sigOk =
+            signatureVerifier.verify(
+                message = archive.manifestBytes,
+                signature = archive.signature,
+                publicKey = publicKey,
+            )
         if (!sigOk) return Result.failure(VerificationErrorException(VerificationError.BadSignature))
 
         val manifestResult = BundleManifestJson.parse(archive.manifestBytes)
@@ -32,8 +38,9 @@ class BundleVerifier(
         val manifest = manifestResult.getOrThrow()
 
         for ((path, expected) in manifest.contents) {
-            val bytes = archive.dataEntries[path]
-                ?: return Result.failure(VerificationErrorException(VerificationError.BadChecksum(path)))
+            val bytes =
+                archive.dataEntries[path]
+                    ?: return Result.failure(VerificationErrorException(VerificationError.BadChecksum(path)))
             val expectedHex = expected.removePrefix("sha256:")
             val actualHex = Sha256.hashHex(bytes)
             if (actualHex != expectedHex) {

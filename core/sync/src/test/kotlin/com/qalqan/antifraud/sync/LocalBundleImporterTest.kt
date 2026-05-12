@@ -30,20 +30,23 @@ class LocalBundleImporterTest {
     private val repos = Repositories.inMemory(context)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     private fun buildAfpkg(source: String = "stable"): ByteArray {
         val patterns = "patterns-payload".toByteArray()
-        val manifest = BundleManifest(
-            version = "2026.05.12-001",
-            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-            source = source,
-            schemaVersion = 1,
-            minAppVersion = 1,
-            priority = BundlePriority.NORMAL,
-            previousPackageId = null,
-            contents = mapOf("data/patterns.json" to "sha256:${Sha256.hashHex(patterns)}"),
-        )
+        val manifest =
+            BundleManifest(
+                version = "2026.05.12-001",
+                createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+                source = source,
+                schemaVersion = 1,
+                minAppVersion = 1,
+                priority = BundlePriority.NORMAL,
+                previousPackageId = null,
+                contents = mapOf("data/patterns.json" to "sha256:${Sha256.hashHex(patterns)}"),
+            )
         val canonical = BundleManifestJson.toCanonicalJson(manifest)
         val signature = TestKeys.signWithTestKey(canonical)
         val bos = ByteArrayOutputStream()
@@ -61,15 +64,17 @@ class LocalBundleImporterTest {
         return bos.toByteArray()
     }
 
-    private fun newImporter(): LocalBundleImporter = LocalBundleImporter(
-        archiveReader = BundleArchiveReader(),
-        verifier = BundleVerifier(
-            Ed25519SignatureVerifier(),
-            TestKeys.hexToBytes(TestKeys.TEST_PUBLIC_KEY_HEX),
-        ),
-        store = BundleStore(context),
-        actionLogger = repos.actionLogger,
-    )
+    private fun newImporter(): LocalBundleImporter =
+        LocalBundleImporter(
+            archiveReader = BundleArchiveReader(),
+            verifier =
+                BundleVerifier(
+                    Ed25519SignatureVerifier(),
+                    TestKeys.hexToBytes(TestKeys.TEST_PUBLIC_KEY_HEX),
+                ),
+            store = BundleStore(context),
+            actionLogger = repos.actionLogger,
+        )
 
     @Test
     fun `valid fixture stream resolves to Activated and writes local_bundle_imported marker`() {
@@ -78,8 +83,9 @@ class LocalBundleImporterTest {
             outcome.shouldBeInstanceOf<SyncOutcome.Activated>()
         }
         val entries = runBlocking { repos.actionLog.recent(limit = 50) }
-        val marker = entries.filter { it.action == AppAction.SETTING_CHANGED }
-            .filter { it.details["setting"] == "local_bundle_imported" }
+        val marker =
+            entries.filter { it.action == AppAction.SETTING_CHANGED }
+                .filter { it.details["setting"] == "local_bundle_imported" }
         (marker.isNotEmpty()) shouldBe true
     }
 
@@ -90,9 +96,10 @@ class LocalBundleImporterTest {
             outcome.shouldBeInstanceOf<SyncOutcome.Activated>()
         }
         val entries = runBlocking { repos.actionLog.recent(limit = 50) }
-        val marker = entries.first {
-            it.action == AppAction.SETTING_CHANGED && it.details["setting"] == "local_bundle_imported"
-        }
+        val marker =
+            entries.first {
+                it.action == AppAction.SETTING_CHANGED && it.details["setting"] == "local_bundle_imported"
+            }
         marker.details["channel"] shouldBe "local"
     }
 

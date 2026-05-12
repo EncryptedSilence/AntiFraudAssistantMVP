@@ -1,3 +1,5 @@
+@file:Suppress("NestedBlockDepth")
+
 package com.qalqan.antifraud.acceptance
 
 import io.kotest.matchers.shouldBe
@@ -13,35 +15,37 @@ import java.io.File
 class Acceptance2NoTelemetrySdkTest {
     private val repoRoot = File(System.getProperty("user.dir")!!).parentFile!!
 
-    private fun manifestFiles(): List<File> = listOf(
-        "app/src/main/AndroidManifest.xml",
-        "core/correlation/src/main/AndroidManifest.xml",
-        "core/crypto/src/main/AndroidManifest.xml",
-        "core/database/src/main/AndroidManifest.xml",
-        "core/demo/src/main/AndroidManifest.xml",
-        "core/domain/src/main/AndroidManifest.xml",
-        "core/patterns/src/main/AndroidManifest.xml",
-        "core/scoring/src/main/AndroidManifest.xml",
-        "core/sync/src/main/AndroidManifest.xml",
-        "feature/calls/src/main/AndroidManifest.xml",
-        "feature/sms/src/main/AndroidManifest.xml",
-        "feature/web/src/main/AndroidManifest.xml",
-    ).map { File(repoRoot, it) }.filter { it.exists() }
+    private fun manifestFiles(): List<File> =
+        listOf(
+            "app/src/main/AndroidManifest.xml",
+            "core/correlation/src/main/AndroidManifest.xml",
+            "core/crypto/src/main/AndroidManifest.xml",
+            "core/database/src/main/AndroidManifest.xml",
+            "core/demo/src/main/AndroidManifest.xml",
+            "core/domain/src/main/AndroidManifest.xml",
+            "core/patterns/src/main/AndroidManifest.xml",
+            "core/scoring/src/main/AndroidManifest.xml",
+            "core/sync/src/main/AndroidManifest.xml",
+            "feature/calls/src/main/AndroidManifest.xml",
+            "feature/sms/src/main/AndroidManifest.xml",
+            "feature/web/src/main/AndroidManifest.xml",
+        ).map { File(repoRoot, it) }.filter { it.exists() }
 
-    private fun productionSourceRoots(): List<File> = listOf(
-        "app/src/main",
-        "core/correlation/src/main",
-        "core/crypto/src/main",
-        "core/database/src/main",
-        "core/demo/src/main",
-        "core/domain/src/main",
-        "core/patterns/src/main",
-        "core/scoring/src/main",
-        "core/sync/src/main",
-        "feature/calls/src/main",
-        "feature/sms/src/main",
-        "feature/web/src/main",
-    ).map { File(repoRoot, it) }.filter { it.exists() }
+    private fun productionSourceRoots(): List<File> =
+        listOf(
+            "app/src/main",
+            "core/correlation/src/main",
+            "core/crypto/src/main",
+            "core/database/src/main",
+            "core/demo/src/main",
+            "core/domain/src/main",
+            "core/patterns/src/main",
+            "core/scoring/src/main",
+            "core/sync/src/main",
+            "feature/calls/src/main",
+            "feature/sms/src/main",
+            "feature/web/src/main",
+        ).map { File(repoRoot, it) }.filter { it.exists() }
 
     @Test
     fun `INTERNET permission is declared only by core_sync`() {
@@ -59,19 +63,20 @@ class Acceptance2NoTelemetrySdkTest {
 
     @Test
     fun `production sources contain no analytics or crash-reporter SDK literals`() {
-        val forbidden = listOf(
-            "Firebase",
-            "Crashlytics",
-            "Bugsnag",
-            "Sentry",
-            "Mixpanel",
-            "Amplitude",
-            "Datadog",
-            "Segment",
-            "Google Analytics",
-            "GoogleAnalytics",
-            "androidx.tracing",
-        )
+        val forbidden =
+            listOf(
+                "Firebase",
+                "Crashlytics",
+                "Bugsnag",
+                "Sentry",
+                "Mixpanel",
+                "Amplitude",
+                "Datadog",
+                "Segment",
+                "Google Analytics",
+                "GoogleAnalytics",
+                "androidx.tracing",
+            )
         val violations = mutableListOf<String>()
         productionSourceRoots().forEach { root ->
             root.walkTopDown()

@@ -14,19 +14,22 @@ import java.time.Instant
  * two operations share the Moshi factory.
  */
 object BundleManifestJson {
-    private val moshi: Moshi = Moshi.Builder()
-        .add(InstantJsonAdapter)
-        .add(BundlePriorityJsonAdapter)
-        .addLast(KotlinJsonAdapterFactory())
-        .build()
+    private val moshi: Moshi =
+        Moshi.Builder()
+            .add(InstantJsonAdapter)
+            .add(BundlePriorityJsonAdapter)
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
 
     private val dtoAdapter = moshi.adapter(BundleManifestDto::class.java)
 
-    fun parse(bytes: ByteArray): Result<BundleManifest> = runCatching {
-        val dto = dtoAdapter.fromJson(bytes.toString(Charsets.UTF_8))
-            ?: error("manifest is null")
-        dto.toDomain()
-    }
+    fun parse(bytes: ByteArray): Result<BundleManifest> =
+        runCatching {
+            val dto =
+                dtoAdapter.fromJson(bytes.toString(Charsets.UTF_8))
+                    ?: error("manifest is null")
+            dto.toDomain()
+        }
 
     /**
      * Spec §7.4 — produces the EXACT byte representation that the Ed25519 signature is
@@ -35,23 +38,27 @@ object BundleManifestJson {
      */
     fun toCanonicalJson(manifest: BundleManifest): ByteArray {
         val sortedContents = manifest.contents.toSortedMap()
-        val rootMap = linkedMapOf<String, Any?>(
-            "contents" to sortedContents,
-            "createdAt" to manifest.createdAt.toString(),
-            "minAppVersion" to manifest.minAppVersion,
-            "previousPackageId" to manifest.previousPackageId,
-            "priority" to manifest.priority.name,
-            "schemaVersion" to manifest.schemaVersion,
-            "source" to manifest.source,
-            "version" to manifest.version,
-        )
+        val rootMap =
+            linkedMapOf<String, Any?>(
+                "contents" to sortedContents,
+                "createdAt" to manifest.createdAt.toString(),
+                "minAppVersion" to manifest.minAppVersion,
+                "previousPackageId" to manifest.previousPackageId,
+                "priority" to manifest.priority.name,
+                "schemaVersion" to manifest.schemaVersion,
+                "source" to manifest.source,
+                "version" to manifest.version,
+            )
         val sb = StringBuilder()
         writeJson(sb, rootMap)
         return sb.toString().toByteArray(Charsets.UTF_8)
     }
 
     @Suppress("CyclomaticComplexMethod")
-    private fun writeJson(sb: StringBuilder, value: Any?) {
+    private fun writeJson(
+        sb: StringBuilder,
+        value: Any?,
+    ) {
         when (value) {
             null -> sb.append("null")
             is Boolean -> sb.append(value.toString())
@@ -96,26 +103,28 @@ object BundleManifestJson {
         val previousPackageId: String?,
         val contents: Map<String, String>?,
     ) {
-        fun toDomain(): BundleManifest = BundleManifest(
-            version = requireNotNull(version) { "version is required" },
-            createdAt = requireNotNull(createdAt) { "createdAt is required" },
-            source = requireNotNull(source) { "source is required" },
-            schemaVersion = requireNotNull(schemaVersion) { "schemaVersion is required" },
-            minAppVersion = requireNotNull(minAppVersion) { "minAppVersion is required" },
-            priority = requireNotNull(priority) { "priority is required" },
-            previousPackageId = previousPackageId,
-            contents = requireNotNull(contents) { "contents is required" },
-        )
+        fun toDomain(): BundleManifest =
+            BundleManifest(
+                version = requireNotNull(version) { "version is required" },
+                createdAt = requireNotNull(createdAt) { "createdAt is required" },
+                source = requireNotNull(source) { "source is required" },
+                schemaVersion = requireNotNull(schemaVersion) { "schemaVersion is required" },
+                minAppVersion = requireNotNull(minAppVersion) { "minAppVersion is required" },
+                priority = requireNotNull(priority) { "priority is required" },
+                previousPackageId = previousPackageId,
+                contents = requireNotNull(contents) { "contents is required" },
+            )
     }
 }
 
 internal object InstantJsonAdapter {
     @com.squareup.moshi.FromJson fun fromJson(value: String): Instant = Instant.parse(value)
+
     @com.squareup.moshi.ToJson fun toJson(value: Instant): String = value.toString()
 }
 
 internal object BundlePriorityJsonAdapter {
-    @com.squareup.moshi.FromJson fun fromJson(value: String): BundlePriority =
-        BundlePriority.valueOf(value.uppercase())
+    @com.squareup.moshi.FromJson fun fromJson(value: String): BundlePriority = BundlePriority.valueOf(value.uppercase())
+
     @com.squareup.moshi.ToJson fun toJson(value: BundlePriority): String = value.name
 }

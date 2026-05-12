@@ -26,13 +26,14 @@ class BundleArchiveReaderTest {
         val signature = ByteArray(64) { it.toByte() }
         val patterns = "patterns-payload".toByteArray()
 
-        val bytes = zip(
-            listOf(
-                "manifest.json" to manifest,
-                "signature" to signature,
-                "data/patterns.json" to patterns,
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "manifest.json" to manifest,
+                    "signature" to signature,
+                    "data/patterns.json" to patterns,
+                ),
+            )
 
         val result = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         result.isSuccess shouldBe true
@@ -47,13 +48,14 @@ class BundleArchiveReaderTest {
     fun `rejects entry larger than 256 KB`() {
         val signature = ByteArray(64)
         val oversize = ByteArray(MAX_ENTRY_BYTES_PLUS_ONE) { 'a'.code.toByte() }
-        val bytes = zip(
-            listOf(
-                "manifest.json" to "m".toByteArray(),
-                "signature" to signature,
-                "data/big.json" to oversize,
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "manifest.json" to "m".toByteArray(),
+                    "signature" to signature,
+                    "data/big.json" to oversize,
+                ),
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         (r.exceptionOrNull() is BundleArchiveError.EntryTooLarge) shouldBe true
@@ -63,13 +65,14 @@ class BundleArchiveReaderTest {
     fun `rejects total uncompressed size exceeding 1 MB`() {
         val signature = ByteArray(64)
         val chunk = ByteArray(MAX_ENTRY_BYTES) { 'x'.code.toByte() }
-        val bytes = zip(
-            buildList {
-                add("manifest.json" to "m".toByteArray())
-                add("signature" to signature)
-                repeat(5) { i -> add("data/chunk-$i.bin" to chunk) }
-            },
-        )
+        val bytes =
+            zip(
+                buildList {
+                    add("manifest.json" to "m".toByteArray())
+                    add("signature" to signature)
+                    repeat(5) { i -> add("data/chunk-$i.bin" to chunk) }
+                },
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         val ex = r.exceptionOrNull()
@@ -79,13 +82,14 @@ class BundleArchiveReaderTest {
     @Test
     fun `rejects entry whose name contains parent-directory escape`() {
         val signature = ByteArray(64)
-        val bytes = zip(
-            listOf(
-                "manifest.json" to "m".toByteArray(),
-                "signature" to signature,
-                "data/../etc/passwd" to "x".toByteArray(),
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "manifest.json" to "m".toByteArray(),
+                    "signature" to signature,
+                    "data/../etc/passwd" to "x".toByteArray(),
+                ),
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         (r.exceptionOrNull() is BundleArchiveError.ForbiddenPath) shouldBe true
@@ -94,13 +98,14 @@ class BundleArchiveReaderTest {
     @Test
     fun `rejects entry whose name starts with a slash`() {
         val signature = ByteArray(64)
-        val bytes = zip(
-            listOf(
-                "manifest.json" to "m".toByteArray(),
-                "signature" to signature,
-                "/etc/passwd" to "x".toByteArray(),
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "manifest.json" to "m".toByteArray(),
+                    "signature" to signature,
+                    "/etc/passwd" to "x".toByteArray(),
+                ),
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         (r.exceptionOrNull() is BundleArchiveError.ForbiddenPath) shouldBe true
@@ -114,13 +119,14 @@ class BundleArchiveReaderTest {
         // throwable. The exact variant (MalformedZip / MissingManifest /
         // MissingSignature / SignatureWrongSize) depends on what ZipInputStream
         // can salvage before failing.
-        val full = zip(
-            listOf(
-                "manifest.json" to "m".toByteArray(),
-                "signature" to ByteArray(64),
-                "data/x" to "y".toByteArray(),
-            ),
-        )
+        val full =
+            zip(
+                listOf(
+                    "manifest.json" to "m".toByteArray(),
+                    "signature" to ByteArray(64),
+                    "data/x" to "y".toByteArray(),
+                ),
+            )
         val truncated = full.copyOf(10)
         val r = BundleArchiveReader().read(ByteArrayInputStream(truncated))
         r.isFailure shouldBe true
@@ -129,12 +135,13 @@ class BundleArchiveReaderTest {
 
     @Test
     fun `missing manifest returns MissingManifest`() {
-        val bytes = zip(
-            listOf(
-                "signature" to ByteArray(64),
-                "data/x" to "y".toByteArray(),
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "signature" to ByteArray(64),
+                    "data/x" to "y".toByteArray(),
+                ),
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         (r.exceptionOrNull() is BundleArchiveError.MissingManifest) shouldBe true
@@ -142,12 +149,13 @@ class BundleArchiveReaderTest {
 
     @Test
     fun `missing signature returns MissingSignature`() {
-        val bytes = zip(
-            listOf(
-                "manifest.json" to "m".toByteArray(),
-                "data/x" to "y".toByteArray(),
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "manifest.json" to "m".toByteArray(),
+                    "data/x" to "y".toByteArray(),
+                ),
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         (r.exceptionOrNull() is BundleArchiveError.MissingSignature) shouldBe true
@@ -155,13 +163,14 @@ class BundleArchiveReaderTest {
 
     @Test
     fun `signature with wrong size returns SignatureWrongSize`() {
-        val bytes = zip(
-            listOf(
-                "manifest.json" to "m".toByteArray(),
-                "signature" to ByteArray(63),
-                "data/x" to "y".toByteArray(),
-            ),
-        )
+        val bytes =
+            zip(
+                listOf(
+                    "manifest.json" to "m".toByteArray(),
+                    "signature" to ByteArray(63),
+                    "data/x" to "y".toByteArray(),
+                ),
+            )
         val r = BundleArchiveReader().read(ByteArrayInputStream(bytes))
         r.isFailure shouldBe true
         (r.exceptionOrNull() is BundleArchiveError.SignatureWrongSize) shouldBe true

@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package com.qalqan.antifraud.crypto
 
 import android.content.Context
@@ -13,6 +15,5 @@ import android.content.Context
  * key … key rotation … is post-MVP").
  */
 object EmbeddedPublicKey {
-    fun load(context: Context): ByteArray =
-        context.resources.openRawResource(R.raw.sync_public_key).use { it.readBytes() }
+    fun load(context: Context): ByteArray = context.resources.openRawResource(R.raw.sync_public_key).use { it.readBytes() }
 }

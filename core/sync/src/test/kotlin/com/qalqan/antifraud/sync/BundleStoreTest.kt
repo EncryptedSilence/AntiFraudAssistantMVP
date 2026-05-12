@@ -20,16 +20,17 @@ class BundleStoreTest {
         version: String = "v1",
         patterns: ByteArray = "patterns-v1".toByteArray(),
     ): Pair<ByteArray, VerifiedBundle> {
-        val manifest = BundleManifest(
-            version = version,
-            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-            source = "stable",
-            schemaVersion = 1,
-            minAppVersion = 1,
-            priority = BundlePriority.NORMAL,
-            previousPackageId = null,
-            contents = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
-        )
+        val manifest =
+            BundleManifest(
+                version = version,
+                createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+                source = "stable",
+                schemaVersion = 1,
+                minAppVersion = 1,
+                priority = BundlePriority.NORMAL,
+                previousPackageId = null,
+                contents = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
+            )
         val raw = "raw-bundle-$version".toByteArray()
         return raw to VerifiedBundle(manifest, mapOf("data/patterns.json" to patterns))
     }

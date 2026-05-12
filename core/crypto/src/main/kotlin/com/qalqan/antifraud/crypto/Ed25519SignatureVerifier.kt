@@ -1,3 +1,5 @@
+@file:Suppress("ReturnCount")
+
 package com.qalqan.antifraud.crypto
 
 import com.google.crypto.tink.subtle.Ed25519Verify

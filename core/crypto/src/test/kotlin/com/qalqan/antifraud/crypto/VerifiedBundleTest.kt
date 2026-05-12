@@ -8,16 +8,17 @@ import java.time.Instant
 class VerifiedBundleTest {
     @Test
     fun `VerifiedBundle carries manifest and data entries`() {
-        val manifest = BundleManifest(
-            version = "v1",
-            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-            source = "stable",
-            schemaVersion = 1,
-            minAppVersion = 1,
-            priority = BundlePriority.NORMAL,
-            previousPackageId = null,
-            contents = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
-        )
+        val manifest =
+            BundleManifest(
+                version = "v1",
+                createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+                source = "stable",
+                schemaVersion = 1,
+                minAppVersion = 1,
+                priority = BundlePriority.NORMAL,
+                previousPackageId = null,
+                contents = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
+            )
         val data = mapOf("data/patterns.json" to "payload".toByteArray())
         val v = VerifiedBundle(manifest, data)
         v.manifest shouldBe manifest

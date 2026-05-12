@@ -24,11 +24,12 @@ class LocalBundleImporter(
     private val actionLogger: ApplicationActionLogger?,
 ) {
     suspend fun import(stream: InputStream): SyncOutcome {
-        val bytes = try {
-            readBounded(stream)
-        } catch (_: Exception) {
-            return fail("read")
-        }
+        val bytes =
+            try {
+                readBounded(stream)
+            } catch (_: Exception) {
+                return fail("read")
+            }
 
         val readResult = archiveReader.read(bytes.inputStream())
         if (readResult.isFailure) return fail("read")

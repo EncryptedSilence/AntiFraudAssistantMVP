@@ -10,16 +10,17 @@ class BundleManifestBoundaryTest {
         schemaVersion: Int = 1,
         minAppVersion: Int = 1,
         contents: Map<String, String> = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
-    ): BundleManifest = BundleManifest(
-        version = version,
-        createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-        source = "stable",
-        schemaVersion = schemaVersion,
-        minAppVersion = minAppVersion,
-        priority = BundlePriority.NORMAL,
-        previousPackageId = null,
-        contents = contents,
-    )
+    ): BundleManifest =
+        BundleManifest(
+            version = version,
+            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+            source = "stable",
+            schemaVersion = schemaVersion,
+            minAppVersion = minAppVersion,
+            priority = BundlePriority.NORMAL,
+            previousPackageId = null,
+            contents = contents,
+        )
 
     @Test
     fun `blank version is rejected`() {

@@ -12,16 +12,17 @@ class BundleVerifierTest {
     private fun manifest(
         schemaVersion: Int = 1,
         minAppVersion: Int = 1,
-    ): BundleManifest = BundleManifest(
-        version = "2026.05.12-001",
-        createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-        source = "stable",
-        schemaVersion = schemaVersion,
-        minAppVersion = minAppVersion,
-        priority = BundlePriority.NORMAL,
-        previousPackageId = null,
-        contents = mapOf("data/patterns.json" to "sha256:$patternsHash"),
-    )
+    ): BundleManifest =
+        BundleManifest(
+            version = "2026.05.12-001",
+            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+            source = "stable",
+            schemaVersion = schemaVersion,
+            minAppVersion = minAppVersion,
+            priority = BundlePriority.NORMAL,
+            previousPackageId = null,
+            contents = mapOf("data/patterns.json" to "sha256:$patternsHash"),
+        )
 
     private fun signedArchive(m: BundleManifest = manifest()): BundleArchive {
         val canonical = BundleManifestJson.toCanonicalJson(m)
@@ -37,11 +38,12 @@ class BundleVerifierTest {
     fun `tampered manifest fails signature verification`() {
         val archive = signedArchive()
         val tampered = archive.manifestBytes.copyOf().also { it[0] = (it[0].toInt() xor 1).toByte() }
-        val bad = BundleArchive(
-            manifestBytes = tampered,
-            signature = archive.signature,
-            dataEntries = archive.dataEntries,
-        )
+        val bad =
+            BundleArchive(
+                manifestBytes = tampered,
+                signature = archive.signature,
+                dataEntries = archive.dataEntries,
+            )
         val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
         val r = verifier.verify(bad, appVersionCode = 1)
         r.isFailure shouldBe true
@@ -69,14 +71,16 @@ class BundleVerifierTest {
     @Test
     fun `tampered data file yields BadChecksum with the offending path`() {
         val archive = signedArchive()
-        val mutated = archive.dataEntries.toMutableMap().also {
-            it["data/patterns.json"] = "DIFFERENT".toByteArray()
-        }
-        val bad = BundleArchive(
-            manifestBytes = archive.manifestBytes,
-            signature = archive.signature,
-            dataEntries = mutated,
-        )
+        val mutated =
+            archive.dataEntries.toMutableMap().also {
+                it["data/patterns.json"] = "DIFFERENT".toByteArray()
+            }
+        val bad =
+            BundleArchive(
+                manifestBytes = archive.manifestBytes,
+                signature = archive.signature,
+                dataEntries = mutated,
+            )
         val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
         val r = verifier.verify(bad, appVersionCode = 1)
         r.isFailure shouldBe true
@@ -87,11 +91,12 @@ class BundleVerifierTest {
     @Test
     fun `missing data entry yields BadChecksum with the missing path`() {
         val archive = signedArchive()
-        val bad = BundleArchive(
-            manifestBytes = archive.manifestBytes,
-            signature = archive.signature,
-            dataEntries = emptyMap(),
-        )
+        val bad =
+            BundleArchive(
+                manifestBytes = archive.manifestBytes,
+                signature = archive.signature,
+                dataEntries = emptyMap(),
+            )
         val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
         val r = verifier.verify(bad, appVersionCode = 1)
         r.isFailure shouldBe true
@@ -103,11 +108,12 @@ class BundleVerifierTest {
     fun `unsupported schemaVersion is rejected with UnsupportedSchemaVersion`() {
         val m = manifest(schemaVersion = 2)
         val canonical = BundleManifestJson.toCanonicalJson(m)
-        val archive = BundleArchive(
-            manifestBytes = canonical,
-            signature = TestKeys.signWithTestKey(canonical),
-            dataEntries = mapOf("data/patterns.json" to patternsBytes),
-        )
+        val archive =
+            BundleArchive(
+                manifestBytes = canonical,
+                signature = TestKeys.signWithTestKey(canonical),
+                dataEntries = mapOf("data/patterns.json" to patternsBytes),
+            )
         val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
         val r = verifier.verify(archive, appVersionCode = 1)
         r.isFailure shouldBe true
@@ -119,11 +125,12 @@ class BundleVerifierTest {
     fun `minAppVersion greater than appVersionCode yields AppTooOld`() {
         val m = manifest(minAppVersion = 999)
         val canonical = BundleManifestJson.toCanonicalJson(m)
-        val archive = BundleArchive(
-            manifestBytes = canonical,
-            signature = TestKeys.signWithTestKey(canonical),
-            dataEntries = mapOf("data/patterns.json" to patternsBytes),
-        )
+        val archive =
+            BundleArchive(
+                manifestBytes = canonical,
+                signature = TestKeys.signWithTestKey(canonical),
+                dataEntries = mapOf("data/patterns.json" to patternsBytes),
+            )
         val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
         val r = verifier.verify(archive, appVersionCode = 1)
         r.isFailure shouldBe true

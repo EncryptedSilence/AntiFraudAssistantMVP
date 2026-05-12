@@ -22,20 +22,23 @@ class RepositoriesWipeIntegrationTest {
     private val store = BundleStore(context)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `wipeAll deletes the sync directory when a BundleStore is wired`() {
-        val manifest = BundleManifest(
-            version = "v1",
-            createdAt = Instant.parse("2026-05-12T10:00:00Z"),
-            source = "stable",
-            schemaVersion = 1,
-            minAppVersion = 1,
-            priority = BundlePriority.NORMAL,
-            previousPackageId = null,
-            contents = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
-        )
+        val manifest =
+            BundleManifest(
+                version = "v1",
+                createdAt = Instant.parse("2026-05-12T10:00:00Z"),
+                source = "stable",
+                schemaVersion = 1,
+                minAppVersion = 1,
+                priority = BundlePriority.NORMAL,
+                previousPackageId = null,
+                contents = mapOf("data/patterns.json" to "sha256:${"a".repeat(64)}"),
+            )
         val v = VerifiedBundle(manifest, mapOf("data/patterns.json" to "x".toByteArray()))
         store.activate("raw".toByteArray(), v).isSuccess shouldBe true
         File(context.filesDir, "sync/current").exists() shouldBe true

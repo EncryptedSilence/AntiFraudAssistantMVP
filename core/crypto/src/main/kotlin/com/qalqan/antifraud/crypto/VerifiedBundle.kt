@@ -17,7 +17,10 @@ data class VerifiedBundle(
  */
 sealed interface VerificationError {
     data object BadSignature : VerificationError
+
     data class BadChecksum(val path: String) : VerificationError
+
     data class UnsupportedSchemaVersion(val version: Int) : VerificationError
+
     data class AppTooOld(val required: Int, val current: Int) : VerificationError
 }

@@ -23,52 +23,61 @@ class BundleStore(context: Context) : com.qalqan.antifraud.database.Repositories
     private val previousDir = File(root, "previous")
     private val tmpDir = File(root, "current.tmp")
 
-    fun activate(rawBundleBytes: ByteArray, verified: VerifiedBundle): Result<Unit> = runCatching {
-        root.mkdirs()
-        tmpDir.deleteRecursively()
-        tmpDir.mkdirs()
+    fun activate(
+        rawBundleBytes: ByteArray,
+        verified: VerifiedBundle,
+    ): Result<Unit> =
+        runCatching {
+            root.mkdirs()
+            tmpDir.deleteRecursively()
+            tmpDir.mkdirs()
 
-        writeAndFsync(File(tmpDir, "bundle.afpkg"), rawBundleBytes)
-        verified.dataEntries.forEach { (path, bytes) ->
-            val out = File(tmpDir, path)
-            out.parentFile?.mkdirs()
-            writeAndFsync(out, bytes)
-        }
-
-        if (currentDir.exists()) {
-            previousDir.deleteRecursively()
-            check(currentDir.renameTo(previousDir)) {
-                "failed to rotate current to previous"
+            writeAndFsync(File(tmpDir, "bundle.afpkg"), rawBundleBytes)
+            verified.dataEntries.forEach { (path, bytes) ->
+                val out = File(tmpDir, path)
+                out.parentFile?.mkdirs()
+                writeAndFsync(out, bytes)
             }
+
+            if (currentDir.exists()) {
+                previousDir.deleteRecursively()
+                check(currentDir.renameTo(previousDir)) {
+                    "failed to rotate current to previous"
+                }
+            }
+            check(tmpDir.renameTo(currentDir)) {
+                "failed to rename tmp to current"
+            }
+            Unit
         }
-        check(tmpDir.renameTo(currentDir)) {
-            "failed to rename tmp to current"
-        }
-        Unit
-    }
 
     /**
      * Spec §23 #20 — used by `Repositories.wipeAll()` when the user invokes the
      * "delete all data" action. The §23 #20 wiring is extended in Phase 7 T32.
      */
-    override fun wipe(): Result<Unit> = runCatching {
-        root.deleteRecursively()
-        Unit
-    }
-
-    fun rollback(): Result<Unit> = runCatching {
-        if (!previousDir.exists()) {
-            throw BundleStoreError.NoPreviousBundle
+    override fun wipe(): Result<Unit> =
+        runCatching {
+            root.deleteRecursively()
+            Unit
         }
-        val swapDir = File(root, "current.swap")
-        swapDir.deleteRecursively()
-        check(currentDir.renameTo(swapDir)) { "failed to move current aside for rollback" }
-        check(previousDir.renameTo(currentDir)) { "failed to promote previous to current" }
-        check(swapDir.renameTo(previousDir)) { "failed to move former current into previous" }
-        Unit
-    }
 
-    private fun writeAndFsync(file: File, bytes: ByteArray) {
+    fun rollback(): Result<Unit> =
+        runCatching {
+            if (!previousDir.exists()) {
+                throw BundleStoreError.NoPreviousBundle
+            }
+            val swapDir = File(root, "current.swap")
+            swapDir.deleteRecursively()
+            check(currentDir.renameTo(swapDir)) { "failed to move current aside for rollback" }
+            check(previousDir.renameTo(currentDir)) { "failed to promote previous to current" }
+            check(swapDir.renameTo(previousDir)) { "failed to move former current into previous" }
+            Unit
+        }
+
+    private fun writeAndFsync(
+        file: File,
+        bytes: ByteArray,
+    ) {
         FileOutputStream(file).use { fos ->
             fos.write(bytes)
             fos.fd.sync()
@@ -84,5 +93,6 @@ class BundleStore(context: Context) : com.qalqan.antifraud.database.Repositories
 /** Spec §7.4 — typed failure modes for [BundleStore]. */
 sealed class BundleStoreError(message: String) : Throwable(message) {
     data object NoPreviousBundle : BundleStoreError("no previous bundle to roll back to")
+
     data class IoError(val reason: Throwable) : BundleStoreError(reason.message ?: "io error")
 }

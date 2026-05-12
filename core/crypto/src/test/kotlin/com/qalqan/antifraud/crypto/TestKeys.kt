@@ -8,7 +8,9 @@ package com.qalqan.antifraud.crypto
 object TestKeys {
     const val TEST_PUBLIC_KEY_HEX = "dc5e8cd1d6bac038938cc7477042e26c62d889f2e61f43b1475c113dbd83a0b3"
     const val TEST_PRIVATE_KEY_HEX = "de8b7794a198f086747e009faaf1668e7742424b041ef8caa36a94582d674835"
-    const val TEST_SIGNATURE_FOR_HELLO_HEX = "8bb2a3415b7589f473b51166f872e00c888f71eee63ed60778d3801fcb21c9a1454a089305a6999f1088fb417d9e273aca6362a16bbfa1bf6d287f781d0dce0e"
+    const val TEST_SIGNATURE_FOR_HELLO_HEX =
+        "8bb2a3415b7589f473b51166f872e00c888f71eee63ed60778d3801fcb21c9a1" +
+            "454a089305a6999f1088fb417d9e273aca6362a16bbfa1bf6d287f781d0dce0e"
 
     fun hexToBytes(hex: String): ByteArray {
         require(hex.length % 2 == 0) { "hex length must be even" }

@@ -28,9 +28,10 @@ class BundleArchive(
     override fun hashCode(): Int {
         var result = manifestBytes.contentHashCode()
         result = 31 * result + signature.contentHashCode()
-        result = 31 * result + dataEntries.entries.sumOf { (k, v) ->
-            k.hashCode() xor v.contentHashCode()
-        }
+        result = 31 * result +
+            dataEntries.entries.sumOf { (k, v) ->
+                k.hashCode() xor v.contentHashCode()
+            }
         return result
     }
 

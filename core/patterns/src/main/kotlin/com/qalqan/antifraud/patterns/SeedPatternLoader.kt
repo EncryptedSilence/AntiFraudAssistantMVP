@@ -19,9 +19,10 @@ object SeedPatternLoader {
      */
     fun load(syncedPatternsDir: File? = null): List<ScenarioPattern> {
         if (syncedPatternsDir != null && syncedPatternsDir.exists()) {
-            val jsonFiles = syncedPatternsDir.listFiles { f -> f.isFile && f.name.endsWith(".json") }
-                ?.toList()
-                .orEmpty()
+            val jsonFiles =
+                syncedPatternsDir.listFiles { f -> f.isFile && f.name.endsWith(".json") }
+                    ?.toList()
+                    .orEmpty()
             if (jsonFiles.isNotEmpty()) {
                 return jsonFiles.flatMap { f -> parseJsonBytes(f.readBytes()) }
             }

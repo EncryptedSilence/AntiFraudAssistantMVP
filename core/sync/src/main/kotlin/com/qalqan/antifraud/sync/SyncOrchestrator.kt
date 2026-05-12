@@ -1,3 +1,5 @@
+@file:Suppress("ReturnCount")
+
 package com.qalqan.antifraud.sync
 
 import com.qalqan.antifraud.crypto.BundleArchiveReader
@@ -74,8 +76,12 @@ class SyncOrchestrator(
 /** Spec §7.4 — outcome of one [SyncOrchestrator.runOnce] invocation. */
 sealed class SyncOutcome {
     data object Disabled : SyncOutcome()
+
     data class Downloaded(val bytes: ByteArray) : SyncOutcome()
+
     data class Verified(val bundle: VerifiedBundle) : SyncOutcome()
+
     data class Activated(val bundle: VerifiedBundle) : SyncOutcome()
+
     data class Failed(val reason: String) : SyncOutcome()
 }

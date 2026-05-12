@@ -13,30 +13,33 @@ import java.io.File
  * pin the boundary across the full codebase.
  */
 class SyncDownloaderSourceScopeTest {
-    private val repoRoot = File(System.getProperty("user.dir")!!)
-        .parentFile!!.parentFile!! // core/sync/ → core/ → repo root
+    private val repoRoot =
+        File(System.getProperty("user.dir")!!)
+            .parentFile!!.parentFile!! // core/sync/ → core/ → repo root
 
-    private fun productionSourceRoots(): List<File> = listOf(
-        "app/src/main",
-        "core/correlation/src/main",
-        "core/crypto/src/main",
-        "core/database/src/main",
-        "core/demo/src/main",
-        "core/domain/src/main",
-        "core/patterns/src/main",
-        "core/scoring/src/main",
-        "feature/calls/src/main",
-        "feature/sms/src/main",
-        "feature/web/src/main",
-        // NOTE: core/sync/src/main is intentionally absent — it IS allowed to import HTTP types.
-    ).map { File(repoRoot, it) }.filter { it.exists() }
+    private fun productionSourceRoots(): List<File> =
+        listOf(
+            "app/src/main",
+            "core/correlation/src/main",
+            "core/crypto/src/main",
+            "core/database/src/main",
+            "core/demo/src/main",
+            "core/domain/src/main",
+            "core/patterns/src/main",
+            "core/scoring/src/main",
+            "feature/calls/src/main",
+            "feature/sms/src/main",
+            "feature/web/src/main",
+            // NOTE: core/sync/src/main is intentionally absent — it IS allowed to import HTTP types.
+        ).map { File(repoRoot, it) }.filter { it.exists() }
 
     @Test
     fun `core_sync main sources DO import HttpURLConnection`() {
         val syncMain = File(repoRoot, "core/sync/src/main")
-        val text = syncMain.walkTopDown()
-            .filter { it.isFile && it.name.endsWith(".kt") }
-            .joinToString("\n") { it.readText() }
+        val text =
+            syncMain.walkTopDown()
+                .filter { it.isFile && it.name.endsWith(".kt") }
+                .joinToString("\n") { it.readText() }
         (text.contains("HttpURLConnection")) shouldBe true
         (text.contains("java.net.URL")) shouldBe true
     }

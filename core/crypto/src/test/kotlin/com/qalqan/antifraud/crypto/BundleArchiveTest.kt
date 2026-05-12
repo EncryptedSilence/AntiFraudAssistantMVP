@@ -29,16 +29,18 @@ class BundleArchiveTest {
 
     @Test
     fun `equals compares ByteArrays by content`() {
-        val a = BundleArchive(
-            manifestBytes = "m".toByteArray(),
-            signature = ByteArray(64) { 0 },
-            dataEntries = mapOf("data/x" to "x".toByteArray()),
-        )
-        val b = BundleArchive(
-            manifestBytes = "m".toByteArray(),
-            signature = ByteArray(64) { 0 },
-            dataEntries = mapOf("data/x" to "x".toByteArray()),
-        )
+        val a =
+            BundleArchive(
+                manifestBytes = "m".toByteArray(),
+                signature = ByteArray(64) { 0 },
+                dataEntries = mapOf("data/x" to "x".toByteArray()),
+            )
+        val b =
+            BundleArchive(
+                manifestBytes = "m".toByteArray(),
+                signature = ByteArray(64) { 0 },
+                dataEntries = mapOf("data/x" to "x".toByteArray()),
+            )
         (a == b) shouldBe true
         a.hashCode() shouldBe b.hashCode()
     }

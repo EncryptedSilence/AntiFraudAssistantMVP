@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength", "LoopWithTooManyJumpStatements")
+
 package com.qalqan.antifraud.sync
 
 import io.kotest.matchers.shouldBe
@@ -8,10 +10,10 @@ class SyncDownloaderUnitTest {
     @Test
     fun `interface contract — Result type compiles`() {
         runBlocking {
-            val d: SyncDownloader = object : SyncDownloader {
-                override suspend fun fetchLatest(url: String): Result<ByteArray> =
-                    Result.success("payload".toByteArray())
-            }
+            val d: SyncDownloader =
+                object : SyncDownloader {
+                    override suspend fun fetchLatest(url: String): Result<ByteArray> = Result.success("payload".toByteArray())
+                }
             val r = d.fetchLatest("https://example.invalid/")
             r.isSuccess shouldBe true
             r.getOrThrow().toString(Charsets.UTF_8) shouldBe "payload"
@@ -41,34 +43,48 @@ class SyncDownloaderUnitTest {
     ) : AutoCloseable {
         private val socket = java.net.ServerSocket(0, 1, java.net.InetAddress.getByName("127.0.0.1"))
         val port: Int = socket.localPort
-        private val thread = Thread {
-            try {
-                socket.accept().use { client ->
-                    // Drain request headers up to blank line.
-                    val reader = client.getInputStream().bufferedReader(Charsets.US_ASCII)
-                    while (true) {
-                        val line = reader.readLine() ?: break
-                        if (line.isEmpty()) break
+        private val thread =
+            Thread {
+                try {
+                    socket.accept().use { client ->
+                        // Drain request headers up to blank line.
+                        val reader = client.getInputStream().bufferedReader(Charsets.US_ASCII)
+                        while (true) {
+                            val line = reader.readLine() ?: break
+                            if (line.isEmpty()) break
+                        }
+                        onRequest(client.getOutputStream())
                     }
-                    onRequest(client.getOutputStream())
+                } catch (_: Throwable) {
+                    // socket closed during shutdown is expected
                 }
-            } catch (_: Throwable) {
-                // socket closed during shutdown is expected
+            }.apply {
+                isDaemon = true
+                start()
             }
-        }.apply { isDaemon = true; start() }
 
         override fun close() {
-            try { socket.close() } catch (_: Throwable) { /* ignore */ }
+            try {
+                socket.close()
+            } catch (_: Throwable) {
+                // ignore
+            }
             thread.join(1_000)
         }
     }
 
-    private fun writeResponse(out: java.io.OutputStream, status: Int, statusText: String, body: ByteArray) {
-        val header = (
-            "HTTP/1.1 $status $statusText\r\n" +
-                "Content-Length: ${body.size}\r\n" +
-                "Connection: close\r\n" +
-                "\r\n"
+    private fun writeResponse(
+        out: java.io.OutputStream,
+        status: Int,
+        statusText: String,
+        body: ByteArray,
+    ) {
+        val header =
+            (
+                "HTTP/1.1 $status $statusText\r\n" +
+                    "Content-Length: ${body.size}\r\n" +
+                    "Connection: close\r\n" +
+                    "\r\n"
             ).toByteArray(Charsets.US_ASCII)
         out.write(header)
         out.write(body)

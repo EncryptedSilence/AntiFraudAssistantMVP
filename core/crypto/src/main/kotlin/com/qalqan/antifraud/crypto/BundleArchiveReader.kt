@@ -1,4 +1,4 @@
-@file:Suppress("ReturnCount")
+@file:Suppress("ReturnCount", "SwallowedException")
 
 package com.qalqan.antifraud.crypto
 
@@ -16,55 +16,57 @@ import java.util.zip.ZipInputStream
  * DoS caps and path-allowlist enforcement land in T13.
  */
 class BundleArchiveReader {
-    fun read(input: InputStream): Result<BundleArchive> = runCatching {
-        var manifestBytes: ByteArray? = null
-        var signature: ByteArray? = null
-        val dataEntries = mutableMapOf<String, ByteArray>()
-        var totalBytes = 0L
+    fun read(input: InputStream): Result<BundleArchive> =
+        runCatching {
+            var manifestBytes: ByteArray? = null
+            var signature: ByteArray? = null
+            val dataEntries = mutableMapOf<String, ByteArray>()
+            var totalBytes = 0L
 
-        try {
-            ZipInputStream(input).use { zis ->
-                var entry = zis.nextEntry
-                while (entry != null) {
-                    if (!entry.isDirectory) {
-                        val name = entry.name
-                        checkAllowedPath(name)
-                        val bytes = zis.readEntryBytesBounded(name)
-                        totalBytes += bytes.size
-                        if (totalBytes > MAX_TOTAL_BYTES) {
-                            throw BundleArchiveError.ArchiveTooLarge(totalBytes)
+            try {
+                ZipInputStream(input).use { zis ->
+                    var entry = zis.nextEntry
+                    while (entry != null) {
+                        if (!entry.isDirectory) {
+                            val name = entry.name
+                            checkAllowedPath(name)
+                            val bytes = zis.readEntryBytesBounded(name)
+                            totalBytes += bytes.size
+                            if (totalBytes > MAX_TOTAL_BYTES) {
+                                throw BundleArchiveError.ArchiveTooLarge(totalBytes)
+                            }
+                            when {
+                                name == MANIFEST_NAME -> manifestBytes = bytes
+                                name == SIGNATURE_NAME -> signature = bytes
+                                name.startsWith(DATA_PREFIX) -> dataEntries[name] = bytes
+                            }
                         }
-                        when {
-                            name == MANIFEST_NAME -> manifestBytes = bytes
-                            name == SIGNATURE_NAME -> signature = bytes
-                            name.startsWith(DATA_PREFIX) -> dataEntries[name] = bytes
-                        }
+                        zis.closeEntry()
+                        entry = zis.nextEntry
                     }
-                    zis.closeEntry()
-                    entry = zis.nextEntry
                 }
+            } catch (e: ZipException) {
+                throw BundleArchiveError.MalformedZip(e.message ?: "malformed zip")
+            } catch (e: IOException) {
+                throw BundleArchiveError.MalformedZip(e.message ?: "io error")
             }
-        } catch (e: ZipException) {
-            throw BundleArchiveError.MalformedZip(e.message ?: "malformed zip")
-        } catch (e: IOException) {
-            throw BundleArchiveError.MalformedZip(e.message ?: "io error")
-        }
 
-        val m = manifestBytes ?: throw BundleArchiveError.MissingManifest
-        val s = signature ?: throw BundleArchiveError.MissingSignature
-        if (s.size != BundleArchive.ED25519_SIGNATURE_BYTES) {
-            throw BundleArchiveError.SignatureWrongSize(s.size)
+            val m = manifestBytes ?: throw BundleArchiveError.MissingManifest
+            val s = signature ?: throw BundleArchiveError.MissingSignature
+            if (s.size != BundleArchive.ED25519_SIGNATURE_BYTES) {
+                throw BundleArchiveError.SignatureWrongSize(s.size)
+            }
+            BundleArchive(manifestBytes = m, signature = s, dataEntries = dataEntries)
         }
-        BundleArchive(manifestBytes = m, signature = s, dataEntries = dataEntries)
-    }
 
     private fun checkAllowedPath(name: String) {
         if (name.startsWith("/") || name.contains("..") || name.contains("\\")) {
             throw BundleArchiveError.ForbiddenPath(name)
         }
-        val allowed = name == MANIFEST_NAME ||
-            name == SIGNATURE_NAME ||
-            name.startsWith(DATA_PREFIX)
+        val allowed =
+            name == MANIFEST_NAME ||
+                name == SIGNATURE_NAME ||
+                name.startsWith(DATA_PREFIX)
         if (!allowed) throw BundleArchiveError.ForbiddenPath(name)
     }
 
@@ -100,15 +102,21 @@ class BundleArchiveReader {
  */
 sealed class BundleArchiveError(message: String) : Throwable(message) {
     data object MissingManifest : BundleArchiveError("manifest.json is missing")
+
     data object MissingSignature : BundleArchiveError("signature is missing")
+
     data class SignatureWrongSize(val sizeBytes: Int) :
         BundleArchiveError("signature must be 64 bytes, was $sizeBytes")
+
     data class ForbiddenPath(val name: String) :
         BundleArchiveError("entry path is outside allowlist: '$name'")
+
     data class EntryTooLarge(val name: String, val sizeBytes: Long) :
         BundleArchiveError("entry '$name' is $sizeBytes bytes, exceeds per-entry cap")
+
     data class ArchiveTooLarge(val sizeBytes: Long) :
         BundleArchiveError("archive uncompressed size is $sizeBytes bytes, exceeds total cap")
+
     data class MalformedZip(val reason: String) :
         BundleArchiveError("malformed zip: $reason")
 }

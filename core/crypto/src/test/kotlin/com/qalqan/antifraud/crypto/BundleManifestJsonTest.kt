@@ -6,7 +6,8 @@ import org.junit.Test
 import java.time.Instant
 
 class BundleManifestJsonTest {
-    private val validJson = """
+    private val validJson =
+        """
         {
           "version": "2026.05.12-001",
           "createdAt": "2026-05-12T10:00:00Z",
@@ -19,7 +20,7 @@ class BundleManifestJsonTest {
             "data/patterns.json": "sha256:${"a".repeat(64)}"
           }
         }
-    """.trimIndent().toByteArray(Charsets.UTF_8)
+        """.trimIndent().toByteArray(Charsets.UTF_8)
 
     @Test
     fun `parses a valid manifest`() {
@@ -35,7 +36,8 @@ class BundleManifestJsonTest {
 
     @Test
     fun `rejects missing required field`() {
-        val missingVersion = """
+        val missingVersion =
+            """
             {
               "createdAt": "2026-05-12T10:00:00Z",
               "source": "stable",
@@ -45,7 +47,7 @@ class BundleManifestJsonTest {
               "previousPackageId": null,
               "contents": { "data/patterns.json": "sha256:${"a".repeat(64)}" }
             }
-        """.trimIndent().toByteArray(Charsets.UTF_8)
+            """.trimIndent().toByteArray(Charsets.UTF_8)
         BundleManifestJson.parse(missingVersion).isFailure shouldBe true
     }
 
@@ -54,7 +56,8 @@ class BundleManifestJsonTest {
         // Moshi's reflective adapter coerces numeric strings ("1") to Int per its
         // documented lenient-number behavior; use a non-numeric string to assert that
         // a genuinely wrong type is rejected.
-        val badType = """
+        val badType =
+            """
             {
               "version": "v1",
               "createdAt": "2026-05-12T10:00:00Z",
@@ -65,7 +68,7 @@ class BundleManifestJsonTest {
               "previousPackageId": null,
               "contents": { "data/patterns.json": "sha256:${"a".repeat(64)}" }
             }
-        """.trimIndent().toByteArray(Charsets.UTF_8)
+            """.trimIndent().toByteArray(Charsets.UTF_8)
         val r = BundleManifestJson.parse(badType)
         r.isFailure shouldBe true
         r.exceptionOrNull().shouldBeInstanceOf<Throwable>()
