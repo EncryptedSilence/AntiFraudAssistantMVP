@@ -56,4 +56,46 @@ class BundleVerifierTest {
         r.isFailure shouldBe true
         (r.exceptionOrNull() as VerificationErrorException).error shouldBe VerificationError.BadSignature
     }
+
+    @Test
+    fun `happy path returns Success when signature and all checksums pass`() {
+        val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
+        val r = verifier.verify(signedArchive(), appVersionCode = 1)
+        r.isSuccess shouldBe true
+        r.getOrThrow().manifest.version shouldBe "2026.05.12-001"
+        r.getOrThrow().dataEntries.keys shouldBe setOf("data/patterns.json")
+    }
+
+    @Test
+    fun `tampered data file yields BadChecksum with the offending path`() {
+        val archive = signedArchive()
+        val mutated = archive.dataEntries.toMutableMap().also {
+            it["data/patterns.json"] = "DIFFERENT".toByteArray()
+        }
+        val bad = BundleArchive(
+            manifestBytes = archive.manifestBytes,
+            signature = archive.signature,
+            dataEntries = mutated,
+        )
+        val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
+        val r = verifier.verify(bad, appVersionCode = 1)
+        r.isFailure shouldBe true
+        val err = (r.exceptionOrNull() as VerificationErrorException).error
+        err shouldBe VerificationError.BadChecksum("data/patterns.json")
+    }
+
+    @Test
+    fun `missing data entry yields BadChecksum with the missing path`() {
+        val archive = signedArchive()
+        val bad = BundleArchive(
+            manifestBytes = archive.manifestBytes,
+            signature = archive.signature,
+            dataEntries = emptyMap(),
+        )
+        val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
+        val r = verifier.verify(bad, appVersionCode = 1)
+        r.isFailure shouldBe true
+        val err = (r.exceptionOrNull() as VerificationErrorException).error
+        err shouldBe VerificationError.BadChecksum("data/patterns.json")
+    }
 }

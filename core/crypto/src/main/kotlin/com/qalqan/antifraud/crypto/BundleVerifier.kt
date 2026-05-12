@@ -31,7 +31,16 @@ class BundleVerifier(
         }
         val manifest = manifestResult.getOrThrow()
 
-        // Checksum + schema + minAppVersion checks land in T17 / T18.
+        for ((path, expected) in manifest.contents) {
+            val bytes = archive.dataEntries[path]
+                ?: return Result.failure(VerificationErrorException(VerificationError.BadChecksum(path)))
+            val expectedHex = expected.removePrefix("sha256:")
+            val actualHex = Sha256.hashHex(bytes)
+            if (actualHex != expectedHex) {
+                return Result.failure(VerificationErrorException(VerificationError.BadChecksum(path)))
+            }
+        }
+
         return Result.success(VerifiedBundle(manifest, archive.dataEntries))
     }
 }
