@@ -127,4 +127,23 @@ class BundleStoreTest {
         val current = File(context.filesDir, "sync/current")
         File(current, "bundle.afpkg").readBytes().contentEquals(raw2) shouldBe true
     }
+
+    @Test
+    fun `wipe deletes the sync directory completely`() {
+        val store = BundleStore(context)
+        val (raw1, v1) = verified()
+        store.activate(raw1, v1).isSuccess shouldBe true
+
+        store.wipe().isSuccess shouldBe true
+
+        File(context.filesDir, "sync").exists() shouldBe false
+    }
+
+    @Test
+    fun `wipe is idempotent — calling on empty store succeeds`() {
+        val store = BundleStore(context)
+        store.wipe().isSuccess shouldBe true
+        store.wipe().isSuccess shouldBe true
+        File(context.filesDir, "sync").exists() shouldBe false
+    }
 }

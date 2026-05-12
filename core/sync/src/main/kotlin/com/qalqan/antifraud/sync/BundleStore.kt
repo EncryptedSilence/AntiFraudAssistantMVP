@@ -47,6 +47,15 @@ class BundleStore(context: Context) {
         Unit
     }
 
+    /**
+     * Spec §23 #20 — used by `Repositories.wipeAll()` when the user invokes the
+     * "delete all data" action. The §23 #20 wiring is extended in Phase 7 T32.
+     */
+    fun wipe(): Result<Unit> = runCatching {
+        root.deleteRecursively()
+        Unit
+    }
+
     fun rollback(): Result<Unit> = runCatching {
         if (!previousDir.exists()) {
             throw BundleStoreError.NoPreviousBundle
