@@ -41,6 +41,8 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val smsPermissionsState: com.qalqan.antifraud.sms.SmsObserverPermissions.State =
             com.qalqan.antifraud.sms.SmsObserverPermissions.State.DENIED,
         val batteryOptimizationExempt: Boolean = false,
+        val syncEnabled: Boolean = false,
+        val lastSyncAt: Instant? = null,
     )
 
     fun runDemo() {
@@ -130,6 +132,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val enabledPatterns = loadEnabledPatterns()
         val (warningLevel, warningReason) = computeWarning(enabledPatterns)
         val app = getApplication<Application>()
+        val syncSettings = com.qalqan.antifraud.sync.SyncSettings(app)
         _state.value =
             State(
                 calls = callsCount,
@@ -142,7 +145,67 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
                 callPermissionsState = com.qalqan.antifraud.calls.CallObserverPermissions(app).state(),
                 smsPermissionsState = com.qalqan.antifraud.sms.SmsObserverPermissions(app).state(),
                 batteryOptimizationExempt = com.qalqan.antifraud.calls.BatteryOptimizationPrompt.isExempt(app),
+                syncEnabled = syncSettings.enabled,
+                lastSyncAt = syncSettings.lastSyncAt,
             )
+    }
+
+    fun toggleSync() {
+        viewModelScope.launch {
+            val settings = com.qalqan.antifraud.sync.SyncSettings(getApplication())
+            settings.enabled = !settings.enabled
+            repos.actionLogger.log(
+                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                mapOf(
+                    "setting" to "sync_enabled",
+                    "state" to if (settings.enabled) "on" else "off",
+                ),
+            )
+            refresh()
+        }
+    }
+
+    fun runSyncNow() {
+        viewModelScope.launch {
+            val settings = com.qalqan.antifraud.sync.SyncSettings(getApplication())
+            val orchestrator =
+                com.qalqan.antifraud.sync.SyncOrchestrator(
+                    settings = settings,
+                    downloader = com.qalqan.antifraud.sync.HttpUrlConnectionSyncDownloader(),
+                    archiveReader = com.qalqan.antifraud.crypto.BundleArchiveReader(),
+                    verifier =
+                        com.qalqan.antifraud.crypto.BundleVerifier(
+                            com.qalqan.antifraud.crypto.Ed25519SignatureVerifier(),
+                            com.qalqan.antifraud.crypto.EmbeddedPublicKey.load(getApplication()),
+                        ),
+                    store = com.qalqan.antifraud.sync.BundleStore(getApplication()),
+                    actionLogger = repos.actionLogger,
+                )
+            // TODO Stage 8 / 9: replace with a real channel URL once provisioned.
+            orchestrator.runOnce("https://example.invalid/")
+            settings.lastSyncAt = Instant.now()
+            refresh()
+        }
+    }
+
+    fun importLocalBundle(uri: android.net.Uri) {
+        viewModelScope.launch {
+            val resolver = getApplication<Application>().contentResolver
+            val stream = resolver.openInputStream(uri) ?: return@launch
+            val importer =
+                com.qalqan.antifraud.sync.LocalBundleImporter(
+                    archiveReader = com.qalqan.antifraud.crypto.BundleArchiveReader(),
+                    verifier =
+                        com.qalqan.antifraud.crypto.BundleVerifier(
+                            com.qalqan.antifraud.crypto.Ed25519SignatureVerifier(),
+                            com.qalqan.antifraud.crypto.EmbeddedPublicKey.load(getApplication()),
+                        ),
+                    store = com.qalqan.antifraud.sync.BundleStore(getApplication()),
+                    actionLogger = repos.actionLogger,
+                )
+            stream.use { importer.import(it) }
+            refresh()
+        }
     }
 
     private suspend fun loadEnabledPatterns(): List<ScenarioPattern> {

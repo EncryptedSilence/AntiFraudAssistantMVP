@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,6 +24,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
     val state by viewModel.state.collectAsState()
     var sheetOpen by remember { mutableStateOf(false) }
+    val importLauncher =
+        androidx.activity.compose.rememberLauncherForActivityResult(
+            contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocument(),
+        ) { uri: android.net.Uri? ->
+            if (uri != null) viewModel.importLocalBundle(uri)
+        }
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -45,20 +52,23 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             state.latestWarningLevel?.let { level ->
                 Text("Latest warning: ${level.jsonValue.uppercase()} — ${state.latestWarningReason ?: ""}")
             }
-            Button(onClick = { viewModel.runDemo() }) { Text("Run demo (Fast attack)") }
-            Button(onClick = { viewModel.wipe() }) { Text("Wipe all data") }
-            Button(onClick = { viewModel.recordSuspiciousCallStub() }) {
-                Text("I had a suspicious call")
-            }
-            Button(onClick = { viewModel.recordSuspiciousSmsStub() }) {
-                Text("I had a suspicious SMS")
-            }
-            Button(onClick = {
-                viewModel.recordSuspiciousSiteStub()
-                sheetOpen = true
-            }) {
-                Text("I had a suspicious site")
-            }
+            ManualEntryButtons(
+                onDemo = { viewModel.runDemo() },
+                onWipe = { viewModel.wipe() },
+                onSuspiciousCall = { viewModel.recordSuspiciousCallStub() },
+                onSuspiciousSms = { viewModel.recordSuspiciousSmsStub() },
+                onSuspiciousSite = {
+                    viewModel.recordSuspiciousSiteStub()
+                    sheetOpen = true
+                },
+            )
+            SyncControlsRow(
+                syncEnabled = state.syncEnabled,
+                lastSyncAt = state.lastSyncAt,
+                onToggle = { viewModel.toggleSync() },
+                onSyncNow = { viewModel.runSyncNow() },
+                onImportLocal = { importLauncher.launch(arrayOf("application/zip", "*/*")) },
+            )
             if (sheetOpen) {
                 WebEntrySheet(
                     onDismiss = { sheetOpen = false },
@@ -69,6 +79,44 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             }
         }
     }
+}
+
+@Composable
+private fun ManualEntryButtons(
+    onDemo: () -> Unit,
+    onWipe: () -> Unit,
+    onSuspiciousCall: () -> Unit,
+    onSuspiciousSms: () -> Unit,
+    onSuspiciousSite: () -> Unit,
+) {
+    Button(onClick = onDemo) { Text("Run demo (Fast attack)") }
+    Button(onClick = onWipe) { Text("Wipe all data") }
+    Button(onClick = onSuspiciousCall) { Text("I had a suspicious call") }
+    Button(onClick = onSuspiciousSms) { Text("I had a suspicious SMS") }
+    Button(onClick = onSuspiciousSite) { Text("I had a suspicious site") }
+}
+
+@Composable
+private fun SyncControlsRow(
+    syncEnabled: Boolean,
+    lastSyncAt: java.time.Instant?,
+    onToggle: () -> Unit,
+    onSyncNow: () -> Unit,
+    onImportLocal: () -> Unit,
+) {
+    androidx.compose.foundation.layout.Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("Sync: ${if (syncEnabled) "enabled" else "disabled"}")
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.width(16.dp))
+        androidx.compose.material3.Switch(
+            checked = syncEnabled,
+            onCheckedChange = { onToggle() },
+        )
+    }
+    Text("Last synced: ${lastSyncAt ?: "—"}")
+    Button(onClick = onSyncNow, enabled = syncEnabled) { Text("Sync now") }
+    Button(onClick = onImportLocal) { Text("Import local bundle…") }
 }
 
 private fun callPermissionBanner(state: com.qalqan.antifraud.calls.CallObserverPermissions.State): String =
