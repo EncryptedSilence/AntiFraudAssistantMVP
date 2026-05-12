@@ -16,4 +16,9 @@ object TestKeys {
             ((Character.digit(hex[i * 2], 16) shl 4) or Character.digit(hex[i * 2 + 1], 16)).toByte()
         }
     }
+
+    fun signWithTestKey(message: ByteArray): ByteArray {
+        val signer = com.google.crypto.tink.subtle.Ed25519Sign(hexToBytes(TEST_PRIVATE_KEY_HEX))
+        return signer.sign(message)
+    }
 }
