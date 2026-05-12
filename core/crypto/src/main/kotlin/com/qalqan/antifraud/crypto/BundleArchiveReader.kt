@@ -20,6 +20,7 @@ class BundleArchiveReader {
         var manifestBytes: ByteArray? = null
         var signature: ByteArray? = null
         val dataEntries = mutableMapOf<String, ByteArray>()
+        var totalBytes = 0L
 
         try {
             ZipInputStream(input).use { zis ->
@@ -27,12 +28,16 @@ class BundleArchiveReader {
                 while (entry != null) {
                     if (!entry.isDirectory) {
                         val name = entry.name
-                        val bytes = zis.readEntryBytes()
+                        checkAllowedPath(name)
+                        val bytes = zis.readEntryBytesBounded(name)
+                        totalBytes += bytes.size
+                        if (totalBytes > MAX_TOTAL_BYTES) {
+                            throw BundleArchiveError.ArchiveTooLarge(totalBytes)
+                        }
                         when {
                             name == MANIFEST_NAME -> manifestBytes = bytes
                             name == SIGNATURE_NAME -> signature = bytes
                             name.startsWith(DATA_PREFIX) -> dataEntries[name] = bytes
-                            else -> throw BundleArchiveError.ForbiddenPath(name)
                         }
                     }
                     zis.closeEntry()
@@ -53,12 +58,27 @@ class BundleArchiveReader {
         BundleArchive(manifestBytes = m, signature = s, dataEntries = dataEntries)
     }
 
-    private fun ZipInputStream.readEntryBytes(): ByteArray {
+    private fun checkAllowedPath(name: String) {
+        if (name.startsWith("/") || name.contains("..") || name.contains("\\")) {
+            throw BundleArchiveError.ForbiddenPath(name)
+        }
+        val allowed = name == MANIFEST_NAME ||
+            name == SIGNATURE_NAME ||
+            name.startsWith(DATA_PREFIX)
+        if (!allowed) throw BundleArchiveError.ForbiddenPath(name)
+    }
+
+    private fun ZipInputStream.readEntryBytesBounded(name: String): ByteArray {
         val out = ByteArrayOutputStream()
         val buf = ByteArray(BUFFER_SIZE)
+        var total = 0L
         while (true) {
             val n = read(buf)
             if (n == -1) break
+            total += n
+            if (total > MAX_ENTRY_BYTES) {
+                throw BundleArchiveError.EntryTooLarge(name, total)
+            }
             out.write(buf, 0, n)
         }
         return out.toByteArray()
@@ -68,6 +88,8 @@ class BundleArchiveReader {
         const val MANIFEST_NAME = "manifest.json"
         const val SIGNATURE_NAME = "signature"
         const val DATA_PREFIX = "data/"
+        const val MAX_ENTRY_BYTES = 256L * 1024L
+        const val MAX_TOTAL_BYTES = 1024L * 1024L
         private const val BUFFER_SIZE = 8192
     }
 }
