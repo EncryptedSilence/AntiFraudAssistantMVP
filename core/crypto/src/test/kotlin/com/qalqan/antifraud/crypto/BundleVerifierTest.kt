@@ -98,4 +98,36 @@ class BundleVerifierTest {
         val err = (r.exceptionOrNull() as VerificationErrorException).error
         err shouldBe VerificationError.BadChecksum("data/patterns.json")
     }
+
+    @Test
+    fun `unsupported schemaVersion is rejected with UnsupportedSchemaVersion`() {
+        val m = manifest(schemaVersion = 2)
+        val canonical = BundleManifestJson.toCanonicalJson(m)
+        val archive = BundleArchive(
+            manifestBytes = canonical,
+            signature = TestKeys.signWithTestKey(canonical),
+            dataEntries = mapOf("data/patterns.json" to patternsBytes),
+        )
+        val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
+        val r = verifier.verify(archive, appVersionCode = 1)
+        r.isFailure shouldBe true
+        val err = (r.exceptionOrNull() as VerificationErrorException).error
+        err shouldBe VerificationError.UnsupportedSchemaVersion(2)
+    }
+
+    @Test
+    fun `minAppVersion greater than appVersionCode yields AppTooOld`() {
+        val m = manifest(minAppVersion = 999)
+        val canonical = BundleManifestJson.toCanonicalJson(m)
+        val archive = BundleArchive(
+            manifestBytes = canonical,
+            signature = TestKeys.signWithTestKey(canonical),
+            dataEntries = mapOf("data/patterns.json" to patternsBytes),
+        )
+        val verifier = BundleVerifier(Ed25519SignatureVerifier(), publicKey)
+        val r = verifier.verify(archive, appVersionCode = 1)
+        r.isFailure shouldBe true
+        val err = (r.exceptionOrNull() as VerificationErrorException).error
+        err shouldBe VerificationError.AppTooOld(required = 999, current = 1)
+    }
 }

@@ -41,6 +41,24 @@ class BundleVerifier(
             }
         }
 
+        if (!SupportedSchemaVersion.isSupported(manifest.schemaVersion)) {
+            return Result.failure(
+                VerificationErrorException(
+                    VerificationError.UnsupportedSchemaVersion(manifest.schemaVersion),
+                ),
+            )
+        }
+        if (manifest.minAppVersion > appVersionCode) {
+            return Result.failure(
+                VerificationErrorException(
+                    VerificationError.AppTooOld(
+                        required = manifest.minAppVersion,
+                        current = appVersionCode,
+                    ),
+                ),
+            )
+        }
+
         return Result.success(VerifiedBundle(manifest, archive.dataEntries))
     }
 }
