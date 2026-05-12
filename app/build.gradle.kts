@@ -7,7 +7,14 @@ android {
     namespace = "com.qalqan.antifraud"
     buildFeatures.compose = true
     testOptions {
-        unitTests.isIncludeAndroidResources = true
+        unitTests {
+            isIncludeAndroidResources = true
+            all { test ->
+                if (test.name.contains("Release")) {
+                    test.exclude("**/ExportSheetGatingTest.class")
+                }
+            }
+        }
     }
 }
 
@@ -46,6 +53,5 @@ dependencies {
 
     testImplementation(platform(libs.compose.bom))
     testImplementation("androidx.compose.ui:ui-test-junit4")
-    testImplementation("androidx.compose.ui:ui-test-manifest")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
