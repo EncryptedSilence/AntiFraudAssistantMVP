@@ -32,6 +32,7 @@ class WebManualCaptureTest {
             seenChecker = DomainSeenChecker(repos.web),
             builder = WebEventBuilder(digest),
             repo = repos.web,
+            actionLog = WebObserverActionLog(repos.actionLogger),
         )
 
     @Test
@@ -117,6 +118,26 @@ class WebManualCaptureTest {
             ('?' in saved.domainDisplayLocal) shouldBe false
             ('#' in saved.domainDisplayLocal) shouldBe false
             saved.domainDisplayLocal.contains("://") shouldBe false
+        }
+    }
+
+    @Test
+    fun `submit logs manual_site_submitted exactly once and NOT lookalike when no match`() {
+        runBlocking {
+            newCapture().submit("kaspi.kz", Instant.now())
+            val entries = repos.actionLog.recent(5)
+            entries.count { it.details["setting"] == "manual_site_submitted" } shouldBe 1
+            entries.none { it.details["setting"] == "lookalike_match" } shouldBe true
+        }
+    }
+
+    @Test
+    fun `submit logs both manual_site_submitted and lookalike_match for a typo`() {
+        runBlocking {
+            newCapture().submit("halykbamk.kz", Instant.now())
+            val entries = repos.actionLog.recent(5)
+            entries.count { it.details["setting"] == "manual_site_submitted" } shouldBe 1
+            entries.count { it.details["setting"] == "lookalike_match" } shouldBe 1
         }
     }
 }

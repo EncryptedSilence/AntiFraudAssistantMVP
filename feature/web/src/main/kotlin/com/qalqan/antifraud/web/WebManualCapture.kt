@@ -26,6 +26,7 @@ class WebManualCapture(
     private val seenChecker: DomainSeenChecker,
     private val builder: WebEventBuilder,
     private val repo: WebEventRepository,
+    private val actionLog: WebObserverActionLog,
 ) {
     suspend fun submit(
         rawInput: String,
@@ -50,6 +51,8 @@ class WebManualCapture(
         val status = DomainStatusResolver.resolve(isNew = isNew, lookalike = lookalike)
         val final = builder.build(canonical, visitedAt, isNew, status)
         repo.save(final)
+        actionLog.manualSubmitted()
+        lookalike?.let { actionLog.lookalikeTriggered(it.distance) }
         return WebCaptureOutcome.Saved(
             id = final.id,
             canonical = canonical,
