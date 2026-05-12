@@ -28,6 +28,63 @@ object BundleManifestJson {
         dto.toDomain()
     }
 
+    /**
+     * Spec §7.4 — produces the EXACT byte representation that the Ed25519 signature is
+     * computed over. Determinism: sorted keys at every level, no whitespace, ISO-8601
+     * UTC for `createdAt`. Two semantically equal manifests produce byte-identical output.
+     */
+    fun toCanonicalJson(manifest: BundleManifest): ByteArray {
+        val sortedContents = manifest.contents.toSortedMap()
+        val rootMap = linkedMapOf<String, Any?>(
+            "contents" to sortedContents,
+            "createdAt" to manifest.createdAt.toString(),
+            "minAppVersion" to manifest.minAppVersion,
+            "previousPackageId" to manifest.previousPackageId,
+            "priority" to manifest.priority.name,
+            "schemaVersion" to manifest.schemaVersion,
+            "source" to manifest.source,
+            "version" to manifest.version,
+        )
+        val sb = StringBuilder()
+        writeJson(sb, rootMap)
+        return sb.toString().toByteArray(Charsets.UTF_8)
+    }
+
+    @Suppress("CyclomaticComplexMethod")
+    private fun writeJson(sb: StringBuilder, value: Any?) {
+        when (value) {
+            null -> sb.append("null")
+            is Boolean -> sb.append(value.toString())
+            is Number -> sb.append(value.toString())
+            is String -> {
+                sb.append('"')
+                value.forEach { c ->
+                    when (c) {
+                        '\\' -> sb.append("\\\\")
+                        '"' -> sb.append("\\\"")
+                        '\n' -> sb.append("\\n")
+                        '\r' -> sb.append("\\r")
+                        '\t' -> sb.append("\\t")
+                        else -> sb.append(c)
+                    }
+                }
+                sb.append('"')
+            }
+            is Map<*, *> -> {
+                sb.append('{')
+                val keys = value.keys.map { it.toString() }.sorted()
+                keys.forEachIndexed { idx, k ->
+                    if (idx > 0) sb.append(',')
+                    writeJson(sb, k)
+                    sb.append(':')
+                    writeJson(sb, value[k])
+                }
+                sb.append('}')
+            }
+            else -> error("unsupported value type: ${value::class}")
+        }
+    }
+
     @JsonClass(generateAdapter = false)
     internal data class BundleManifestDto(
         val version: String?,
