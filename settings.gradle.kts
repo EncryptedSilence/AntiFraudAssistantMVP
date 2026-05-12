@@ -25,6 +25,7 @@ include(
     ":core:database",
     ":core:demo",
     ":core:patterns",
+    ":core:crypto",
     ":feature:calls",
     ":feature:sms",
     ":feature:web",
