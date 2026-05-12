@@ -49,4 +49,42 @@ class BundleStoreTest {
 
         File(context.filesDir, "sync/previous").exists() shouldBe false
     }
+
+    @Test
+    fun `activate twice rotates first bundle into previous slot`() {
+        val store = BundleStore(context)
+        val (raw1, v1) = verified(version = "v1", patterns = "patterns-v1".toByteArray())
+        val (raw2, v2) = verified(version = "v2", patterns = "patterns-v2".toByteArray())
+
+        store.activate(raw1, v1).isSuccess shouldBe true
+        store.activate(raw2, v2).isSuccess shouldBe true
+
+        val current = File(context.filesDir, "sync/current")
+        val previous = File(context.filesDir, "sync/previous")
+
+        File(current, "bundle.afpkg").readBytes().contentEquals(raw2) shouldBe true
+        File(current, "data/patterns.json").readBytes().contentEquals(
+            v2.dataEntries.getValue("data/patterns.json"),
+        ) shouldBe true
+
+        File(previous, "bundle.afpkg").readBytes().contentEquals(raw1) shouldBe true
+        File(previous, "data/patterns.json").readBytes().contentEquals(
+            v1.dataEntries.getValue("data/patterns.json"),
+        ) shouldBe true
+    }
+
+    @Test
+    fun `third activate overwrites the older previous (N = 1 retention)`() {
+        val store = BundleStore(context)
+        val (raw1, v1) = verified(version = "v1", patterns = "patterns-v1".toByteArray())
+        val (raw2, v2) = verified(version = "v2", patterns = "patterns-v2".toByteArray())
+        val (raw3, v3) = verified(version = "v3", patterns = "patterns-v3".toByteArray())
+
+        store.activate(raw1, v1).isSuccess shouldBe true
+        store.activate(raw2, v2).isSuccess shouldBe true
+        store.activate(raw3, v3).isSuccess shouldBe true
+
+        val previous = File(context.filesDir, "sync/previous")
+        File(previous, "bundle.afpkg").readBytes().contentEquals(raw2) shouldBe true
+    }
 }
