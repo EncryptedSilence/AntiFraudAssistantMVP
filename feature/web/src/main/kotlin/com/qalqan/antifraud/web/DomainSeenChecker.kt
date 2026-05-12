@@ -15,6 +15,5 @@ import java.time.Instant
  * can land in Stage 8 without touching this caller.
  */
 class DomainSeenChecker(private val web: WebEventRepository) {
-    suspend fun isNew(hashHex: String): Boolean =
-        web.listSince(Instant.EPOCH).none { it.domainHash.value == hashHex }
+    suspend fun isNew(hashHex: String): Boolean = web.listSince(Instant.EPOCH).none { it.domainHash.value == hashHex }
 }

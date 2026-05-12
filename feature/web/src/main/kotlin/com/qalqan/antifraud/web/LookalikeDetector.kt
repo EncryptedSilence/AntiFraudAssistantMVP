@@ -1,3 +1,5 @@
+@file:Suppress("ReturnCount")
+
 package com.qalqan.antifraud.web
 
 /**
@@ -34,7 +36,10 @@ class LookalikeDetector(private val seeds: Set<String>) {
     /**
      * Standard iterative two-row Levenshtein. Pure Kotlin; no Android deps.
      */
-    private fun levenshtein(a: String, b: String): Int {
+    private fun levenshtein(
+        a: String,
+        b: String,
+    ): Int {
         if (a == b) return 0
         if (a.isEmpty()) return b.length
         if (b.isEmpty()) return a.length
@@ -46,11 +51,12 @@ class LookalikeDetector(private val seeds: Set<String>) {
             curr[0] = i
             for (j in 1..b.length) {
                 val cost = if (a[i - 1] == b[j - 1]) 0 else 1
-                curr[j] = minOf(
-                    curr[j - 1] + 1,
-                    prev[j] + 1,
-                    prev[j - 1] + cost,
-                )
+                curr[j] =
+                    minOf(
+                        curr[j - 1] + 1,
+                        prev[j] + 1,
+                        prev[j - 1] + cost,
+                    )
             }
             System.arraycopy(curr, 0, prev, 0, curr.size)
         }

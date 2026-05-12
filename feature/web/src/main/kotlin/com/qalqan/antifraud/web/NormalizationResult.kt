@@ -12,6 +12,7 @@ sealed interface NormalizationResult {
 
     sealed interface Error : NormalizationResult {
         data object Empty : Error
+
         data class Invalid(val input: String) : Error
     }
 }

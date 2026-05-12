@@ -23,7 +23,9 @@ class WebEntryDigestTest {
     private val box = InMemoryCryptoBox()
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `digest produces the same hash that ManualEntry WebSubmitter writes`() {

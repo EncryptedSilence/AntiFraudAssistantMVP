@@ -1,3 +1,5 @@
+@file:Suppress("ReturnCount")
+
 package com.qalqan.antifraud.web
 
 /**
@@ -35,8 +37,9 @@ class DomainNormalizer {
         if (s.isEmpty() || s.any(Char::isWhitespace)) return NormalizationResult.Error.Invalid(rawInput)
         if ('.' !in s) return NormalizationResult.Error.Invalid(rawInput)
 
-        val canonical = resolveEtldPlusOne(s)
-            ?: return NormalizationResult.Error.Invalid(rawInput)
+        val canonical =
+            resolveEtldPlusOne(s)
+                ?: return NormalizationResult.Error.Invalid(rawInput)
         return NormalizationResult.Success(canonical)
     }
 

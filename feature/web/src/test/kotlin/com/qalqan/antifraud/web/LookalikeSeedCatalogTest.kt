@@ -17,29 +17,31 @@ class LookalikeSeedCatalogTest {
 
     @Test
     fun `catalog contains the canonical KZ banks Stage 5 must recognize`() {
-        LookalikeSeedCatalog.seeds shouldContainAll setOf(
-            "halykbank.kz",
-            "kaspi.kz",
-            "jusan.kz",
-            "forte.kz",
-            "bcc.kz",
-            "bereke.kz",
-            "freedombank.kz",
-            "eubank.kz",
-            "sberbank.kz",
-        )
+        LookalikeSeedCatalog.seeds shouldContainAll
+            setOf(
+                "halykbank.kz",
+                "kaspi.kz",
+                "jusan.kz",
+                "forte.kz",
+                "bcc.kz",
+                "bereke.kz",
+                "freedombank.kz",
+                "eubank.kz",
+                "sberbank.kz",
+            )
     }
 
     @Test
     fun `catalog contains KZ authority + telecom anchors`() {
-        LookalikeSeedCatalog.seeds shouldContainAll setOf(
-            "egov.kz",
-            "kgd.gov.kz",
-            "beeline.kz",
-            "kcell.kz",
-            "tele2.kz",
-            "activ.kz",
-        )
+        LookalikeSeedCatalog.seeds shouldContainAll
+            setOf(
+                "egov.kz",
+                "kgd.gov.kz",
+                "beeline.kz",
+                "kcell.kz",
+                "tele2.kz",
+                "activ.kz",
+            )
     }
 
     @Test

@@ -20,7 +20,9 @@ class DomainSeenCheckerTest {
     private val checker = DomainSeenChecker(repos.web)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `unseen domain hash returns isNew = true`() {

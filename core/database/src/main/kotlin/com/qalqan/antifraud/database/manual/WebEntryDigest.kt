@@ -14,8 +14,7 @@ import java.security.SecureRandom
  * Mirrors [CallEntryDigest] and [SmsEntryDigest] for calls and SMS respectively.
  */
 class WebEntryDigest private constructor(private val salt: ByteArray) {
-    fun hash(canonicalEtldPlusOne: String): String =
-        Hashing.saltedSha256(canonicalEtldPlusOne.trim().lowercase(), salt)
+    fun hash(canonicalEtldPlusOne: String): String = Hashing.saltedSha256(canonicalEtldPlusOne.trim().lowercase(), salt)
 
     companion object {
         private const val SALT_FILE = "antifraud.hash.salt"
