@@ -17,7 +17,7 @@ import java.io.FileOutputStream
  * and publicly distributed, so the on-device copy is treated as a public artifact. The
  * §23 #19 encrypted-storage criterion does not apply to public, signed payloads.
  */
-class BundleStore(context: Context) {
+class BundleStore(context: Context) : com.qalqan.antifraud.database.Repositories.BundleStoreLike {
     private val root = File(context.filesDir, "sync")
     private val currentDir = File(root, "current")
     private val previousDir = File(root, "previous")
@@ -51,7 +51,7 @@ class BundleStore(context: Context) {
      * Spec §23 #20 — used by `Repositories.wipeAll()` when the user invokes the
      * "delete all data" action. The §23 #20 wiring is extended in Phase 7 T32.
      */
-    fun wipe(): Result<Unit> = runCatching {
+    override fun wipe(): Result<Unit> = runCatching {
         root.deleteRecursively()
         Unit
     }

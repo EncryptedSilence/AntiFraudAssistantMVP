@@ -35,9 +35,10 @@ class Repositories private constructor(
 
     /**
      * Spec §23 #20 — full local wipe. Deletes every row across all entity tables, then resets the
-     * SQLCipher database key (production) so the next open generates a new one.
+     * SQLCipher database key (production) so the next open generates a new one. When a
+     * [bundleStore] is supplied, also clears the synced bundle store (Stage 6).
      */
-    suspend fun wipeAll() {
+    suspend fun wipeAll(bundleStore: BundleStoreLike? = null) {
         db.callEventDao().deleteAll()
         db.smsEventDao().deleteAll()
         db.webEventDao().deleteAll()
@@ -47,10 +48,20 @@ class Repositories private constructor(
         db.contactProfileDao().deleteAll()
         db.applicationActionLogDao().deleteAll()
         db.patternStateDao().deleteAll()
+        bundleStore?.wipe()
         onWipe()
     }
 
     fun close() = db.close()
+
+    /**
+     * Spec §23 #20 — adapter interface for the synced-bundle store so [Repositories] can clear
+     * it without compile-time coupling to `:core:sync`. The single implementation lives
+     * in `:core:sync` as `com.qalqan.antifraud.sync.BundleStore`.
+     */
+    interface BundleStoreLike {
+        fun wipe(): Result<Unit>
+    }
 
     companion object {
         fun build(context: Context): Repositories {
