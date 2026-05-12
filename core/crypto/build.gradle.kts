@@ -8,4 +8,6 @@ android {
 
 dependencies {
     implementation(libs.tink.android)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
 }
