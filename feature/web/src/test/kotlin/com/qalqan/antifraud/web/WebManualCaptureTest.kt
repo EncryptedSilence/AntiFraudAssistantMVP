@@ -96,4 +96,27 @@ class WebManualCaptureTest {
             repos.web.listSince(Instant.EPOCH).isEmpty() shouldBe true
         }
     }
+
+    @Test
+    fun `§23 #5 — manual entry produces a stored WebEvent with the expected fields`() {
+        runBlocking {
+            val visitedAt = Instant.parse("2026-05-12T10:00:00Z")
+            val r = newCapture().submit("https://kaspi.kz/profile?x=1", visitedAt)
+            r.shouldBeInstanceOf<WebCaptureOutcome.Saved>()
+
+            val saved = repos.web.find(r.id)!!
+            saved.domainDisplayLocal shouldBe "kaspi.kz"
+            saved.visitedAt shouldBe visitedAt
+            saved.isNewDomain shouldBe true
+            saved.domainStatus shouldBe DomainStatus.NEW
+            saved.webRiskScore shouldBe 0
+            saved.linkedSessionId shouldBe null
+            saved.linkedCampaignId shouldBe null
+            // §16.4 / §23 #24 boundary — re-check at the DB read path.
+            ('/' in saved.domainDisplayLocal) shouldBe false
+            ('?' in saved.domainDisplayLocal) shouldBe false
+            ('#' in saved.domainDisplayLocal) shouldBe false
+            saved.domainDisplayLocal.contains("://") shouldBe false
+        }
+    }
 }
