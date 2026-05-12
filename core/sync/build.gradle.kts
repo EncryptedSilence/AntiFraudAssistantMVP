@@ -14,4 +14,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+
+    testImplementation(libs.tink.android)
+    testImplementation(libs.coroutines.test)
 }
