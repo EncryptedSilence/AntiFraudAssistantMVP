@@ -10,4 +10,7 @@ internal data class PatternStateEntity(
     @ColumnInfo(name = "enabled") val enabled: Boolean,
     // ISO-8601 Instant
     @ColumnInfo(name = "updated_at") val updatedAt: String,
+    // Trigger tracking — added in schema v3 (Stage 7 T22). NULL until first trigger.
+    @ColumnInfo(name = "last_triggered_at") val lastTriggeredAt: String? = null,
+    @ColumnInfo(name = "times_triggered") val timesTriggered: Int = 0,
 )

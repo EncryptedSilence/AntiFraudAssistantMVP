@@ -16,6 +16,9 @@ internal interface PatternStateDao {
     @Query("SELECT * FROM pattern_state")
     suspend fun listAll(): List<PatternStateEntity>
 
+    @Query("SELECT * FROM pattern_state WHERE last_triggered_at IS NOT NULL")
+    suspend fun listTriggered(): List<PatternStateEntity>
+
     @Query("DELETE FROM pattern_state")
     suspend fun deleteAll()
 }

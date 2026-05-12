@@ -40,7 +40,7 @@ import com.qalqan.antifraud.database.web.WebEventEntity
         ApplicationActionLogEntity::class,
         PatternStateEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 @TypeConverters(JsonListConverters::class)
@@ -78,7 +78,7 @@ abstract class AntifraudDatabase : RoomDatabase() {
         ): AntifraudDatabase =
             Room.databaseBuilder(context, AntifraudDatabase::class.java, NAME)
                 .openHelperFactory(sqlCipherFactory(keyProvider))
-                .addMigrations(PatternStateMigration.MIGRATION_1_2)
+                .addMigrations(PatternStateMigration.MIGRATION_1_2, PatternStateMigration.MIGRATION_2_3)
                 .fallbackToDestructiveMigrationOnDowngrade(true)
                 .build()
 
@@ -89,7 +89,7 @@ abstract class AntifraudDatabase : RoomDatabase() {
         @VisibleForTesting
         fun inMemory(context: Context): AntifraudDatabase =
             Room.inMemoryDatabaseBuilder(context, AntifraudDatabase::class.java)
-                .addMigrations(PatternStateMigration.MIGRATION_1_2)
+                .addMigrations(PatternStateMigration.MIGRATION_1_2, PatternStateMigration.MIGRATION_2_3)
                 .allowMainThreadQueries()
                 .build()
     }

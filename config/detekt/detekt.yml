@@ -11,7 +11,7 @@ style:
   MagicNumber:
     active: true
     excludes: ['**/core/scoring/**', '**/core/correlation/**', '**/test/**', '**/androidTest/**', '**/testFixtures/**']
-    ignoreNumbers: ['-1', '0', '1', '2', '4', '100']
+    ignoreNumbers: ['-1', '0', '1', '2', '3', '4', '100']
     ignoreEnums: true
     ignoreRanges: true
 

@@ -18,4 +18,12 @@ internal object PatternStateMigration {
                 )
             }
         }
+
+    val MIGRATION_2_3: Migration =
+        object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE pattern_state ADD COLUMN last_triggered_at TEXT")
+                db.execSQL("ALTER TABLE pattern_state ADD COLUMN times_triggered INTEGER NOT NULL DEFAULT 0")
+            }
+        }
 }
