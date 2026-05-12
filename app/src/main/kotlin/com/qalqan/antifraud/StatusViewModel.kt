@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.qalqan.antifraud
 
 import android.app.Application
@@ -79,9 +81,52 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun recordSuspiciousSiteStub() {
+        viewModelScope.launch {
+            // Spec §17.1.2 — fallback button that opens the manual-site sheet.
+            // Stage 5 ships only the wiring marker here; the actual capture happens via
+            // submitSiteFromSheet(rawInput, visitedAt) below, called by WebEntrySheet.
+            repos.actionLogger.log(
+                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                mapOf("setting" to "manual_site_button", "state" to "tapped"),
+            )
+        }
+    }
+
+    fun submitSiteFromSheet(
+        rawInput: String,
+        onResult: (com.qalqan.antifraud.web.WebCaptureOutcome) -> Unit,
+    ) {
+        viewModelScope.launch {
+            val detector =
+                com.qalqan.antifraud.web.LookalikeDetector(
+                    com.qalqan.antifraud.web.LookalikeSeedCatalog.seeds,
+                )
+            val builder =
+                com.qalqan.antifraud.web.WebEventBuilder(
+                    com.qalqan.antifraud.database.manual.WebEntryDigest.create(
+                        getApplication(),
+                    ),
+                )
+            val capture =
+                com.qalqan.antifraud.web.WebManualCapture(
+                    normalizer = com.qalqan.antifraud.web.DomainNormalizer(),
+                    detector = detector,
+                    seenChecker = com.qalqan.antifraud.web.DomainSeenChecker(repos.web),
+                    builder = builder,
+                    repo = repos.web,
+                    actionLog = com.qalqan.antifraud.web.WebObserverActionLog(repos.actionLogger),
+                )
+            val outcome = capture.submit(rawInput, java.time.Instant.now())
+            onResult(outcome)
+            refresh()
+        }
+    }
+
     private suspend fun refresh() {
         val callsCount = repos.calls.listSince(Instant.EPOCH).size
         val smsCount = repos.sms.listSince(Instant.EPOCH).size
+        val webCount = repos.web.listSince(Instant.EPOCH).size
         val enabledPatterns = loadEnabledPatterns()
         val (warningLevel, warningReason) = computeWarning(enabledPatterns)
         val app = getApplication<Application>()
@@ -89,7 +134,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
             State(
                 calls = callsCount,
                 sms = smsCount,
-                web = 0,
+                web = webCount,
                 campaigns = 0,
                 patternsEnabledCount = enabledPatterns.size,
                 latestWarningLevel = warningLevel,
