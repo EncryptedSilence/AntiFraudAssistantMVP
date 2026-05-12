@@ -18,6 +18,8 @@ dependencies {
     implementation(project(":feature:calls"))
     implementation(project(":feature:sms"))
     implementation(project(":feature:web"))
+    implementation(project(":core:crypto"))
+    implementation(project(":core:sync"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
