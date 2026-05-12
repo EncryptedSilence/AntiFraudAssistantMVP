@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
     implementation(project(":core:crypto"))
     implementation(project(":core:patterns"))
     implementation(project(":core:database"))
