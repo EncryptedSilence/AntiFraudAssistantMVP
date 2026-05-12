@@ -6,6 +6,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.export.ExportProfileEntity
+import com.qalqan.antifraud.database.log.ApplicationActionLogger
 import java.time.Instant
 import java.util.UUID
 
@@ -28,7 +29,9 @@ class ExportOrchestrator(
     private val contentResolver: ContentResolver,
     private val clock: () -> Instant,
     private val idGenerator: () -> String = { UUID.randomUUID().toString() },
+    private val actionLogger: ApplicationActionLogger? = null,
 ) {
+    private val actionLog = ExportActionLog(actionLogger)
     private val pendingPreviews = mutableMapOf<String, Preview>()
 
     suspend fun preview(
@@ -41,6 +44,7 @@ class ExportOrchestrator(
         val token = idGenerator()
         val preview = Preview(token = token, request = request, bytes = bytes)
         pendingPreviews[token] = preview
+        actionLog.previewShown(request)
         return Result.success(preview)
     }
 
@@ -56,7 +60,10 @@ class ExportOrchestrator(
         if (preview.request != request) return Result.failure(ExportWriteError.PreviewNotShown)
 
         val writeResult = ExportWriter.writeTo(uri, preview.bytes, contentResolver)
-        if (writeResult.isFailure) return writeResult
+        if (writeResult.isFailure) {
+            actionLog.failed("write")
+            return writeResult
+        }
 
         repositories.exportProfiles.insert(
             ExportProfileEntity(
@@ -71,6 +78,7 @@ class ExportOrchestrator(
             ),
         )
         pendingPreviews.remove(previewToken)
+        actionLog.completed(request)
         return Result.success(Unit)
     }
 
