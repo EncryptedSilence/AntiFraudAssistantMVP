@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":core:patterns"))
     implementation(project(":feature:calls"))
     implementation(project(":feature:sms"))
+    implementation(project(":feature:web"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
