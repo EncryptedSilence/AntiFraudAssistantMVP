@@ -3,6 +3,7 @@ package com.qalqan.antifraud.database
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
+import com.qalqan.antifraud.database.export.ExportProfileRepository
 import com.qalqan.antifraud.database.log.ApplicationActionLogRepository
 import com.qalqan.antifraud.database.log.ApplicationActionLogger
 import com.qalqan.antifraud.database.patterns.PatternStateRepository
@@ -32,6 +33,7 @@ class Repositories private constructor(
     val actionLog: ApplicationActionLogRepository = ApplicationActionLogRepository(db.applicationActionLogDao())
     val actionLogger: ApplicationActionLogger = ApplicationActionLogger(db.applicationActionLogDao())
     val patternState: PatternStateRepository = PatternStateRepository(db.patternStateDao())
+    val exportProfiles: ExportProfileRepository = ExportProfileRepository(db.exportProfileDao())
 
     /**
      * Spec §23 #20 — full local wipe. Deletes every row across all entity tables, then resets the
