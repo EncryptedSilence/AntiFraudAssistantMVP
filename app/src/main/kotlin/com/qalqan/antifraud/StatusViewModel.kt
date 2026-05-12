@@ -3,13 +3,19 @@
 package com.qalqan.antifraud
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.manual.ManualEntry
 import com.qalqan.antifraud.demo.BuiltInScenario
 import com.qalqan.antifraud.demo.DemoImporter
+import com.qalqan.antifraud.domain.AppAction
 import com.qalqan.antifraud.domain.RiskEvent
+import com.qalqan.antifraud.export.ExportGatherer
+import com.qalqan.antifraud.export.ExportOrchestrator
+import com.qalqan.antifraud.export.ExportRequest
+import com.qalqan.antifraud.export.RedactionPipeline
 import com.qalqan.antifraud.patterns.BatchPatternMatcher
 import com.qalqan.antifraud.patterns.PatternExplainer
 import com.qalqan.antifraud.patterns.ScenarioPattern
@@ -65,7 +71,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
             // Stage 3 ships only the wiring: a no-op insert that proves the button reaches
             // the manual path. The full sheet UI lands in Stage 8.
             repos.actionLogger.log(
-                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                AppAction.SETTING_CHANGED,
                 mapOf("setting" to "manual_call_button", "state" to "tapped"),
             )
         }
@@ -77,7 +83,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
             // Stage 4 ships only the wiring: a no-op insert that proves the button reaches
             // the manual path. The full sheet UI lands in Stage 8.
             repos.actionLogger.log(
-                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                AppAction.SETTING_CHANGED,
                 mapOf("setting" to "manual_sms_button", "state" to "tapped"),
             )
         }
@@ -89,7 +95,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
             // Stage 5 ships only the wiring marker here; the actual capture happens via
             // submitSiteFromSheet(rawInput, visitedAt) below, called by WebEntrySheet.
             repos.actionLogger.log(
-                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                AppAction.SETTING_CHANGED,
                 mapOf("setting" to "manual_site_button", "state" to "tapped"),
             )
         }
@@ -155,7 +161,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
             val settings = com.qalqan.antifraud.sync.SyncSettings(getApplication())
             settings.enabled = !settings.enabled
             repos.actionLogger.log(
-                com.qalqan.antifraud.domain.AppAction.SETTING_CHANGED,
+                AppAction.SETTING_CHANGED,
                 mapOf(
                     "setting" to "sync_enabled",
                     "state" to if (settings.enabled) "on" else "off",
@@ -236,6 +242,43 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         val callEvents = repos.calls.listSince(Instant.EPOCH).map { RiskEvent.Call(it) }
         val smsEvents = repos.sms.listSince(Instant.EPOCH).map { RiskEvent.Sms(it) }
         return callEvents + smsEvents
+    }
+
+    fun recordExportButtonTap() {
+        viewModelScope.launch {
+            repos.actionLogger.log(
+                AppAction.SETTING_CHANGED,
+                mapOf("setting" to "export_button", "state" to "tapped"),
+            )
+        }
+    }
+
+    suspend fun generateExportPreview(request: ExportRequest): Result<ExportOrchestrator.Preview> {
+        val orchestrator =
+            ExportOrchestrator(
+                gatherer = ExportGatherer.default(getApplication()),
+                pipeline = RedactionPipeline.default(),
+                contentResolver = getApplication<Application>().contentResolver,
+                clock = { Instant.now() },
+                actionLogger = repos.actionLogger,
+            )
+        return orchestrator.preview(request, repos)
+    }
+
+    suspend fun writeExport(
+        request: ExportRequest,
+        uri: Uri,
+        previewToken: String,
+    ): Result<Unit> {
+        val orchestrator =
+            ExportOrchestrator(
+                gatherer = ExportGatherer.default(getApplication()),
+                pipeline = RedactionPipeline.default(),
+                contentResolver = getApplication<Application>().contentResolver,
+                clock = { Instant.now() },
+                actionLogger = repos.actionLogger,
+            )
+        return orchestrator.write(request, repos, uri, previewToken)
     }
 
     override fun onCleared() {

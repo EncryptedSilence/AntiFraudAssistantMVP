@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
     val state by viewModel.state.collectAsState()
     var sheetOpen by remember { mutableStateOf(false) }
+    var exportSheetOpen by remember { mutableStateOf(false) }
     val importLauncher =
         androidx.activity.compose.rememberLauncherForActivityResult(
             contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocument(),
@@ -36,22 +37,7 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start,
         ) {
-            Text("AntiFraud Assistant — Stage 2 status board", style = MaterialTheme.typography.titleLarge)
-            Text("Calls captured: ${state.calls}")
-            Text(callPermissionBanner(state.callPermissionsState), style = MaterialTheme.typography.bodyLarge)
-            Text(smsPermissionBanner(state.smsPermissionsState), style = MaterialTheme.typography.bodyLarge)
-            if (!state.batteryOptimizationExempt) {
-                Text(
-                    "Battery optimization is on; call observation may be killed in the background.",
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-            Text("SMS captured: ${state.sms}")
-            Text("Web visits captured: ${state.web}")
-            Text("Patterns enabled: ${state.patternsEnabledCount}")
-            state.latestWarningLevel?.let { level ->
-                Text("Latest warning: ${level.jsonValue.uppercase()} — ${state.latestWarningReason ?: ""}")
-            }
+            StatusInfoBlock(state)
             ManualEntryButtons(
                 onDemo = { viewModel.runDemo() },
                 onWipe = { viewModel.wipe() },
@@ -69,15 +55,51 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
                 onSyncNow = { viewModel.runSyncNow() },
                 onImportLocal = { importLauncher.launch(arrayOf("application/zip", "*/*")) },
             )
+            Button(onClick = {
+                viewModel.recordExportButtonTap()
+                exportSheetOpen = true
+            }) {
+                Text("Export…")
+            }
             if (sheetOpen) {
                 WebEntrySheet(
                     onDismiss = { sheetOpen = false },
-                    onSubmit = { input, callback ->
-                        viewModel.submitSiteFromSheet(input, callback)
-                    },
+                    onSubmit = { input, callback -> viewModel.submitSiteFromSheet(input, callback) },
                 )
             }
+            ExportSheetHost(exportSheetOpen, onDismiss = { exportSheetOpen = false }, viewModel)
         }
+    }
+}
+
+@Composable
+private fun StatusInfoBlock(state: StatusViewModel.State) {
+    Text("AntiFraud Assistant — Stage 2 status board", style = MaterialTheme.typography.titleLarge)
+    Text("Calls captured: ${state.calls}")
+    Text(callPermissionBanner(state.callPermissionsState), style = MaterialTheme.typography.bodyLarge)
+    Text(smsPermissionBanner(state.smsPermissionsState), style = MaterialTheme.typography.bodyLarge)
+    if (!state.batteryOptimizationExempt) {
+        Text(
+            "Battery optimization is on; call observation may be killed in the background.",
+            style = MaterialTheme.typography.bodySmall,
+        )
+    }
+    Text("SMS captured: ${state.sms}")
+    Text("Web visits captured: ${state.web}")
+    Text("Patterns enabled: ${state.patternsEnabledCount}")
+    state.latestWarningLevel?.let { level ->
+        Text("Latest warning: ${level.jsonValue.uppercase()} — ${state.latestWarningReason ?: ""}")
+    }
+}
+
+@Composable
+private fun ExportSheetHost(
+    open: Boolean,
+    onDismiss: () -> Unit,
+    viewModel: StatusViewModel,
+) {
+    if (open) {
+        ExportSheet(onDismiss = onDismiss, viewModel = viewModel)
     }
 }
 
