@@ -45,4 +45,22 @@ class DomainNormalizerTest {
         val r = n.normalize("kz")
         r.shouldBeInstanceOf<NormalizationResult.Error.Invalid>()
     }
+
+    @Test
+    fun `normalize is idempotent on its own output`() {
+        val r1 = (n.normalize("https://www.HalykBank.kz/login") as NormalizationResult.Success).canonical
+        val r2 = (n.normalize(r1) as NormalizationResult.Success).canonical
+        r1 shouldBe r2
+    }
+
+    @Test
+    fun `empty input yields Empty error`() {
+        n.normalize("") shouldBe NormalizationResult.Error.Empty
+        n.normalize("   ") shouldBe NormalizationResult.Error.Empty
+    }
+
+    @Test
+    fun `single-label input yields Invalid error`() {
+        n.normalize("localhost") shouldBe NormalizationResult.Error.Invalid("localhost")
+    }
 }
