@@ -23,20 +23,23 @@ class Acceptance20ExportProfileWipedTest {
     private val repos = Repositories.inMemory(context)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
     @Test
     fun `§23 #20 — wipeAll drops every export_profile row alongside the rest of the DB`() {
-        val entity = ExportProfileEntity(
-            exportId = "e-1",
-            createdAt = 1700000000000L,
-            exportType = "risk_campaigns",
-            includedCategories = "risk_campaigns",
-            anonymizationLevel = "numbers_last_4",
-            format = "JSON",
-            userConfirmed = true,
-            redactionPreviewShown = true,
-        )
+        val entity =
+            ExportProfileEntity(
+                exportId = "e-1",
+                createdAt = 1700000000000L,
+                exportType = "risk_campaigns",
+                includedCategories = "risk_campaigns",
+                anonymizationLevel = "numbers_last_4",
+                format = "JSON",
+                userConfirmed = true,
+                redactionPreviewShown = true,
+            )
         runBlocking {
             repos.exportProfiles.insert(entity)
             repos.exportProfiles.count() shouldBe 1

@@ -1,3 +1,5 @@
+@file:Suppress("NestedBlockDepth")
+
 package com.qalqan.antifraud.acceptance
 
 import android.content.Context
@@ -34,17 +36,20 @@ class Acceptance15PreviewMatchesFileTest {
     private val repos = Repositories.inMemory(context)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
-    private fun newOrchestrator(): ExportOrchestrator = ExportOrchestrator(
-        gatherer = ExportGatherer.default(context),
-        pipeline = RedactionPipeline.default(),
-        contentResolver = context.contentResolver,
-        clock = { java.time.Instant.parse("2026-05-12T10:00:00Z") },
-    )
+    private fun newOrchestrator(): ExportOrchestrator =
+        ExportOrchestrator(
+            gatherer = ExportGatherer.default(context),
+            pipeline = RedactionPipeline.default(),
+            contentResolver = context.contentResolver,
+            clock = { java.time.Instant.parse("2026-05-12T10:00:00Z") },
+        )
 
-    private fun sha256(bytes: ByteArray): String =
-        MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+    @Suppress("MaxLineLength")
+    private fun sha256(bytes: ByteArray): String = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
     @Test
     fun `§23 #15 — preview bytes match file bytes for every category, format, anonymization combination`() {

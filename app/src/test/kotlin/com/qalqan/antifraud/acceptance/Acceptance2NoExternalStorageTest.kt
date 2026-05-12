@@ -16,21 +16,22 @@ import java.io.File
 class Acceptance2NoExternalStorageTest {
     private val repoRoot = File(System.getProperty("user.dir")!!).parentFile!!
 
-    private fun manifestFiles(): List<File> = listOf(
-        "app/src/main/AndroidManifest.xml",
-        "core/correlation/src/main/AndroidManifest.xml",
-        "core/crypto/src/main/AndroidManifest.xml",
-        "core/database/src/main/AndroidManifest.xml",
-        "core/demo/src/main/AndroidManifest.xml",
-        "core/domain/src/main/AndroidManifest.xml",
-        "core/patterns/src/main/AndroidManifest.xml",
-        "core/scoring/src/main/AndroidManifest.xml",
-        "core/sync/src/main/AndroidManifest.xml",
-        "feature/calls/src/main/AndroidManifest.xml",
-        "feature/sms/src/main/AndroidManifest.xml",
-        "feature/web/src/main/AndroidManifest.xml",
-        "feature/export/src/main/AndroidManifest.xml",
-    ).map { File(repoRoot, it) }.filter { it.exists() }
+    private fun manifestFiles(): List<File> =
+        listOf(
+            "app/src/main/AndroidManifest.xml",
+            "core/correlation/src/main/AndroidManifest.xml",
+            "core/crypto/src/main/AndroidManifest.xml",
+            "core/database/src/main/AndroidManifest.xml",
+            "core/demo/src/main/AndroidManifest.xml",
+            "core/domain/src/main/AndroidManifest.xml",
+            "core/patterns/src/main/AndroidManifest.xml",
+            "core/scoring/src/main/AndroidManifest.xml",
+            "core/sync/src/main/AndroidManifest.xml",
+            "feature/calls/src/main/AndroidManifest.xml",
+            "feature/sms/src/main/AndroidManifest.xml",
+            "feature/web/src/main/AndroidManifest.xml",
+            "feature/export/src/main/AndroidManifest.xml",
+        ).map { File(repoRoot, it) }.filter { it.exists() }
 
     @Test
     fun `no production manifest declares WRITE_EXTERNAL_STORAGE`() {

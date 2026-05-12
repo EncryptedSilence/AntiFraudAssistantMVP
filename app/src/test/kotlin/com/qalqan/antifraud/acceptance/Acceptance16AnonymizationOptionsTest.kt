@@ -35,21 +35,27 @@ class Acceptance16AnonymizationOptionsTest {
     private val repos = Repositories.inMemory(context)
 
     @After
-    fun tearDown() { repos.close() }
+    fun tearDown() {
+        repos.close()
+    }
 
-    private val sample: List<ExportRecord> = listOf(
-        ExportRecord.SuspiciousNumber(
-            phoneFull = "+77001234567",
-            phoneLast4 = "4567",
-            isShortCode = false,
-            displayName = "Bank Alfa",
-            trustStatus = "suspicious",
-            firstSeenAt = Instant.parse("2026-05-01T14:37:22Z"),
-            riskCounter = 3,
-        ),
-    )
+    private val sample: List<ExportRecord> =
+        listOf(
+            ExportRecord.SuspiciousNumber(
+                phoneFull = "+77001234567",
+                phoneLast4 = "4567",
+                isShortCode = false,
+                displayName = "Bank Alfa",
+                trustStatus = "suspicious",
+                firstSeenAt = Instant.parse("2026-05-01T14:37:22Z"),
+                riskCounter = 3,
+            ),
+        )
 
-    private fun renderText(opts: Set<AnonymizationOption>, format: ExportFormat): String {
+    private fun renderText(
+        opts: Set<AnonymizationOption>,
+        format: ExportFormat,
+    ): String {
         val request = ExportRequest(setOf(ExportCategory.SUSPICIOUS_NUMBERS), format, opts)
         val redacted = RedactionPipeline.default().apply(sample, opts)
         val bytes = ExportFormatters.forFormat(format).format(redacted, request)
