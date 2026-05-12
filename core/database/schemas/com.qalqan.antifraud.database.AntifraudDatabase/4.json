@@ -1,0 +1,828 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "32460ecedb02c8845e8f61fbb552bdfb",
+    "entities": [
+      {
+        "tableName": "contact_profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `phoneNormalizedEnc` BLOB NOT NULL, `phoneHash` TEXT NOT NULL, `phoneLast4` TEXT, `isShortCode` INTEGER NOT NULL, `displayNameLocal` TEXT, `isInContacts` INTEGER NOT NULL, `trustStatus` TEXT NOT NULL, `firstSeenAtMs` INTEGER NOT NULL, `lastSeenAtMs` INTEGER NOT NULL, `riskCounter` INTEGER NOT NULL, `userComment` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneNormalizedEnc",
+            "columnName": "phoneNormalizedEnc",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneHash",
+            "columnName": "phoneHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneLast4",
+            "columnName": "phoneLast4",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isShortCode",
+            "columnName": "isShortCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayNameLocal",
+            "columnName": "displayNameLocal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isInContacts",
+            "columnName": "isInContacts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trustStatus",
+            "columnName": "trustStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstSeenAtMs",
+            "columnName": "firstSeenAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSeenAtMs",
+            "columnName": "lastSeenAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riskCounter",
+            "columnName": "riskCounter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userComment",
+            "columnName": "userComment",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "call_event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `phoneHash` TEXT NOT NULL, `simSlot` INTEGER, `direction` TEXT NOT NULL, `startedAtMs` INTEGER NOT NULL, `endedAtMs` INTEGER, `durationSec` INTEGER NOT NULL, `isKnownContact` INTEGER NOT NULL, `isRepeated` INTEGER NOT NULL, `callRiskScore` INTEGER NOT NULL, `linkedSessionId` TEXT, `linkedCampaignId` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneHash",
+            "columnName": "phoneHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "simSlot",
+            "columnName": "simSlot",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "direction",
+            "columnName": "direction",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtMs",
+            "columnName": "startedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAtMs",
+            "columnName": "endedAtMs",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "durationSec",
+            "columnName": "durationSec",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isKnownContact",
+            "columnName": "isKnownContact",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRepeated",
+            "columnName": "isRepeated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "callRiskScore",
+            "columnName": "callRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedSessionId",
+            "columnName": "linkedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "linkedCampaignId",
+            "columnName": "linkedCampaignId",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_call_event_startedAtMs",
+            "unique": false,
+            "columnNames": [
+              "startedAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_call_event_startedAtMs` ON `${TABLE_NAME}` (`startedAtMs`)"
+          },
+          {
+            "name": "index_call_event_phoneHash",
+            "unique": false,
+            "columnNames": [
+              "phoneHash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_call_event_phoneHash` ON `${TABLE_NAME}` (`phoneHash`)"
+          }
+        ]
+      },
+      {
+        "tableName": "sms_event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `senderHash` TEXT NOT NULL, `senderDisplayNameLocal` TEXT, `simSlot` INTEGER, `receivedAtMs` INTEGER NOT NULL, `smsCategory` TEXT NOT NULL, `containsCode` INTEGER NOT NULL, `containsLink` INTEGER NOT NULL, `containsFinancialKeyword` INTEGER NOT NULL, `containsSecurityKeyword` INTEGER NOT NULL, `bodyExcerptEnc` BLOB NOT NULL, `smsRiskScore` INTEGER NOT NULL, `linkedSessionId` TEXT, `linkedCampaignId` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "senderHash",
+            "columnName": "senderHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "senderDisplayNameLocal",
+            "columnName": "senderDisplayNameLocal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "simSlot",
+            "columnName": "simSlot",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "receivedAtMs",
+            "columnName": "receivedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsCategory",
+            "columnName": "smsCategory",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsCode",
+            "columnName": "containsCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsLink",
+            "columnName": "containsLink",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsFinancialKeyword",
+            "columnName": "containsFinancialKeyword",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "containsSecurityKeyword",
+            "columnName": "containsSecurityKeyword",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bodyExcerptEnc",
+            "columnName": "bodyExcerptEnc",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsRiskScore",
+            "columnName": "smsRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedSessionId",
+            "columnName": "linkedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "linkedCampaignId",
+            "columnName": "linkedCampaignId",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sms_event_receivedAtMs",
+            "unique": false,
+            "columnNames": [
+              "receivedAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sms_event_receivedAtMs` ON `${TABLE_NAME}` (`receivedAtMs`)"
+          },
+          {
+            "name": "index_sms_event_senderHash",
+            "unique": false,
+            "columnNames": [
+              "senderHash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sms_event_senderHash` ON `${TABLE_NAME}` (`senderHash`)"
+          }
+        ]
+      },
+      {
+        "tableName": "web_event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `domainHash` TEXT NOT NULL, `domainDisplayLocal` TEXT NOT NULL, `visitedAtMs` INTEGER NOT NULL, `isNewDomain` INTEGER NOT NULL, `domainStatus` TEXT NOT NULL, `webRiskScore` INTEGER NOT NULL, `linkedSessionId` TEXT, `linkedCampaignId` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domainHash",
+            "columnName": "domainHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domainDisplayLocal",
+            "columnName": "domainDisplayLocal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visitedAtMs",
+            "columnName": "visitedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNewDomain",
+            "columnName": "isNewDomain",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domainStatus",
+            "columnName": "domainStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "webRiskScore",
+            "columnName": "webRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedSessionId",
+            "columnName": "linkedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "linkedCampaignId",
+            "columnName": "linkedCampaignId",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_web_event_visitedAtMs",
+            "unique": false,
+            "columnNames": [
+              "visitedAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_web_event_visitedAtMs` ON `${TABLE_NAME}` (`visitedAtMs`)"
+          }
+        ]
+      },
+      {
+        "tableName": "user_answer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `relatedEventId` TEXT NOT NULL, `relatedSessionId` TEXT, `relatedCampaignId` TEXT, `questionCode` TEXT NOT NULL, `answerCode` TEXT NOT NULL, `userNoteLocalEnc` BLOB, `answerRiskScore` INTEGER NOT NULL, `createdAtMs` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedEventId",
+            "columnName": "relatedEventId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedSessionId",
+            "columnName": "relatedSessionId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "relatedCampaignId",
+            "columnName": "relatedCampaignId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "questionCode",
+            "columnName": "questionCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "answerCode",
+            "columnName": "answerCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userNoteLocalEnc",
+            "columnName": "userNoteLocalEnc",
+            "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "answerRiskScore",
+            "columnName": "answerRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMs",
+            "columnName": "createdAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_user_answer_createdAtMs",
+            "unique": false,
+            "columnNames": [
+              "createdAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_answer_createdAtMs` ON `${TABLE_NAME}` (`createdAtMs`)"
+          },
+          {
+            "name": "index_user_answer_relatedEventId",
+            "unique": false,
+            "columnNames": [
+              "relatedEventId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_answer_relatedEventId` ON `${TABLE_NAME}` (`relatedEventId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "risk_session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `startedAtMs` INTEGER NOT NULL, `endedAtMs` INTEGER, `status` TEXT NOT NULL, `relatedCallEventIds` TEXT NOT NULL, `relatedSmsEventIds` TEXT NOT NULL, `relatedWebEventIds` TEXT NOT NULL, `relatedUserAnswerIds` TEXT NOT NULL, `sessionRiskScore` INTEGER NOT NULL, `sessionRiskBand` TEXT NOT NULL, `explanation` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtMs",
+            "columnName": "startedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAtMs",
+            "columnName": "endedAtMs",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedCallEventIds",
+            "columnName": "relatedCallEventIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedSmsEventIds",
+            "columnName": "relatedSmsEventIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedWebEventIds",
+            "columnName": "relatedWebEventIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedUserAnswerIds",
+            "columnName": "relatedUserAnswerIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionRiskScore",
+            "columnName": "sessionRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionRiskBand",
+            "columnName": "sessionRiskBand",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "explanation",
+            "columnName": "explanation",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_risk_session_startedAtMs",
+            "unique": false,
+            "columnNames": [
+              "startedAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_risk_session_startedAtMs` ON `${TABLE_NAME}` (`startedAtMs`)"
+          },
+          {
+            "name": "index_risk_session_status",
+            "unique": false,
+            "columnNames": [
+              "status"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_risk_session_status` ON `${TABLE_NAME}` (`status`)"
+          }
+        ]
+      },
+      {
+        "tableName": "risk_campaign",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`campaignId` TEXT NOT NULL, `startedAtMs` INTEGER NOT NULL, `lastEventAtMs` INTEGER NOT NULL, `status` TEXT NOT NULL, `scenarioType` TEXT, `relatedPhoneHashes` TEXT NOT NULL, `relatedSmsSenderHashes` TEXT NOT NULL, `relatedDomainHashes` TEXT NOT NULL, `relatedEventIds` TEXT NOT NULL, `relatedSessionIds` TEXT NOT NULL, `userAnswerIds` TEXT NOT NULL, `triggeredPatternIds` TEXT NOT NULL, `campaignRiskScore` INTEGER NOT NULL, `campaignRiskBand` TEXT NOT NULL, `explanation` TEXT, PRIMARY KEY(`campaignId`))",
+        "fields": [
+          {
+            "fieldPath": "campaignId",
+            "columnName": "campaignId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtMs",
+            "columnName": "startedAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastEventAtMs",
+            "columnName": "lastEventAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scenarioType",
+            "columnName": "scenarioType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "relatedPhoneHashes",
+            "columnName": "relatedPhoneHashes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedSmsSenderHashes",
+            "columnName": "relatedSmsSenderHashes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedDomainHashes",
+            "columnName": "relatedDomainHashes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedEventIds",
+            "columnName": "relatedEventIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relatedSessionIds",
+            "columnName": "relatedSessionIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userAnswerIds",
+            "columnName": "userAnswerIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "triggeredPatternIds",
+            "columnName": "triggeredPatternIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "campaignRiskScore",
+            "columnName": "campaignRiskScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "campaignRiskBand",
+            "columnName": "campaignRiskBand",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "explanation",
+            "columnName": "explanation",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "campaignId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_risk_campaign_lastEventAtMs",
+            "unique": false,
+            "columnNames": [
+              "lastEventAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_risk_campaign_lastEventAtMs` ON `${TABLE_NAME}` (`lastEventAtMs`)"
+          },
+          {
+            "name": "index_risk_campaign_status",
+            "unique": false,
+            "columnNames": [
+              "status"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_risk_campaign_status` ON `${TABLE_NAME}` (`status`)"
+          }
+        ]
+      },
+      {
+        "tableName": "application_action_log",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `createdAtMs` INTEGER NOT NULL, `action` TEXT NOT NULL, `detailsJson` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMs",
+            "columnName": "createdAtMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "action",
+            "columnName": "action",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "detailsJson",
+            "columnName": "detailsJson",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_application_action_log_createdAtMs",
+            "unique": false,
+            "columnNames": [
+              "createdAtMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_application_action_log_createdAtMs` ON `${TABLE_NAME}` (`createdAtMs`)"
+          }
+        ]
+      },
+      {
+        "tableName": "pattern_state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pattern_id` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `updated_at` TEXT NOT NULL, `last_triggered_at` TEXT, `times_triggered` INTEGER NOT NULL, PRIMARY KEY(`pattern_id`))",
+        "fields": [
+          {
+            "fieldPath": "patternId",
+            "columnName": "pattern_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enabled",
+            "columnName": "enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastTriggeredAt",
+            "columnName": "last_triggered_at",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timesTriggered",
+            "columnName": "times_triggered",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pattern_id"
+          ]
+        }
+      },
+      {
+        "tableName": "export_profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`exportId` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `exportType` TEXT NOT NULL, `includedCategories` TEXT NOT NULL, `anonymizationLevel` TEXT NOT NULL, `format` TEXT NOT NULL, `userConfirmed` INTEGER NOT NULL, `redactionPreviewShown` INTEGER NOT NULL, PRIMARY KEY(`exportId`))",
+        "fields": [
+          {
+            "fieldPath": "exportId",
+            "columnName": "exportId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exportType",
+            "columnName": "exportType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "includedCategories",
+            "columnName": "includedCategories",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anonymizationLevel",
+            "columnName": "anonymizationLevel",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "format",
+            "columnName": "format",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userConfirmed",
+            "columnName": "userConfirmed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "redactionPreviewShown",
+            "columnName": "redactionPreviewShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "exportId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '32460ecedb02c8845e8f61fbb552bdfb')"
+    ]
+  }
+}

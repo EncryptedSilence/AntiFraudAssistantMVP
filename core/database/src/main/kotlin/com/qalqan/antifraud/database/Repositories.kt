@@ -48,6 +48,7 @@ class Repositories private constructor(
         db.contactProfileDao().deleteAll()
         db.applicationActionLogDao().deleteAll()
         db.patternStateDao().deleteAll()
+        db.exportProfileDao().deleteAll()
         bundleStore?.wipe()
         onWipe()
     }

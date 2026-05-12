@@ -6,6 +6,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.qalqan.antifraud.database.answers.UserAnswerDao
 import com.qalqan.antifraud.database.answers.UserAnswerEntity
 import com.qalqan.antifraud.database.calls.CallEventDao
@@ -16,6 +18,8 @@ import com.qalqan.antifraud.database.contacts.ContactProfileDao
 import com.qalqan.antifraud.database.contacts.ContactProfileEntity
 import com.qalqan.antifraud.database.converters.JsonListConverters
 import com.qalqan.antifraud.database.crypto.DatabaseKeyProvider
+import com.qalqan.antifraud.database.export.ExportProfileDao
+import com.qalqan.antifraud.database.export.ExportProfileEntity
 import com.qalqan.antifraud.database.log.ApplicationActionLogDao
 import com.qalqan.antifraud.database.log.ApplicationActionLogEntity
 import com.qalqan.antifraud.database.patterns.PatternStateDao
@@ -39,8 +43,9 @@ import com.qalqan.antifraud.database.web.WebEventEntity
         RiskCampaignEntity::class,
         ApplicationActionLogEntity::class,
         PatternStateEntity::class,
+        ExportProfileEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 @TypeConverters(JsonListConverters::class)
@@ -63,8 +68,32 @@ abstract class AntifraudDatabase : RoomDatabase() {
 
     internal abstract fun patternStateDao(): PatternStateDao
 
+    internal abstract fun exportProfileDao(): ExportProfileDao
+
     companion object {
         private const val NAME = "antifraud.db"
+
+        @JvmField
+        val MIGRATION_3_4: Migration =
+            object : Migration(3, 4) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    // Spec §16.10 — additive: new table `export_profile` only.
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS export_profile (
+                            exportId TEXT NOT NULL PRIMARY KEY,
+                            createdAt INTEGER NOT NULL,
+                            exportType TEXT NOT NULL,
+                            includedCategories TEXT NOT NULL,
+                            anonymizationLevel TEXT NOT NULL,
+                            format TEXT NOT NULL,
+                            userConfirmed INTEGER NOT NULL,
+                            redactionPreviewShown INTEGER NOT NULL
+                        )
+                        """.trimIndent(),
+                    )
+                }
+            }
 
         /**
          * Production factory — opens an encrypted SQLCipher database with a Keystore-wrapped key.
@@ -78,7 +107,7 @@ abstract class AntifraudDatabase : RoomDatabase() {
         ): AntifraudDatabase =
             Room.databaseBuilder(context, AntifraudDatabase::class.java, NAME)
                 .openHelperFactory(sqlCipherFactory(keyProvider))
-                .addMigrations(PatternStateMigration.MIGRATION_1_2, PatternStateMigration.MIGRATION_2_3)
+                .addMigrations(PatternStateMigration.MIGRATION_1_2, PatternStateMigration.MIGRATION_2_3, MIGRATION_3_4)
                 .fallbackToDestructiveMigrationOnDowngrade(true)
                 .build()
 
@@ -89,7 +118,7 @@ abstract class AntifraudDatabase : RoomDatabase() {
         @VisibleForTesting
         fun inMemory(context: Context): AntifraudDatabase =
             Room.inMemoryDatabaseBuilder(context, AntifraudDatabase::class.java)
-                .addMigrations(PatternStateMigration.MIGRATION_1_2, PatternStateMigration.MIGRATION_2_3)
+                .addMigrations(PatternStateMigration.MIGRATION_1_2, PatternStateMigration.MIGRATION_2_3, MIGRATION_3_4)
                 .allowMainThreadQueries()
                 .build()
     }
