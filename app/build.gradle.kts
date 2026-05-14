@@ -12,6 +12,7 @@ android {
             all { test ->
                 if (test.name.contains("Release")) {
                     test.exclude("**/ExportSheetGatingTest.class")
+                    test.exclude("**/AntifraudAppSmokeTest.class")
                 }
             }
         }

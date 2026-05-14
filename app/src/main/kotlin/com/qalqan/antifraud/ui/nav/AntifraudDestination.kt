@@ -10,7 +10,10 @@ import com.qalqan.antifraud.R
  * the bottom nav. Onboarding routes from MainActivity based on
  * UserSettings.onboardingCompleted (Phase 9). Settings is reached via the Privacy screen.
  */
-sealed class AntifraudDestination(val route: String, @StringRes val labelResId: Int) {
+sealed class AntifraudDestination(
+    val route: String,
+    @StringRes val labelResId: Int,
+) {
     object Home : AntifraudDestination("home", R.string.nav_home)
 
     object Campaigns : AntifraudDestination("campaigns", R.string.nav_campaigns)
