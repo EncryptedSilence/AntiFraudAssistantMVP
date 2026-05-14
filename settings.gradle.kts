@@ -32,4 +32,5 @@ include(
     ":feature:web",
     ":feature:export",
     ":feature:alerts",
+    ":feature:settings",
 )

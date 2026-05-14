@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -59,7 +60,7 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
                 viewModel.recordExportButtonTap()
                 exportSheetOpen = true
             }) {
-                Text("Export…")
+                Text(stringResource(R.string.home_export_button))
             }
             if (sheetOpen) {
                 WebEntrySheet(
@@ -74,21 +75,21 @@ fun StatusScreen(viewModel: StatusViewModel = viewModel()) {
 
 @Composable
 private fun StatusInfoBlock(state: StatusViewModel.State) {
-    Text("AntiFraud Assistant — Stage 2 status board", style = MaterialTheme.typography.titleLarge)
-    Text("Calls captured: ${state.calls}")
+    Text(stringResource(R.string.home_title), style = MaterialTheme.typography.titleLarge)
+    Text(stringResource(R.string.home_calls_count, state.calls))
     Text(callPermissionBanner(state.callPermissionsState), style = MaterialTheme.typography.bodyLarge)
     Text(smsPermissionBanner(state.smsPermissionsState), style = MaterialTheme.typography.bodyLarge)
     if (!state.batteryOptimizationExempt) {
         Text(
-            "Battery optimization is on; call observation may be killed in the background.",
+            stringResource(R.string.home_battery_optimization_warning),
             style = MaterialTheme.typography.bodySmall,
         )
     }
-    Text("SMS captured: ${state.sms}")
-    Text("Web visits captured: ${state.web}")
-    Text("Patterns enabled: ${state.patternsEnabledCount}")
+    Text(stringResource(R.string.home_sms_count, state.sms))
+    Text(stringResource(R.string.home_web_count, state.web))
+    Text(stringResource(R.string.home_patterns_enabled_count, state.patternsEnabledCount))
     state.latestWarningLevel?.let { level ->
-        Text("Latest warning: ${level.jsonValue.uppercase()} — ${state.latestWarningReason ?: ""}")
+        Text(stringResource(R.string.home_latest_warning, level.jsonValue.uppercase(), state.latestWarningReason ?: ""))
     }
 }
 
@@ -111,11 +112,11 @@ private fun ManualEntryButtons(
     onSuspiciousSms: () -> Unit,
     onSuspiciousSite: () -> Unit,
 ) {
-    Button(onClick = onDemo) { Text("Run demo (Fast attack)") }
-    Button(onClick = onWipe) { Text("Wipe all data") }
-    Button(onClick = onSuspiciousCall) { Text("I had a suspicious call") }
-    Button(onClick = onSuspiciousSms) { Text("I had a suspicious SMS") }
-    Button(onClick = onSuspiciousSite) { Text("I had a suspicious site") }
+    Button(onClick = onDemo) { Text(stringResource(R.string.home_run_demo_button)) }
+    Button(onClick = onWipe) { Text(stringResource(R.string.home_wipe_button)) }
+    Button(onClick = onSuspiciousCall) { Text(stringResource(R.string.home_suspicious_call_button)) }
+    Button(onClick = onSuspiciousSms) { Text(stringResource(R.string.home_suspicious_sms_button)) }
+    Button(onClick = onSuspiciousSite) { Text(stringResource(R.string.home_suspicious_site_button)) }
 }
 
 @Composable
@@ -126,37 +127,45 @@ private fun SyncControlsRow(
     onSyncNow: () -> Unit,
     onImportLocal: () -> Unit,
 ) {
+    val syncStateLabel =
+        if (syncEnabled) {
+            stringResource(R.string.home_sync_state_enabled)
+        } else {
+            stringResource(R.string.home_sync_state_disabled)
+        }
     androidx.compose.foundation.layout.Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text("Sync: ${if (syncEnabled) "enabled" else "disabled"}")
+        Text(stringResource(R.string.home_sync_label, syncStateLabel))
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.width(16.dp))
         androidx.compose.material3.Switch(
             checked = syncEnabled,
             onCheckedChange = { onToggle() },
         )
     }
-    Text("Last synced: ${lastSyncAt ?: "—"}")
-    Button(onClick = onSyncNow, enabled = syncEnabled) { Text("Sync now") }
-    Button(onClick = onImportLocal) { Text("Import local bundle…") }
+    Text(stringResource(R.string.home_last_synced, lastSyncAt?.toString() ?: "—"))
+    Button(onClick = onSyncNow, enabled = syncEnabled) { Text(stringResource(R.string.home_sync_now_button)) }
+    Button(onClick = onImportLocal) { Text(stringResource(R.string.home_import_local_button)) }
 }
 
+@Composable
 private fun callPermissionBanner(state: com.qalqan.antifraud.calls.CallObserverPermissions.State): String =
     when (state) {
         com.qalqan.antifraud.calls.CallObserverPermissions.State.GRANTED ->
-            "Auto call capture: on"
+            stringResource(R.string.home_call_perm_granted)
         com.qalqan.antifraud.calls.CallObserverPermissions.State.PARTIAL ->
-            "Auto call capture: partial — some permissions missing"
+            stringResource(R.string.home_call_perm_partial)
         com.qalqan.antifraud.calls.CallObserverPermissions.State.DENIED ->
-            "Auto call capture: off — manual entry only"
+            stringResource(R.string.home_call_perm_denied)
     }
 
+@Composable
 private fun smsPermissionBanner(state: com.qalqan.antifraud.sms.SmsObserverPermissions.State): String =
     when (state) {
         com.qalqan.antifraud.sms.SmsObserverPermissions.State.GRANTED ->
-            "Auto SMS capture: on"
+            stringResource(R.string.home_sms_perm_granted)
         com.qalqan.antifraud.sms.SmsObserverPermissions.State.PARTIAL ->
-            "Auto SMS capture: partial — some permissions missing"
+            stringResource(R.string.home_sms_perm_partial)
         com.qalqan.antifraud.sms.SmsObserverPermissions.State.DENIED ->
-            "Auto SMS capture: off — manual paste only"
+            stringResource(R.string.home_sms_perm_denied)
     }
