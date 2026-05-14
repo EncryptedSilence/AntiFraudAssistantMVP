@@ -13,9 +13,10 @@ import android.os.Build
  * channel — the IMPORTANCE_HIGH channel still produces an audible heads-up.
  */
 class FullScreenIntentPermissionGate(private val context: Context) {
-    fun fullScreenAllowed(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return true
-        val nm = context.getSystemService(NotificationManager::class.java) ?: return false
-        return nm.canUseFullScreenIntent()
-    }
+    fun fullScreenAllowed(): Boolean =
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            true
+        } else {
+            context.getSystemService(NotificationManager::class.java)?.canUseFullScreenIntent() == true
+        }
 }
