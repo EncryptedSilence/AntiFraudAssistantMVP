@@ -3,6 +3,8 @@
 package com.qalqan.antifraud.calls
 
 import android.content.ContentResolver
+import android.os.Build
+import android.os.Bundle
 import android.provider.CallLog
 
 /**
@@ -13,16 +15,30 @@ import android.provider.CallLog
 class CallLogReader(private val resolver: ContentResolver) {
     fun readLatest(): CallLogRow? {
         val cursor =
-            resolver.query(
-                CallLog.Calls.CONTENT_URI,
-                PROJECTION,
-                // selection =
-                null,
-                // selectionArgs =
-                null,
-                // sortOrder =
-                "${CallLog.Calls.DATE} DESC LIMIT 1",
-            ) ?: return null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                resolver.query(
+                    CallLog.Calls.CONTENT_URI,
+                    PROJECTION,
+                    Bundle().apply {
+                        putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(CallLog.Calls.DATE))
+                        putInt(
+                            ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                            ContentResolver.QUERY_SORT_DIRECTION_DESCENDING,
+                        )
+                        putInt(ContentResolver.QUERY_ARG_LIMIT, 1)
+                    },
+                    null,
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                resolver.query(
+                    CallLog.Calls.CONTENT_URI,
+                    PROJECTION,
+                    null,
+                    null,
+                    "${CallLog.Calls.DATE} DESC",
+                )
+            } ?: return null
         cursor.use {
             if (!it.moveToFirst()) return null
             val number = it.getString(0) ?: ""

@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <!-- Android 14+ requires this or default-Dialer role for a phoneCall foreground service. -->
+    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
 
     <!-- §22 Stage 3 — battery-optimization-exemption prompt -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />

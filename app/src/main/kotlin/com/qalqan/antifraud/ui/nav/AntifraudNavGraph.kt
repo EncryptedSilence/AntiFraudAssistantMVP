@@ -2,7 +2,15 @@
 
 package com.qalqan.antifraud.ui.nav
 
+import android.Manifest
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -26,14 +34,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.qalqan.antifraud.alerts.AlertPermissionRequester
+import com.qalqan.antifraud.alerts.FullScreenIntentPermissionGate
 import com.qalqan.antifraud.WebEntrySheet
+import com.qalqan.antifraud.calls.CallObserverPermissions
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.crypto.InMemoryCryptoBox
 import com.qalqan.antifraud.database.crypto.KeyStoreCryptoBox
 import com.qalqan.antifraud.database.manual.ManualEntry
 import com.qalqan.antifraud.database.manual.WebEntryDigest
 import com.qalqan.antifraud.domain.CallDirection
+import com.qalqan.antifraud.settings.OnboardingStep
 import com.qalqan.antifraud.settings.UserSettings
+import com.qalqan.antifraud.sms.SmsObserverPermissions
+import com.qalqan.antifraud.sms.SmsPermissionRequester
 import com.qalqan.antifraud.ui.campaign.CampaignDetailRoute
 import com.qalqan.antifraud.ui.campaign.CampaignDetailViewModel
 import com.qalqan.antifraud.ui.campaign.CampaignListRoute
@@ -182,15 +196,73 @@ fun AntifraudNavGraph(
                 )
             }
             composable(AntifraudDestination.Onboarding.route) {
-                val app = LocalContext.current.applicationContext as Application
+                val context = LocalContext.current
+                val app = context.applicationContext as Application
                 val vm =
                     remember(repos) {
                         OnboardingViewModel(app, repos, UserSettings(app))
                     }
                 val onboardingState by vm.state.collectAsState()
+                val permissionLauncher =
+                    rememberLauncherForActivityResult(
+                        ActivityResultContracts.RequestMultiplePermissions(),
+                    ) { results ->
+                        if (results.values.all { it }) {
+                            vm.grantCurrent()
+                        } else {
+                            vm.skipCurrent()
+                        }
+                    }
+                val settingsLauncher =
+                    rememberLauncherForActivityResult(
+                        ActivityResultContracts.StartActivityForResult(),
+                    ) {
+                        val step = onboardingState.currentStep
+                        val granted =
+                            when (step) {
+                                OnboardingStep.FULL_SCREEN_INTENT ->
+                                    FullScreenIntentPermissionGate(context).fullScreenAllowed()
+                                OnboardingStep.OVERLAY_WINDOW -> Settings.canDrawOverlays(context)
+                                OnboardingStep.BATTERY_OPTIMIZATION -> isIgnoringBatteryOptimizations(context)
+                                else -> false
+                            }
+                        if (granted) {
+                            vm.grantCurrent()
+                        } else {
+                            vm.skipCurrent()
+                        }
+                    }
                 OnboardingRoute(
                     state = onboardingState,
-                    onGrant = { vm.grantCurrent() },
+                    onGrant = {
+                        when (onboardingState.currentStep) {
+                            OnboardingStep.NOTIFICATIONS ->
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    permissionLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
+                                } else {
+                                    vm.grantCurrent()
+                                }
+                            OnboardingStep.PHONE ->
+                                permissionLauncher.launch(arrayOf(Manifest.permission.READ_PHONE_STATE))
+                            OnboardingStep.CALL_LOG ->
+                                permissionLauncher.launch(arrayOf(Manifest.permission.READ_CALL_LOG))
+                            OnboardingStep.SMS ->
+                                permissionLauncher.launch(SmsPermissionRequester.requestList().toTypedArray())
+                            OnboardingStep.FULL_SCREEN_INTENT -> {
+                                val intent = AlertPermissionRequester.fullScreenIntentSettingsIntent(context.packageName)
+                                if (intent != null) {
+                                    settingsLauncher.launch(intent)
+                                } else {
+                                    vm.grantCurrent()
+                                }
+                            }
+                            OnboardingStep.OVERLAY_WINDOW ->
+                                settingsLauncher.launch(AlertPermissionRequester.overlaySettingsIntent(context.packageName))
+                            OnboardingStep.BATTERY_OPTIMIZATION ->
+                                settingsLauncher.launch(batteryOptimizationIntent(context.packageName))
+                            null -> Unit
+                        }
+                    },
                     onSkip = { vm.skipCurrent() },
                     onFinish = {
                         vm.finish()
@@ -203,6 +275,17 @@ fun AntifraudNavGraph(
         }
     }
 }
+
+private fun isIgnoringBatteryOptimizations(context: android.content.Context): Boolean {
+    val powerManager = context.getSystemService(PowerManager::class.java)
+    return powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true
+}
+
+private fun batteryOptimizationIntent(packageName: String): Intent =
+    Intent(
+        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+        Uri.parse("package:$packageName"),
+    )
 
 @Composable
 private fun HomeHost(

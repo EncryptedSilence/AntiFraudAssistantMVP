@@ -98,7 +98,13 @@ class CallObserverService : Service() {
 
     private suspend fun onTransition(transition: CallTransition) {
         if (transition.state == CallTransition.State.IDLE) {
-            capture?.onIdle(transition.subscriptionId)
+            try {
+                capture?.onIdle(transition.subscriptionId)
+            } catch (
+                @Suppress("TooGenericExceptionCaught") e: Exception,
+            ) {
+                android.util.Log.e(TAG, "AutoCallCapture failed; transition ignored", e)
+            }
         }
     }
 
