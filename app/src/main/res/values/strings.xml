@@ -34,4 +34,13 @@
     <string name="nav_patterns">Patterns</string>
     <string name="nav_references">References</string>
     <string name="nav_privacy">Privacy</string>
+
+    <!-- §17.7 common UI states -->
+    <string name="state_empty_default">No data yet.</string>
+    <string name="state_loading_default">Loading…</string>
+    <string name="state_error_default">Something went wrong.</string>
+    <string name="state_error_report_button">Open action log</string>
+    <string name="state_permission_denied_default">Permission required.</string>
+    <string name="state_permission_denied_open_settings">Open settings</string>
+    <string name="state_offline_default">Offline.</string>
 </resources>

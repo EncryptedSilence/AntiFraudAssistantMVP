@@ -35,4 +35,11 @@
     <string name="nav_patterns"></string>
     <string name="nav_references"></string>
     <string name="nav_privacy"></string>
+    <string name="state_empty_default"></string>
+    <string name="state_loading_default"></string>
+    <string name="state_error_default"></string>
+    <string name="state_error_report_button"></string>
+    <string name="state_permission_denied_default"></string>
+    <string name="state_permission_denied_open_settings"></string>
+    <string name="state_offline_default"></string>
 </resources>
