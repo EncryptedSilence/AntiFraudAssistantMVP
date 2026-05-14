@@ -1,9 +1,11 @@
 plugins {
     id("antifraud.android.library")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.qalqan.antifraud.alerts"
+    buildFeatures.compose = true
 }
 
 dependencies {
@@ -17,4 +19,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui.tooling.preview)
 }
