@@ -54,4 +54,10 @@
     <string name="home_active_campaign_card_open">Open</string>
     <string name="home_empty_watching">Watching for signals — none yet.</string>
     <string name="home_empty_state">Watching — no signals yet.</string>
+
+    <!-- Suspicious-{call,sms,site} sheets §17.1 / §23 #45 -->
+    <string name="suspicious_call_sheet_phone_label">Phone (e.g. +7…)</string>
+    <string name="suspicious_sms_sheet_sender_label">Sender</string>
+    <string name="suspicious_sms_sheet_body_label">SMS text</string>
+    <string name="suspicious_sheet_save">Save</string>
 </resources>
