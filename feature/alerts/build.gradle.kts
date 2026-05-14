@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":core:patterns"))
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
 }
