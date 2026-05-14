@@ -167,4 +167,13 @@
     <string name="onboarding_action_skip">Skip</string>
     <string name="onboarding_action_already_granted">Already granted</string>
     <string name="onboarding_action_finish">Finish</string>
+
+    <!-- Question prompts §5.5 -->
+    <string name="question_caller_identity">Did the caller claim to be from a bank, government, or other official service?</string>
+    <string name="question_pressure">Did they tell you not to call back, not to consult anyone, or pressure you to hurry?</string>
+    <string name="question_action_request">Did they ask you to share a code, install an app, open a link, or transfer money?</string>
+    <string name="question_answer_yes">Yes</string>
+    <string name="question_answer_no">No</string>
+    <string name="question_answer_not_sure">Not sure</string>
+    <string name="question_dont_ask_again">Don\'t ask again for this campaign</string>
 </resources>
