@@ -21,16 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.qalqan.antifraud.WebEntrySheet
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.crypto.InMemoryCryptoBox
 import com.qalqan.antifraud.database.crypto.KeyStoreCryptoBox
 import com.qalqan.antifraud.database.manual.ManualEntry
 import com.qalqan.antifraud.domain.CallDirection
+import com.qalqan.antifraud.settings.UserSettings
+import com.qalqan.antifraud.ui.campaign.CampaignDetailRoute
+import com.qalqan.antifraud.ui.campaign.CampaignDetailViewModel
 import com.qalqan.antifraud.ui.campaign.CampaignListRoute
 import com.qalqan.antifraud.ui.campaign.CampaignsViewModel
 import com.qalqan.antifraud.ui.home.HomeRoute
@@ -75,6 +80,35 @@ fun AntifraudNavGraph(
                     onOpenCampaign = { id ->
                         navController.navigate(AntifraudDestination.CampaignDetail(id).route)
                     },
+                )
+            }
+            composable(
+                route = AntifraudDestination.CampaignDetail.ROUTE_PATTERN,
+                arguments =
+                    listOf(
+                        navArgument(AntifraudDestination.CampaignDetail.ARG_CAMPAIGN_ID) {
+                            type = NavType.StringType
+                        },
+                    ),
+            ) { entry ->
+                val app = LocalContext.current.applicationContext as Application
+                val campaignId =
+                    entry.arguments
+                        ?.getString(AntifraudDestination.CampaignDetail.ARG_CAMPAIGN_ID)
+                        .orEmpty()
+                val vm =
+                    remember(repos) {
+                        CampaignDetailViewModel(app, repos, UserSettings(app))
+                    }
+                LaunchedEffect(campaignId) { vm.load(campaignId) }
+                val detailState by vm.state.collectAsState()
+                CampaignDetailRoute(
+                    state = detailState,
+                    onClose = { vm.closeCampaign() },
+                    onFalseAlarm = { vm.markFalseAlarm() },
+                    onMarkSuspicious = {},
+                    onExport = {},
+                    onCreatePattern = {},
                 )
             }
             composable(AntifraudDestination.Patterns.route) {
