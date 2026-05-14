@@ -110,10 +110,13 @@ class AlertPipeline(
         return CampaignRiskScorer.compute(contributions, outcome.triggeredPatternWeights)
     }
 
-    private fun emptyContent(): AlertContent =
-        AlertContent(reasons = listOf("placeholder", "placeholder", "placeholder"))
+    private fun emptyContent(): AlertContent = AlertContent(reasons = PLACEHOLDER_REASONS)
 
     private fun synthesizeCallCampaignId(event: CallEvent): String = "call:${event.id.value}"
 
     private fun synthesizeSmsCampaignId(event: SmsEvent): String = "sms:${event.id.value}"
+
+    private companion object {
+        val PLACEHOLDER_REASONS = listOf("placeholder", "placeholder", "placeholder")
+    }
 }
