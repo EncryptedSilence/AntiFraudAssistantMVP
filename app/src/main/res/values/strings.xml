@@ -104,4 +104,45 @@
     <string name="references_last_update_label">Last update: %1$s · source: %2$s</string>
     <string name="references_no_bundle">No bundle applied</string>
     <string name="references_empty_list">No entries.</string>
+
+    <!-- Privacy screen §17.6 -->
+    <string name="privacy_title">Privacy</string>
+    <string name="privacy_what_is_stored">What is stored</string>
+    <string name="privacy_what_is_stored_body">Hashed phone numbers, hashed sender IDs, event timestamps, eTLD+1 domains, triggered pattern ids, user answers.</string>
+    <string name="privacy_where_is_stored">Where it is stored</string>
+    <string name="privacy_where_is_stored_body">Encrypted local SQLite (SQLCipher) inside the app sandbox. The key is held in the Android Keystore.</string>
+    <string name="privacy_modules_enabled">Modules enabled</string>
+    <string name="privacy_permissions_granted">Permissions granted</string>
+    <string name="privacy_retention_label">Retention</string>
+    <string name="privacy_retention_row">%1$s — %2$d days</string>
+    <string name="privacy_sync_status_label">Sync</string>
+    <string name="privacy_sync_status_idle">idle</string>
+    <string name="privacy_sync_status_failed">failed</string>
+    <string name="privacy_sync_status_paused">paused — no network</string>
+    <string name="privacy_delete_all_button">Delete all data</string>
+    <string name="privacy_disable_sync_button">Disable sync</string>
+    <string name="privacy_reset_permissions_button">Reset permissions</string>
+    <string name="privacy_open_settings_button">Open Settings</string>
+
+    <!-- Settings screen §18 -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_sensitivity_label">Sensitivity</string>
+    <string name="settings_sensitivity_low">Low</string>
+    <string name="settings_sensitivity_standard">Standard</string>
+    <string name="settings_sensitivity_high">High</string>
+    <string name="settings_sensitivity_maximum">Maximum</string>
+    <string name="settings_toggle_call_analysis">Call analysis</string>
+    <string name="settings_toggle_sms_analysis">SMS analysis</string>
+    <string name="settings_toggle_web_analysis">New-site analysis</string>
+    <string name="settings_toggle_risk_campaigns">Risk campaigns</string>
+    <string name="settings_toggle_local_patterns">Local patterns</string>
+    <string name="settings_toggle_reference_sync">Reference sync</string>
+    <string name="settings_toggle_pattern_sync">Pattern sync</string>
+    <string name="settings_toggle_notifications">Notifications</string>
+    <string name="settings_toggle_post_call_q">Post-call questions</string>
+    <string name="settings_toggle_post_sms_q">Post-SMS questions</string>
+    <string name="settings_toggle_post_site_q">Post-site questions</string>
+    <string name="settings_toggle_auto_archiving">Automatic archiving</string>
+    <string name="settings_toggle_advanced_rules">Enable advanced rules</string>
+    <string name="settings_toggle_educational_cards">Educational cards</string>
 </resources>
