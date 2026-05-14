@@ -10,6 +10,7 @@ import android.os.IBinder
 import androidx.annotation.VisibleForTesting
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.manual.CallEntryDigest
+import com.qalqan.antifraud.domain.CallEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,6 +50,7 @@ class CallObserverService : Service() {
             val r = repositoriesFactory(context)
             repos = r
             val updater = RiskCounterUpdater(r.contacts)
+            val hook = captureHookFactory(context, r)
             capture =
                 AutoCallCapture(
                     reader = CallLogReader(context.contentResolver),
@@ -59,7 +61,10 @@ class CallObserverService : Service() {
                             repeats = RepeatCallDetector(r.calls),
                         ),
                     calls = r.calls,
-                    onCaptured = { event -> updater.bump(event) },
+                    onCaptured = { event ->
+                        updater.bump(event)
+                        scope.launch { hook(event) }
+                    },
                 )
             scope.launch { CallObserverActionLog(r.actionLogger).observerStarted() }
         } catch (
@@ -127,6 +132,15 @@ class CallObserverService : Service() {
         @VisibleForTesting
         var repositoriesFactory: (Context) -> Repositories = Repositories::build
 
+        /**
+         * Stage 9 hook — `:app` installs an [AlertPipeline.onCallCaptured]-bound function
+         * here on `Application.onCreate`. Default no-op preserves the Stage 3 behavior
+         * when `:feature:alerts` is excluded (e.g. in a stripped build flavor).
+         */
+        @VisibleForTesting
+        var captureHookFactory: (Context, Repositories) -> (suspend (CallEvent) -> Unit) =
+            { _, _ -> { _ -> } }
+
         fun start(context: Context) {
             val intent = Intent(context, CallObserverService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -138,6 +152,40 @@ class CallObserverService : Service() {
 
         fun stop(context: Context) {
             context.stopService(Intent(context, CallObserverService::class.java))
+        }
+
+        /**
+         * Stage 9 §23 #41 — re-build the §17.0.3 ongoing notification with live counts
+         * from [PassiveCounters]. Safe to call from any thread; the actual `notify` call
+         * is fire-and-forget on the IO dispatcher. Failures (KeyStore unavailable in tests)
+         * swallow silently — the notification simply does not refresh.
+         */
+        fun refreshOngoingNotification(context: Context) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+                val r =
+                    try {
+                        repositoriesFactory(context.applicationContext)
+                    } catch (
+                        @Suppress("TooGenericExceptionCaught") _: Exception,
+                    ) {
+                        return@launch
+                    }
+                try {
+                    val counters = PassiveCounters(r)
+                    val now = java.time.Instant.now()
+                    val copy =
+                        PassiveNotificationCopy(
+                            eventsLast24h = counters.eventsLast24h(now),
+                            alertsLast24h = counters.alertsLast24h(now),
+                        )
+                    val notif = CallObserverNotifications.build(context, copy)
+                    androidx.core.app.NotificationManagerCompat
+                        .from(context)
+                        .notify(NOTIFICATION_ID, notif)
+                } finally {
+                    r.close()
+                }
+            }
         }
     }
 }

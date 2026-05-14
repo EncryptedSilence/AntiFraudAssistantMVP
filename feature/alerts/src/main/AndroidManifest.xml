@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- §4.4.1 (1) full-screen alert; Android 14+ requires user grant -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- §4.4.1 (2) overlay banner; Settings-granted (no runtime dialog) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+        <!--
+            §17.0.1 - the full-screen-intent target. Shown over the lock screen / dialer
+            when a critical alert fires. showWhenLocked + turnScreenOn give us the
+            §4.4.2 < 2 s critical-during-call behavior on Android 8.1+; older devices
+            fall back to FLAG_SHOW_WHEN_LOCKED via the activity itself (Phase 4).
+
+            Stub component name only - the class is added in T16.
+        -->
+        <activity
+            android:name=".CriticalAlertActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:showOnLockScreen="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+
+        <!--
+            §17.0.2 - the overlay banner activity. Drawn via TYPE_APPLICATION_OVERLAY.
+            singleInstance + a transparent theme keep it lightweight and unique.
+            Stub component name only - the class is added in T22.
+        -->
+        <activity
+            android:name=".OverlayBannerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    </application>
+</manifest>

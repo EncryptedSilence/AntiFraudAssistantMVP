@@ -37,9 +37,33 @@ class PassiveCountersTest {
     }
 
     @Test
-    fun `alertsLast24h reports zero in Stage 3 (alert pipeline lands in Stage 9)`() {
-        val counters = PassiveCounters(repos)
-        counters.alertsLast24h(Instant.now()) shouldBe 0
+    fun `alertsLast24h reports zero when no PATTERN_APPLIED alert entries exist`() {
+        runBlocking {
+            val counters = PassiveCounters(repos)
+            counters.alertsLast24h(Instant.now()) shouldBe 0
+        }
+    }
+
+    @Test
+    fun `alertsLast24h counts PATTERN_APPLIED entries with source=alert in the window`() {
+        runBlocking {
+            val now = Instant.now()
+            repos.actionLogger.log(
+                com.qalqan.antifraud.domain.AppAction.PATTERN_APPLIED,
+                mapOf("source" to "alert"),
+            )
+            repos.actionLogger.log(
+                com.qalqan.antifraud.domain.AppAction.PATTERN_APPLIED,
+                mapOf("source" to "alert"),
+            )
+            // a non-alert PATTERN_APPLIED entry should not count
+            repos.actionLogger.log(
+                com.qalqan.antifraud.domain.AppAction.PATTERN_APPLIED,
+                mapOf("source" to "bundle"),
+            )
+            val counters = PassiveCounters(repos)
+            counters.alertsLast24h(now) shouldBe 2
+        }
     }
 
     @Test

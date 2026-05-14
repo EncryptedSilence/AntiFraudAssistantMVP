@@ -31,4 +31,5 @@ include(
     ":feature:sms",
     ":feature:web",
     ":feature:export",
+    ":feature:alerts",
 )

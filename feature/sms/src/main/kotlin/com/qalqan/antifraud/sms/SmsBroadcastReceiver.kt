@@ -8,6 +8,7 @@ import com.qalqan.antifraud.calls.SimEnumerator
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.crypto.KeyStoreCryptoBox
 import com.qalqan.antifraud.database.manual.SmsEntryDigest
+import com.qalqan.antifraud.domain.SmsEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -86,15 +87,25 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     companion object {
         private const val TAG = "SmsBroadcastReceiver"
 
+        /**
+         * Stage 9 hook — `:app` installs an [AlertPipeline.onSmsCaptured]-bound function
+         * here on `Application.onCreate`. Default no-op preserves the Stage 4 behavior.
+         */
+        @VisibleForTesting
+        var captureHookFactory: (Context, Repositories) -> (suspend (SmsEvent) -> Unit) =
+            { _, _ -> { _ -> } }
+
         internal val defaultCaptureProvider: (Context) -> CaptureHandle = { ctx ->
             val r = Repositories.build(ctx)
             val digest = SmsEntryDigest.create(ctx)
             val box = KeyStoreCryptoBox.create(ctx, alias = "antifraud.field_box")
+            val hook = captureHookFactory(ctx, r)
             CaptureHandle(
                 capture =
                     AutoSmsCapture(
                         builder = SmsEventBuilder(digest = digest, box = box),
                         sms = r.sms,
+                        onCaptured = { event -> hook(event) },
                     ),
                 close = { r.close() },
             )
