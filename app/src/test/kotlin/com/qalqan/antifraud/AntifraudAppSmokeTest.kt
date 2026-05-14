@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.test.core.app.ApplicationProvider
 import com.qalqan.antifraud.database.Repositories
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,10 +27,18 @@ class AntifraudAppSmokeTest {
     val composeRule = createComposeRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
-    private val repos: Repositories = Repositories.inMemory(context)
+    private lateinit var repos: Repositories
+
+    @Before
+    fun setUp() {
+        repos = Repositories.inMemory(context)
+    }
 
     @After
     fun tearDown() {
+        // Drain any LaunchedEffect-spawned coroutines (e.g. HomeViewModel.refresh) before
+        // closing the DB so the connection pool isn't pulled out from underneath them.
+        composeRule.waitForIdle()
         repos.close()
     }
 
