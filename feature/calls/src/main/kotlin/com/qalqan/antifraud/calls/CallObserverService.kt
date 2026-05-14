@@ -10,6 +10,7 @@ import android.os.IBinder
 import androidx.annotation.VisibleForTesting
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.manual.CallEntryDigest
+import com.qalqan.antifraud.domain.CallEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,6 +50,7 @@ class CallObserverService : Service() {
             val r = repositoriesFactory(context)
             repos = r
             val updater = RiskCounterUpdater(r.contacts)
+            val hook = captureHookFactory(context, r)
             capture =
                 AutoCallCapture(
                     reader = CallLogReader(context.contentResolver),
@@ -59,7 +61,10 @@ class CallObserverService : Service() {
                             repeats = RepeatCallDetector(r.calls),
                         ),
                     calls = r.calls,
-                    onCaptured = { event -> updater.bump(event) },
+                    onCaptured = { event ->
+                        updater.bump(event)
+                        scope.launch { hook(event) }
+                    },
                 )
             scope.launch { CallObserverActionLog(r.actionLogger).observerStarted() }
         } catch (
@@ -126,6 +131,15 @@ class CallObserverService : Service() {
          */
         @VisibleForTesting
         var repositoriesFactory: (Context) -> Repositories = Repositories::build
+
+        /**
+         * Stage 9 hook — `:app` installs an [AlertPipeline.onCallCaptured]-bound function
+         * here on `Application.onCreate`. Default no-op preserves the Stage 3 behavior
+         * when `:feature:alerts` is excluded (e.g. in a stripped build flavor).
+         */
+        @VisibleForTesting
+        var captureHookFactory: (Context, Repositories) -> (suspend (CallEvent) -> Unit) =
+            { _, _ -> { _ -> } }
 
         fun start(context: Context) {
             val intent = Intent(context, CallObserverService::class.java)
