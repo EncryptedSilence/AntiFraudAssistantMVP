@@ -60,4 +60,25 @@
     <string name="suspicious_sms_sheet_sender_label">Sender</string>
     <string name="suspicious_sms_sheet_body_label">SMS text</string>
     <string name="suspicious_sheet_save">Save</string>
+
+    <!-- Campaigns screen §17.2 -->
+    <string name="campaign_tab_active">Active</string>
+    <string name="campaign_tab_closed">Closed</string>
+    <string name="campaign_tab_archived">Archived</string>
+    <string name="campaign_tab_false_positive">False alarm</string>
+    <string name="campaign_list_empty">No campaigns yet.</string>
+    <string name="campaign_card_started">Started: %1$s</string>
+    <string name="campaign_card_last_event">Last event: %1$s</string>
+    <string name="campaign_card_risk">Risk: %1$s</string>
+    <string name="campaign_detail_title">Campaign</string>
+    <string name="campaign_detail_linked_events">Linked events</string>
+    <string name="campaign_detail_triggered_patterns">Triggered patterns</string>
+    <string name="campaign_detail_reasons">Reasons</string>
+    <string name="campaign_detail_pending_questions">Pending questions</string>
+    <string name="campaign_detail_recommendations">Recommendations</string>
+    <string name="campaign_action_close">Close</string>
+    <string name="campaign_action_false_alarm">False alarm</string>
+    <string name="campaign_action_mark_suspicious">Mark as suspicious</string>
+    <string name="campaign_action_export">Export</string>
+    <string name="campaign_action_create_pattern">Create pattern from this campaign</string>
 </resources>
