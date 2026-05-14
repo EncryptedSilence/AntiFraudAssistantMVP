@@ -31,10 +31,10 @@ object OverlayGate {
      * If the app gains UsageStatsManager in a later stage, this method moves there.
      */
     fun foregroundPackage(context: Context): String? {
-        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager ?: return null
-        val procs = am.runningAppProcesses ?: return null
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        val procs = am?.runningAppProcesses
         val foreground =
-            procs.firstOrNull { it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
+            procs?.firstOrNull { it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
         return foreground?.processName
     }
 }
