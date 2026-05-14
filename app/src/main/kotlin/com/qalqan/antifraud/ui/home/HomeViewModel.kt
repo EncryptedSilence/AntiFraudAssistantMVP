@@ -3,9 +3,13 @@ package com.qalqan.antifraud.ui.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.qalqan.antifraud.calls.BatteryOptimizationPrompt
+import com.qalqan.antifraud.calls.CallObserverPermissions
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.domain.CampaignStatus
 import com.qalqan.antifraud.domain.RiskBand
+import com.qalqan.antifraud.sms.SmsObserverPermissions
+import com.qalqan.antifraud.sync.SyncSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +28,7 @@ class HomeViewModel(
 
     fun refresh() {
         viewModelScope.launch {
+            val app = getApplication<Application>()
             val twentyFourHoursAgo = Instant.now().minusSeconds(SECONDS_PER_DAY)
             val callCount = repos.calls.listSince(twentyFourHoursAgo).size
             val smsCount = repos.sms.listSince(twentyFourHoursAgo).size
@@ -52,6 +57,10 @@ class HomeViewModel(
                                 band = it.campaignRiskBand,
                             )
                         },
+                    callPermissionState = CallObserverPermissions(app).state(),
+                    smsPermissionState = SmsObserverPermissions(app).state(),
+                    batteryExempt = BatteryOptimizationPrompt.isExempt(app),
+                    syncEnabled = SyncSettings(app).enabled,
                 )
         }
     }

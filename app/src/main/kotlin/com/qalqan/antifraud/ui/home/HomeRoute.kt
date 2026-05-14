@@ -44,7 +44,7 @@ fun HomeRoute(
 @Composable
 private fun HomeStatusHeader(
     state: HomeUiState,
-    @Suppress("UNUSED_PARAMETER") onOpenPrivacy: () -> Unit,
+    onOpenPrivacy: () -> Unit,
 ) {
     val bandLabel =
         state.currentBand?.name?.lowercase()?.replaceFirstChar { it.uppercase() }
@@ -58,6 +58,13 @@ private fun HomeStatusHeader(
             state.dismissedLast24h,
         ),
         style = MaterialTheme.typography.bodySmall,
+    )
+    PermissionStatusRow(
+        callState = state.callPermissionState,
+        smsState = state.smsPermissionState,
+        batteryExempt = state.batteryExempt,
+        syncEnabled = state.syncEnabled,
+        onTap = onOpenPrivacy,
     )
 }
 

@@ -1,7 +1,8 @@
 package com.qalqan.antifraud.ui.home
 
-import com.qalqan.antifraud.R
+import com.qalqan.antifraud.calls.CallObserverPermissions
 import com.qalqan.antifraud.domain.RiskBand
+import com.qalqan.antifraud.sms.SmsObserverPermissions
 import java.time.Instant
 
 /**
@@ -17,8 +18,8 @@ data class HomeUiState(
     val alertsLast24h: Int = 0,
     val dismissedLast24h: Int = 0,
     val activeCampaign: ActiveCampaignCard? = null,
-    val callPermissionsLabelResId: Int = R.string.home_call_perm_denied,
-    val smsPermissionsLabelResId: Int = R.string.home_sms_perm_denied,
+    val callPermissionState: CallObserverPermissions.State = CallObserverPermissions.State.DENIED,
+    val smsPermissionState: SmsObserverPermissions.State = SmsObserverPermissions.State.DENIED,
     val syncEnabled: Boolean = false,
     val batteryExempt: Boolean = false,
     val isLoading: Boolean = false,
