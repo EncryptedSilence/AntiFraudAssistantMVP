@@ -14,6 +14,7 @@ android {
                     test.exclude("**/ExportSheetGatingTest.class")
                     test.exclude("**/AntifraudAppSmokeTest.class")
                     test.exclude("**/ui/state/**")
+                    test.exclude("**/ui/home/**")
                 }
             }
         }

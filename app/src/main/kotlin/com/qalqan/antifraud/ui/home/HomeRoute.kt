@@ -18,6 +18,7 @@ import com.qalqan.antifraud.ui.state.LoadingState
 import com.qalqan.antifraud.ui.state.accessibleTouchTarget
 
 @Composable
+@Suppress("LongParameterList")
 fun HomeRoute(
     state: HomeUiState,
     onSuspiciousCall: () -> Unit,
