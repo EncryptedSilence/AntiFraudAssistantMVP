@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.qalqan.antifraud.R
 import com.qalqan.antifraud.domain.RiskBand
+import com.qalqan.antifraud.ui.education.EducationalCardPager
 import com.qalqan.antifraud.ui.pause.PauseBeforeActionModal
 import com.qalqan.antifraud.ui.state.LoadingState
 import com.qalqan.antifraud.ui.state.accessibleTouchTarget
@@ -28,6 +29,7 @@ fun HomeRoute(
     onSuspiciousSite: () -> Unit,
     onOpenCampaign: (String) -> Unit,
     onOpenPrivacy: () -> Unit,
+    onDismissEducationalCard: () -> Unit = {},
 ) {
     if (state.isLoading) {
         LoadingState()
@@ -40,6 +42,10 @@ fun HomeRoute(
         HomeStatusHeader(state, onOpenPrivacy)
         ActiveCampaignCardOrEmpty(state, onOpenCampaign)
         QuickActionRow(onSuspiciousCall, onSuspiciousSms, onSuspiciousSite)
+        EducationalCardPager(
+            visible = state.educationalCardVisible,
+            onDismiss = onDismissEducationalCard,
+        )
     }
     PauseBeforeActionModal(
         visible = state.currentBand == RiskBand.CRITICAL,

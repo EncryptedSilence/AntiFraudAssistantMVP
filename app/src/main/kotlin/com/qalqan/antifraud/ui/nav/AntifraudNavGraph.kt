@@ -239,6 +239,7 @@ private fun HomeHost(
         onOpenPrivacy = {
             navController.navigate(AntifraudDestination.Privacy.route)
         },
+        onDismissEducationalCard = { viewModel.dismissEducationalCard() },
     )
 
     if (showCallSheet) {

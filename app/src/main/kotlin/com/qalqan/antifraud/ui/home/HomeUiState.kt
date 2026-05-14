@@ -22,6 +22,7 @@ data class HomeUiState(
     val smsPermissionState: SmsObserverPermissions.State = SmsObserverPermissions.State.DENIED,
     val syncEnabled: Boolean = false,
     val batteryExempt: Boolean = false,
+    val educationalCardVisible: Boolean = false,
     val isLoading: Boolean = false,
 ) {
     data class ActiveCampaignCard(

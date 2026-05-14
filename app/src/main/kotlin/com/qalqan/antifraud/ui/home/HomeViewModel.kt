@@ -8,6 +8,8 @@ import com.qalqan.antifraud.calls.CallObserverPermissions
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.domain.CampaignStatus
 import com.qalqan.antifraud.domain.RiskBand
+import com.qalqan.antifraud.settings.EducationalCardScheduler
+import com.qalqan.antifraud.settings.UserSettings
 import com.qalqan.antifraud.sms.SmsObserverPermissions
 import com.qalqan.antifraud.sync.SyncSettings
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +63,23 @@ class HomeViewModel(
                     smsPermissionState = SmsObserverPermissions(app).state(),
                     batteryExempt = BatteryOptimizationPrompt.isExempt(app),
                     syncEnabled = SyncSettings(app).enabled,
+                    educationalCardVisible = run {
+                        val s = UserSettings(app)
+                        EducationalCardScheduler.shouldShow(
+                            enabled = s.educationalCardsEnabled,
+                            lastShownAtMs = s.lastEducationalCardAtMs,
+                            nowMs = System.currentTimeMillis(),
+                        )
+                    },
                 )
+        }
+    }
+
+    fun dismissEducationalCard() {
+        viewModelScope.launch {
+            val s = UserSettings(getApplication())
+            s.lastEducationalCardAtMs = System.currentTimeMillis()
+            refresh()
         }
     }
 

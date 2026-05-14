@@ -25,6 +25,9 @@ class AntifraudAppFirstLaunchRoutingTest {
     @Before
     fun setUp() {
         repos = Repositories.inMemory(context)
+        // Suppress the educational card pager so HomeViewModel doesn't keep its refresh
+        // coroutine alive past tearDown.
+        UserSettings(context).lastEducationalCardAtMs = System.currentTimeMillis()
     }
 
     @After

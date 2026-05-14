@@ -8,9 +8,8 @@ import androidx.compose.ui.test.onFirst
 import androidx.test.core.app.ApplicationProvider
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.settings.UserSettings
-import org.junit.AfterClass
+import org.junit.After
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,33 +27,29 @@ class AntifraudAppSmokeTest {
     @get:Rule
     val composeRule = createComposeRule()
 
-    companion object {
-        private lateinit var sharedRepos: Repositories
-        private lateinit var context: Context
-
-        @JvmStatic
-        @BeforeClass
-        fun setUpClass() {
-            context = ApplicationProvider.getApplicationContext()
-            sharedRepos = Repositories.inMemory(context)
-        }
-
-        @JvmStatic
-        @AfterClass
-        fun tearDownClass() {
-            sharedRepos.close()
-        }
-    }
+    private val context: Context = ApplicationProvider.getApplicationContext()
+    private lateinit var repos: Repositories
 
     @Before
     fun setUp() {
-        // Land on Home so the nav-bar test sees all five labels.
+        repos = Repositories.inMemory(context)
         UserSettings(context).onboardingCompleted = true
+        // Mark the educational card as shown "now" so the pager isn't rendered on the
+        // first paint — keeps the smoke assertions focused on the nav bar.
+        UserSettings(context).lastEducationalCardAtMs = System.currentTimeMillis()
+    }
+
+    @After
+    fun tearDown() {
+        composeRule.waitForIdle()
+        repos.close()
+        context.getSharedPreferences("antifraud_user_prefs", Context.MODE_PRIVATE)
+            .edit().clear().commit()
     }
 
     @Test
     fun `app shell renders all five §17 top-level labels`() {
-        composeRule.setContent { AntifraudApp(repos = sharedRepos) }
+        composeRule.setContent { AntifraudApp(repos = repos) }
         composeRule.waitForIdle()
         listOf("Home", "Campaigns", "Patterns", "References", "Privacy").forEach { label ->
             composeRule.onAllNodesWithText(label, useUnmergedTree = true).onFirst().assertIsDisplayed()
@@ -63,7 +58,7 @@ class AntifraudAppSmokeTest {
 
     @Test
     fun `first-launch shell has no account-prompt copy per §23 #2`() {
-        composeRule.setContent { AntifraudApp(repos = sharedRepos) }
+        composeRule.setContent { AntifraudApp(repos = repos) }
         composeRule.waitForIdle()
         listOf("Sign in", "Log in", "Register", "Account").forEach { forbidden ->
             val nodes = composeRule.onAllNodesWithText(forbidden, useUnmergedTree = true).fetchSemanticsNodes()
