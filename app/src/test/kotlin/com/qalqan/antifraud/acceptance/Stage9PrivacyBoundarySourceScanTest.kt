@@ -18,8 +18,9 @@ class Stage9PrivacyBoundarySourceScanTest {
                 File("../feature/alerts/src/main"),
                 File("feature/alerts/src/main"),
             )
-        val root = candidates.firstOrNull { it.exists() }
-            ?: error("expected to find :feature:alerts/src/main; tried ${candidates.map { it.absolutePath }}")
+        val root =
+            candidates.firstOrNull { it.exists() }
+                ?: error("expected to find :feature:alerts/src/main; tried ${candidates.map { it.absolutePath }}")
         val src = root.walkTopDown().filter { it.isFile && it.extension in setOf("kt", "xml") }.toList()
         val forbidden =
             listOf(
