@@ -33,4 +33,28 @@ class Stage9MergedManifestTest {
                 "android.permission.PACKAGE_USAGE_STATS",
             )
     }
+
+    @Test
+    fun `merged manifest declares CriticalAlertActivity (full-screen target)`() {
+        val pm = RuntimeEnvironment.getApplication().packageManager
+        val info =
+            pm.getPackageInfo(
+                RuntimeEnvironment.getApplication().packageName,
+                android.content.pm.PackageManager.GET_ACTIVITIES,
+            )
+        val names = info.activities?.map { it.name }.orEmpty()
+        names shouldContain "com.qalqan.antifraud.alerts.CriticalAlertActivity"
+    }
+
+    @Test
+    fun `merged manifest declares OverlayBannerActivity (overlay target)`() {
+        val pm = RuntimeEnvironment.getApplication().packageManager
+        val info =
+            pm.getPackageInfo(
+                RuntimeEnvironment.getApplication().packageName,
+                android.content.pm.PackageManager.GET_ACTIVITIES,
+            )
+        val names = info.activities?.map { it.name }.orEmpty()
+        names shouldContain "com.qalqan.antifraud.alerts.OverlayBannerActivity"
+    }
 }
