@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.qalqan.antifraud.R
+import com.qalqan.antifraud.domain.RiskBand
+import com.qalqan.antifraud.ui.pause.PauseBeforeActionModal
 import com.qalqan.antifraud.ui.state.LoadingState
 import com.qalqan.antifraud.ui.state.accessibleTouchTarget
 
@@ -39,6 +41,13 @@ fun HomeRoute(
         ActiveCampaignCardOrEmpty(state, onOpenCampaign)
         QuickActionRow(onSuspiciousCall, onSuspiciousSms, onSuspiciousSite)
     }
+    PauseBeforeActionModal(
+        visible = state.currentBand == RiskBand.CRITICAL,
+        onPause = { /* Stage 11 records dismissal via ApplicationActionLogger; no-op here. */ },
+        onShowDetails = {
+            state.activeCampaign?.campaignId?.let { onOpenCampaign(it) }
+        },
+    )
 }
 
 @Composable
