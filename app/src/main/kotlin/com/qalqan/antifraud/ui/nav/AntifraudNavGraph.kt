@@ -50,6 +50,8 @@ import com.qalqan.antifraud.ui.settings.SettingsRoute
 import com.qalqan.antifraud.ui.settings.SettingsViewModel
 import com.qalqan.antifraud.ui.home.SuspiciousCallSheet
 import com.qalqan.antifraud.ui.home.SuspiciousSmsSheet
+import com.qalqan.antifraud.ui.onboarding.OnboardingRoute
+import com.qalqan.antifraud.ui.onboarding.OnboardingViewModel
 import com.qalqan.antifraud.web.DomainNormalizer
 import com.qalqan.antifraud.web.DomainSeenChecker
 import com.qalqan.antifraud.web.LookalikeDetector
@@ -173,6 +175,25 @@ fun AntifraudNavGraph(
                     state = settingsState,
                     onSensitivityChange = { vm.setSensitivity(it) },
                     onToggleChange = { key, enabled -> vm.setToggle(key, enabled) },
+                )
+            }
+            composable(AntifraudDestination.Onboarding.route) {
+                val app = LocalContext.current.applicationContext as Application
+                val vm =
+                    remember(repos) {
+                        OnboardingViewModel(app, repos, UserSettings(app))
+                    }
+                val onboardingState by vm.state.collectAsState()
+                OnboardingRoute(
+                    state = onboardingState,
+                    onGrant = { vm.grantCurrent() },
+                    onSkip = { vm.skipCurrent() },
+                    onFinish = {
+                        vm.finish()
+                        navController.navigate(AntifraudDestination.Home.route) {
+                            popUpTo(AntifraudDestination.Onboarding.route) { inclusive = true }
+                        }
+                    },
                 )
             }
         }
