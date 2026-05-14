@@ -176,4 +176,24 @@
     <string name="question_answer_no">No</string>
     <string name="question_answer_not_sure">Not sure</string>
     <string name="question_dont_ask_again">Don\'t ask again for this campaign</string>
+
+    <!-- Pause-before-action modal §11.5 -->
+    <string name="pause_title">Pause — verify before continuing</string>
+    <string name="pause_body">Active campaign is at critical risk. Take a moment to verify before taking any requested action.</string>
+    <string name="pause_action_pause">I\'ll pause</string>
+    <string name="pause_action_show_details">Show details</string>
+
+    <!-- Educational cards §19A -->
+    <string name="edu_card_1_title">Never share an SMS code</string>
+    <string name="edu_card_1_body">A real bank or service will never ask you to read an SMS code out loud. If someone asks, that\'s the scam.</string>
+    <string name="edu_card_2_title">Never install an app at a caller\'s request</string>
+    <string name="edu_card_2_body">If a caller insists you install an app to \"secure your account\", hang up. That app is almost certainly remote-access spyware.</string>
+    <string name="edu_card_3_title">Verify a bank\'s official number</string>
+    <string name="edu_card_3_body">Look up the bank\'s official phone number on the back of your card or on the bank\'s actual website. Don\'t use the number the caller gave you.</string>
+    <string name="edu_card_4_title">What to do about a suspicious SMS</string>
+    <string name="edu_card_4_body">Don\'t click links in suspicious SMS. Report the sender to your operator. Delete the message.</string>
+    <string name="edu_card_5_title">How to recognize an investment scheme</string>
+    <string name="edu_card_5_body">Promises of guaranteed high returns are the hallmark of a scam. If it sounds too good to be true, it is.</string>
+    <string name="edu_card_next_button">Next</string>
+    <string name="edu_card_dismiss_button">Dismiss</string>
 </resources>
