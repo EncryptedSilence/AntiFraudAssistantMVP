@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">AntiFraud Assistant</string>
+
+    <!-- Home (legacy status content; refactored in Phase 4) -->
+    <string name="home_title">AntiFraud Assistant</string>
+    <string name="home_calls_count">Calls captured: %1$d</string>
+    <string name="home_sms_count">SMS captured: %1$d</string>
+    <string name="home_web_count">Web visits captured: %1$d</string>
+    <string name="home_patterns_enabled_count">Patterns enabled: %1$d</string>
+    <string name="home_battery_optimization_warning">Battery optimization is on; call observation may be killed in the background.</string>
+    <string name="home_latest_warning">Latest warning: %1$s — %2$s</string>
+    <string name="home_call_perm_granted">Auto call capture: on</string>
+    <string name="home_call_perm_partial">Auto call capture: partial — some permissions missing</string>
+    <string name="home_call_perm_denied">Auto call capture: off — manual entry only</string>
+    <string name="home_sms_perm_granted">Auto SMS capture: on</string>
+    <string name="home_sms_perm_partial">Auto SMS capture: partial — some permissions missing</string>
+    <string name="home_sms_perm_denied">Auto SMS capture: off — manual paste only</string>
+    <string name="home_run_demo_button">Run demo (Fast attack)</string>
+    <string name="home_wipe_button">Wipe all data</string>
+    <string name="home_suspicious_call_button">I had a suspicious call</string>
+    <string name="home_suspicious_sms_button">I had a suspicious SMS</string>
+    <string name="home_suspicious_site_button">I had a suspicious site</string>
+    <string name="home_export_button">Export…</string>
+    <string name="home_sync_label">Sync: %1$s</string>
+    <string name="home_sync_state_enabled">enabled</string>
+    <string name="home_sync_state_disabled">disabled</string>
+    <string name="home_last_synced">Last synced: %1$s</string>
+    <string name="home_sync_now_button">Sync now</string>
+    <string name="home_import_local_button">Import local bundle…</string>
+
+    <!-- Bottom nav tabs (consumed in T08) -->
+    <string name="nav_home">Home</string>
+    <string name="nav_campaigns">Campaigns</string>
+    <string name="nav_patterns">Patterns</string>
+    <string name="nav_references">References</string>
+    <string name="nav_privacy">Privacy</string>
 </resources>
