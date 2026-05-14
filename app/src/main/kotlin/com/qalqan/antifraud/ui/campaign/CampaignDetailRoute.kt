@@ -17,6 +17,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.qalqan.antifraud.R
+import com.qalqan.antifraud.domain.AnswerCode
+import com.qalqan.antifraud.settings.QuestionPromptKind
+import com.qalqan.antifraud.ui.question.QuestionPromptCard
 import com.qalqan.antifraud.ui.state.LoadingState
 import com.qalqan.antifraud.ui.state.accessibleTouchTarget
 
@@ -33,6 +36,8 @@ fun CampaignDetailRoute(
     onMarkSuspicious: () -> Unit,
     onExport: () -> Unit,
     onCreatePattern: () -> Unit,
+    onAnswerQuestion: (QuestionPromptKind, AnswerCode) -> Unit = { _, _ -> },
+    onDontAskQuestion: (QuestionPromptKind) -> Unit = {},
 ) {
     if (state.isLoading) {
         LoadingState()
@@ -50,6 +55,15 @@ fun CampaignDetailRoute(
         Section(R.string.campaign_detail_triggered_patterns, state.triggeredPatterns)
         Section(R.string.campaign_detail_reasons, state.reasons, tag = "Reason")
         Section(R.string.campaign_detail_pending_questions, state.pendingQuestions)
+        state.pendingPrompt?.let { kind ->
+            QuestionPromptCard(
+                kind = kind,
+                onAnswerYes = { onAnswerQuestion(kind, AnswerCode.YES) },
+                onAnswerNo = { onAnswerQuestion(kind, AnswerCode.NO) },
+                onAnswerNotSure = { onAnswerQuestion(kind, AnswerCode.NOT_SURE) },
+                onDontAskAgain = { onDontAskQuestion(kind) },
+            )
+        }
         Section(R.string.campaign_detail_recommendations, state.recommendations)
         ActionRow(state, onClose, onFalseAlarm, onMarkSuspicious, onExport, onCreatePattern)
     }

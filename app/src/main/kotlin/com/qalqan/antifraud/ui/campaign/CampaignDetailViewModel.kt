@@ -5,10 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.domain.CampaignStatus
+import com.qalqan.antifraud.domain.RiskBand
 import com.qalqan.antifraud.domain.RiskEvent
 import com.qalqan.antifraud.patterns.BatchPatternMatcher
 import com.qalqan.antifraud.patterns.PatternExplainer
 import com.qalqan.antifraud.patterns.SeedPatternLoader
+import com.qalqan.antifraud.settings.QuestionFatigueGate
+import com.qalqan.antifraud.settings.QuestionPromptKind
 import com.qalqan.antifraud.settings.UserSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,6 +57,7 @@ class CampaignDetailViewModel(
                 } else {
                     emptyList()
                 }
+            val pendingPrompt = computePendingPrompt(campaign.campaignId.value, campaign.campaignRiskBand)
             _state.value =
                 CampaignDetailUiState(
                     campaignId = campaign.campaignId.value,
@@ -67,11 +71,16 @@ class CampaignDetailViewModel(
                     triggeredPatterns = triggeredPairs.map { (p, _) -> p.name },
                     reasons = reasons,
                     pendingQuestions = emptyList(),
+                    pendingPrompt = pendingPrompt,
                     recommendations = emptyList(),
                     advancedRulesEnabled = userSettings.advancedRulesEnabled,
                     isLoading = false,
                 )
         }
+    }
+
+    private companion object {
+        const val SECONDS_PER_DAY: Long = 24L * 60L * 60L
     }
 
     private suspend fun collectCampaignEvents(ids: Set<String>): List<RiskEvent> {
@@ -93,6 +102,62 @@ class CampaignDetailViewModel(
             }
         }
     }
+
+    fun answerQuestion(
+        kind: QuestionPromptKind,
+        value: com.qalqan.antifraud.domain.AnswerCode,
+        relatedEventId: String,
+    ) {
+        viewModelScope.launch {
+            val campaignId = _state.value.campaignId
+            if (campaignId.isBlank()) return@launch
+            val answer =
+                com.qalqan.antifraud.domain.UserAnswer(
+                    id = com.qalqan.antifraud.domain.AnswerId(java.util.UUID.randomUUID().toString()),
+                    relatedEventId = com.qalqan.antifraud.domain.EventId(relatedEventId),
+                    relatedSessionId = null,
+                    relatedCampaignId = com.qalqan.antifraud.domain.CampaignId(campaignId),
+                    questionCode = kind.code,
+                    answerCode = value,
+                    userNoteLocalEnc = null,
+                    answerRiskScore = 0,
+                    createdAt = Instant.now(),
+                )
+            repos.answers.save(answer)
+            load(campaignId)
+        }
+    }
+
+    private suspend fun computePendingPrompt(
+        campaignId: String,
+        currentBand: RiskBand,
+    ): QuestionPromptKind? {
+        val twentyFourHoursAgo = Instant.now().minusSeconds(SECONDS_PER_DAY)
+        val priorAnswers =
+            repos.answers
+                .listSince(twentyFourHoursAgo)
+                .filter { it.relatedCampaignId?.value == campaignId }
+        val answeredKinds =
+            priorAnswers.map { QuestionPromptKind.fromCode(it.questionCode) }.toSet()
+        val gate = QuestionFatigueGate(allowedKinds = allowedKinds())
+        return gate.nextPrompt(
+            campaignId = campaignId,
+            currentBand = currentBand,
+            answeredKinds = answeredKinds,
+            promptsLast24h = priorAnswers.size,
+            dontAskAgain = false,
+            now = Instant.now(),
+        )
+    }
+
+    private fun allowedKinds(): Set<QuestionPromptKind> =
+        buildSet {
+            if (userSettings.postCallQuestionsEnabled) add(QuestionPromptKind.CALLER_IDENTITY)
+            if (userSettings.postSmsQuestionsEnabled || userSettings.postSiteQuestionsEnabled) {
+                add(QuestionPromptKind.PRESSURE)
+                add(QuestionPromptKind.ACTION_REQUEST)
+            }
+        }
 
     fun markFalseAlarm() {
         viewModelScope.launch {

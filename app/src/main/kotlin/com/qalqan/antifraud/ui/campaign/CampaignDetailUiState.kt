@@ -1,6 +1,7 @@
 package com.qalqan.antifraud.ui.campaign
 
 import com.qalqan.antifraud.domain.RiskBand
+import com.qalqan.antifraud.settings.QuestionPromptKind
 import java.time.Instant
 
 /**
@@ -17,6 +18,7 @@ data class CampaignDetailUiState(
     val triggeredPatterns: List<String> = emptyList(),
     val reasons: List<String> = emptyList(),
     val pendingQuestions: List<String> = emptyList(),
+    val pendingPrompt: QuestionPromptKind? = null,
     val recommendations: List<String> = emptyList(),
     val advancedRulesEnabled: Boolean = false,
     val isLoading: Boolean = false,

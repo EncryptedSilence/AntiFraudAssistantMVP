@@ -119,6 +119,11 @@ fun AntifraudNavGraph(
                     onMarkSuspicious = {},
                     onExport = {},
                     onCreatePattern = {},
+                    onAnswerQuestion = { kind, value ->
+                        // No related event id in the current detail wire-up; pass a
+                        // synthetic id so the answer is still recorded.
+                        vm.answerQuestion(kind, value, relatedEventId = "ui-detail-$campaignId")
+                    },
                 )
             }
             composable(AntifraudDestination.Patterns.route) {
