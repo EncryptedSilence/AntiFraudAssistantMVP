@@ -22,6 +22,10 @@ object AlertChannels {
     const val CHANNEL_CRITICAL = "antifraud_critical"
     const val CHANNEL_MEDIUM = "antifraud_medium"
 
+    // §17.0.1 critical vibration: short-pause-short, total under 1 s so it does not block UI.
+    @Suppress("MagicNumber")
+    private val CRITICAL_VIBRATION_PATTERN = longArrayOf(0L, 400L, 200L, 400L)
+
     fun ensure(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -46,7 +50,7 @@ object AlertChannels {
                 description =
                     "High-importance fraud warnings shown over your dialer or lock screen."
                 enableVibration(true)
-                vibrationPattern = longArrayOf(0L, 400L, 200L, 400L)
+                vibrationPattern = CRITICAL_VIBRATION_PATTERN
                 setSound(sound, attrs)
             }
         nm.createNotificationChannel(channel)

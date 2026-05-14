@@ -50,11 +50,12 @@ class AlertNotificationBuilder {
             val pi =
                 PendingIntent.getActivity(
                     context,
-                    /* requestCode = */ 0,
+                    // requestCode =
+                    0,
                     fsIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
                 )
-            builder.setFullScreenIntent(pi, /* highPriority = */ true)
+            builder.setFullScreenIntent(pi, true)
         }
         return builder.build()
     }
