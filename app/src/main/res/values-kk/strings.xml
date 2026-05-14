@@ -42,4 +42,13 @@
     <string name="state_permission_denied_default"></string>
     <string name="state_permission_denied_open_settings"></string>
     <string name="state_offline_default"></string>
+    <string name="home_risk_all_clear"></string>
+    <string name="home_risk_label"></string>
+    <string name="home_24h_summary"></string>
+    <string name="home_active_campaign_card_title"></string>
+    <string name="home_active_campaign_card_started"></string>
+    <string name="home_active_campaign_card_last_event"></string>
+    <string name="home_active_campaign_card_open"></string>
+    <string name="home_empty_watching"></string>
+    <string name="home_empty_state"></string>
 </resources>

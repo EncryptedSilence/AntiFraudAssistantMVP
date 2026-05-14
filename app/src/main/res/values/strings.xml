@@ -43,4 +43,15 @@
     <string name="state_permission_denied_default">Permission required.</string>
     <string name="state_permission_denied_open_settings">Open settings</string>
     <string name="state_offline_default">Offline.</string>
+
+    <!-- Home screen §17.1 -->
+    <string name="home_risk_all_clear">All clear</string>
+    <string name="home_risk_label">Current risk: %1$s</string>
+    <string name="home_24h_summary">Last 24 h: %1$d events, %2$d alerts, %3$d dismissed</string>
+    <string name="home_active_campaign_card_title">Active campaign</string>
+    <string name="home_active_campaign_card_started">Started: %1$s</string>
+    <string name="home_active_campaign_card_last_event">Last event: %1$s</string>
+    <string name="home_active_campaign_card_open">Open</string>
+    <string name="home_empty_watching">Watching for signals — none yet.</string>
+    <string name="home_empty_state">Watching — no signals yet.</string>
 </resources>

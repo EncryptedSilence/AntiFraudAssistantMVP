@@ -17,6 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.qalqan.antifraud.ui.home.HomeRoute
+import com.qalqan.antifraud.ui.home.HomeUiState
 
 @Composable
 fun AntifraudNavGraph(startDestination: String = AntifraudDestination.Home.route) {
@@ -30,7 +32,18 @@ fun AntifraudNavGraph(startDestination: String = AntifraudDestination.Home.route
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(AntifraudDestination.Home.route) {
-                PlaceholderRoute(label = stringResource(AntifraudDestination.Home.labelResId))
+                HomeRoute(
+                    state = HomeUiState(),
+                    onSuspiciousCall = {},
+                    onSuspiciousSms = {},
+                    onSuspiciousSite = {},
+                    onOpenCampaign = { id ->
+                        navController.navigate(AntifraudDestination.CampaignDetail(id).route)
+                    },
+                    onOpenPrivacy = {
+                        navController.navigate(AntifraudDestination.Privacy.route)
+                    },
+                )
             }
             composable(AntifraudDestination.Campaigns.route) {
                 PlaceholderRoute(label = stringResource(AntifraudDestination.Campaigns.labelResId))
