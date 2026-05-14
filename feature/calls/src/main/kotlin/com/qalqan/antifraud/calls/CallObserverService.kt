@@ -153,5 +153,39 @@ class CallObserverService : Service() {
         fun stop(context: Context) {
             context.stopService(Intent(context, CallObserverService::class.java))
         }
+
+        /**
+         * Stage 9 §23 #41 — re-build the §17.0.3 ongoing notification with live counts
+         * from [PassiveCounters]. Safe to call from any thread; the actual `notify` call
+         * is fire-and-forget on the IO dispatcher. Failures (KeyStore unavailable in tests)
+         * swallow silently — the notification simply does not refresh.
+         */
+        fun refreshOngoingNotification(context: Context) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+                val r =
+                    try {
+                        repositoriesFactory(context.applicationContext)
+                    } catch (
+                        @Suppress("TooGenericExceptionCaught") _: Exception,
+                    ) {
+                        return@launch
+                    }
+                try {
+                    val counters = PassiveCounters(r)
+                    val now = java.time.Instant.now()
+                    val copy =
+                        PassiveNotificationCopy(
+                            eventsLast24h = counters.eventsLast24h(now),
+                            alertsLast24h = counters.alertsLast24h(now),
+                        )
+                    val notif = CallObserverNotifications.build(context, copy)
+                    androidx.core.app.NotificationManagerCompat
+                        .from(context)
+                        .notify(NOTIFICATION_ID, notif)
+                } finally {
+                    r.close()
+                }
+            }
+        }
     }
 }
