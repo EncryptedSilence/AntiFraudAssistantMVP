@@ -31,6 +31,8 @@ class Acceptance2NoExternalStorageTest {
             "feature/sms/src/main/AndroidManifest.xml",
             "feature/web/src/main/AndroidManifest.xml",
             "feature/export/src/main/AndroidManifest.xml",
+            "feature/settings/src/main/AndroidManifest.xml",
+            "feature/alerts/src/main/AndroidManifest.xml",
         ).map { File(repoRoot, it) }.filter { it.exists() }
 
     @Test
@@ -60,6 +62,14 @@ class Acceptance2NoExternalStorageTest {
     @Test
     fun `feature_export manifest declares no permissions at all (SAF is permission-less)`() {
         val manifest = File(repoRoot, "feature/export/src/main/AndroidManifest.xml")
+        if (!manifest.exists()) return
+        val text = manifest.readText()
+        text.contains("uses-permission") shouldBe false
+    }
+
+    @Test
+    fun `§2_1 — feature_settings declares no permissions`() {
+        val manifest = File(repoRoot, "feature/settings/src/main/AndroidManifest.xml")
         if (!manifest.exists()) return
         val text = manifest.readText()
         text.contains("uses-permission") shouldBe false
