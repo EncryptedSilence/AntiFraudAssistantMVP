@@ -1,0 +1,38 @@
+<resources>
+    <!--
+        Spec §24 #11 — Russian primary post-MVP; English is the MVP runtime locale.
+        Keys mirror values/strings.xml; values are empty so Android falls back to values/
+        per the resource-fallback rules.
+    -->
+    <string name="app_name"></string>
+    <string name="home_title"></string>
+    <string name="home_calls_count"></string>
+    <string name="home_sms_count"></string>
+    <string name="home_web_count"></string>
+    <string name="home_patterns_enabled_count"></string>
+    <string name="home_battery_optimization_warning"></string>
+    <string name="home_latest_warning"></string>
+    <string name="home_call_perm_granted"></string>
+    <string name="home_call_perm_partial"></string>
+    <string name="home_call_perm_denied"></string>
+    <string name="home_sms_perm_granted"></string>
+    <string name="home_sms_perm_partial"></string>
+    <string name="home_sms_perm_denied"></string>
+    <string name="home_run_demo_button"></string>
+    <string name="home_wipe_button"></string>
+    <string name="home_suspicious_call_button"></string>
+    <string name="home_suspicious_sms_button"></string>
+    <string name="home_suspicious_site_button"></string>
+    <string name="home_export_button"></string>
+    <string name="home_sync_label"></string>
+    <string name="home_sync_state_enabled"></string>
+    <string name="home_sync_state_disabled"></string>
+    <string name="home_last_synced"></string>
+    <string name="home_sync_now_button"></string>
+    <string name="home_import_local_button"></string>
+    <string name="nav_home"></string>
+    <string name="nav_campaigns"></string>
+    <string name="nav_patterns"></string>
+    <string name="nav_references"></string>
+    <string name="nav_privacy"></string>
+</resources>
