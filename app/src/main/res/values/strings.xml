@@ -145,4 +145,26 @@
     <string name="settings_toggle_auto_archiving">Automatic archiving</string>
     <string name="settings_toggle_advanced_rules">Enable advanced rules</string>
     <string name="settings_toggle_educational_cards">Educational cards</string>
+
+    <!-- Onboarding §22 Stage 8 -->
+    <string name="onboarding_title">Welcome</string>
+    <string name="onboarding_step_n_of_m">Step %1$d of %2$d</string>
+    <string name="onboarding_step_notifications_title">Notifications</string>
+    <string name="onboarding_step_notifications_why">We use notifications to warn you about suspicious calls and SMS in real time.</string>
+    <string name="onboarding_step_phone_title">Phone</string>
+    <string name="onboarding_step_phone_why">We read the phone state so we can analyze incoming calls without recording them.</string>
+    <string name="onboarding_step_call_log_title">Call log</string>
+    <string name="onboarding_step_call_log_why">We read the call log so we can correlate recent calls into a single risk campaign.</string>
+    <string name="onboarding_step_sms_title">SMS</string>
+    <string name="onboarding_step_sms_why">We read SMS locally so we can flag fraud patterns. Bodies are stored hashed and truncated.</string>
+    <string name="onboarding_step_full_screen_title">Full-screen alerts</string>
+    <string name="onboarding_step_full_screen_why">Lets us show a full-screen warning while you are on a call.</string>
+    <string name="onboarding_step_overlay_title">Overlay banner</string>
+    <string name="onboarding_step_overlay_why">Lets us show a thin warning banner on top of banking apps.</string>
+    <string name="onboarding_step_battery_title">Battery exemption</string>
+    <string name="onboarding_step_battery_why">Exempting the app from battery optimization keeps the call-observer service alive.</string>
+    <string name="onboarding_action_grant">Grant</string>
+    <string name="onboarding_action_skip">Skip</string>
+    <string name="onboarding_action_already_granted">Already granted</string>
+    <string name="onboarding_action_finish">Finish</string>
 </resources>
