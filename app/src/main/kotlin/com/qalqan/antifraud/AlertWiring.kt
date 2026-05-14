@@ -7,12 +7,12 @@ import com.qalqan.antifraud.alerts.AlertExplanationProvider
 import com.qalqan.antifraud.alerts.AlertNotificationBuilder
 import com.qalqan.antifraud.alerts.AlertPipeline
 import com.qalqan.antifraud.calls.CallObserverService
+import com.qalqan.antifraud.sms.SmsBroadcastReceiver
 
 /**
  * Stage 9 composition root. `:feature:alerts` does NOT depend on `:feature:calls` /
  * `:feature:sms`; the wiring lives here in `:app` so the producer modules can stay free
- * of `:feature:alerts` knowledge. T34 extends this with the action-logger callback;
- * T31 adds the SMS hook.
+ * of `:feature:alerts` knowledge. T34 extends this with the action-logger callback.
  */
 object AlertWiring {
     fun installInto(applicationContext: Context) {
@@ -25,6 +25,16 @@ object AlertWiring {
                     explanationProvider = AlertExplanationProvider(),
                 )
             pipeline::onCallCaptured
+        }
+        SmsBroadcastReceiver.captureHookFactory = { ctx, repos ->
+            val dispatcher = makeDispatcher(ctx)
+            val pipeline =
+                AlertPipeline(
+                    repos = repos,
+                    dispatcher = dispatcher,
+                    explanationProvider = AlertExplanationProvider(),
+                )
+            pipeline::onSmsCaptured
         }
         AlertChannels.ensure(applicationContext)
     }
