@@ -43,19 +43,23 @@ class AlertNotificationBuilder {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         if (band == AlertBand.FULL_SCREEN || band == AlertBand.FULL_SCREEN_PLUS_OVERLAY) {
-            val fsIntent =
-                Intent(context, CriticalAlertActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
-            val pi =
-                PendingIntent.getActivity(
-                    context,
-                    // requestCode =
-                    0,
-                    fsIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-                )
-            builder.setFullScreenIntent(pi, true)
+            val gate = FullScreenIntentPermissionGate(context)
+            if (gate.fullScreenAllowed()) {
+                val fsIntent =
+                    Intent(context, CriticalAlertActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                val pi =
+                    PendingIntent.getActivity(
+                        context,
+                        // requestCode =
+                        0,
+                        fsIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    )
+                builder.setFullScreenIntent(pi, true)
+            }
+            // else: heads-up only (IMPORTANCE_HIGH channel still alerts audibly — §4.4.3)
         }
         return builder.build()
     }
