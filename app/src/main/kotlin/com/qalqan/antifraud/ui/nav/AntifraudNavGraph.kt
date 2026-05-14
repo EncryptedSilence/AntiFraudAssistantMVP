@@ -42,8 +42,12 @@ import com.qalqan.antifraud.ui.home.HomeRoute
 import com.qalqan.antifraud.ui.home.HomeViewModel
 import com.qalqan.antifraud.ui.patterns.PatternsRoute
 import com.qalqan.antifraud.ui.patterns.PatternsViewModel
+import com.qalqan.antifraud.ui.privacy.PrivacyRoute
+import com.qalqan.antifraud.ui.privacy.PrivacyViewModel
 import com.qalqan.antifraud.ui.references.ReferencesRoute
 import com.qalqan.antifraud.ui.references.ReferencesViewModel
+import com.qalqan.antifraud.ui.settings.SettingsRoute
+import com.qalqan.antifraud.ui.settings.SettingsViewModel
 import com.qalqan.antifraud.ui.home.SuspiciousCallSheet
 import com.qalqan.antifraud.ui.home.SuspiciousSmsSheet
 import com.qalqan.antifraud.web.DomainNormalizer
@@ -140,7 +144,36 @@ fun AntifraudNavGraph(
                 ReferencesRoute(state = referencesState)
             }
             composable(AntifraudDestination.Privacy.route) {
-                PlaceholderRoute(label = stringResource(AntifraudDestination.Privacy.labelResId))
+                val app = LocalContext.current.applicationContext as Application
+                val vm =
+                    remember(repos) {
+                        PrivacyViewModel(app, repos, UserSettings(app))
+                    }
+                LaunchedEffect(vm) { vm.refresh() }
+                val privacyState by vm.state.collectAsState()
+                PrivacyRoute(
+                    state = privacyState,
+                    onDeleteAll = { vm.deleteAll() },
+                    onDisableSync = { vm.disableSync() },
+                    onResetPermissions = { vm.resetPermissions() },
+                    onOpenSettings = {
+                        navController.navigate(AntifraudDestination.Settings.route)
+                    },
+                )
+            }
+            composable(AntifraudDestination.Settings.route) {
+                val app = LocalContext.current.applicationContext as Application
+                val vm =
+                    remember(repos) {
+                        SettingsViewModel(app, repos, UserSettings(app))
+                    }
+                LaunchedEffect(vm) { vm.refresh() }
+                val settingsState by vm.state.collectAsState()
+                SettingsRoute(
+                    state = settingsState,
+                    onSensitivityChange = { vm.setSensitivity(it) },
+                    onToggleChange = { key, enabled -> vm.setToggle(key, enabled) },
+                )
             }
         }
     }
