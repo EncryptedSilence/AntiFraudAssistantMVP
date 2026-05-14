@@ -93,4 +93,15 @@
     <string name="patterns_last_trigger_never">Never triggered</string>
     <string name="patterns_reset_button">Reset to defaults</string>
     <string name="patterns_toggle_enabled">Enabled</string>
+
+    <!-- References screen §17.4 -->
+    <string name="references_tab_numbers">Numbers</string>
+    <string name="references_tab_domains">Domains</string>
+    <string name="references_tab_sms_categories">SMS categories</string>
+    <string name="references_tab_official">Official</string>
+    <string name="references_section_suspicious">Suspicious</string>
+    <string name="references_section_trusted">Trusted</string>
+    <string name="references_last_update_label">Last update: %1$s · source: %2$s</string>
+    <string name="references_no_bundle">No bundle applied</string>
+    <string name="references_empty_list">No entries.</string>
 </resources>
