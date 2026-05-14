@@ -13,6 +13,7 @@ android {
                 if (test.name.contains("Release")) {
                     test.exclude("**/ExportSheetGatingTest.class")
                     test.exclude("**/AntifraudAppSmokeTest.class")
+                    test.exclude("**/ui/state/**")
                 }
             }
         }
