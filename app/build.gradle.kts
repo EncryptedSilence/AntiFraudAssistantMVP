@@ -35,6 +35,7 @@ dependencies {
     implementation(project(":core:sync"))
     implementation(project(":feature:export"))
     implementation(project(":feature:alerts"))
+    implementation(project(":feature:settings"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
