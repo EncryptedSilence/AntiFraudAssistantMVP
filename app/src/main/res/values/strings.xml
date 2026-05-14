@@ -81,4 +81,16 @@
     <string name="campaign_action_mark_suspicious">Mark as suspicious</string>
     <string name="campaign_action_export">Export</string>
     <string name="campaign_action_create_pattern">Create pattern from this campaign</string>
+
+    <!-- Patterns screen §17.3 -->
+    <string name="patterns_title">Patterns</string>
+    <string name="patterns_empty">No patterns yet.</string>
+    <string name="patterns_source_seed">seed</string>
+    <string name="patterns_source_bundle">bundle</string>
+    <string name="patterns_last_update_unknown">never updated</string>
+    <string name="patterns_trigger_count">Triggered %1$d times</string>
+    <string name="patterns_last_trigger_at">Last triggered: %1$s</string>
+    <string name="patterns_last_trigger_never">Never triggered</string>
+    <string name="patterns_reset_button">Reset to defaults</string>
+    <string name="patterns_toggle_enabled">Enabled</string>
 </resources>

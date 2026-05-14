@@ -20,7 +20,14 @@ class PatternStateRepository internal constructor(private val dao: PatternStateD
         enabled: Boolean,
         at: Instant,
     ) {
-        dao.upsert(PatternStateEntity(patternId, enabled, at.toString()))
+        val existing = dao.findById(patternId)
+        val merged =
+            if (existing != null) {
+                existing.copy(enabled = enabled, updatedAt = at.toString())
+            } else {
+                PatternStateEntity(patternId = patternId, enabled = enabled, updatedAt = at.toString())
+            }
+        dao.upsert(merged)
     }
 
     /**
@@ -65,5 +72,23 @@ class PatternStateRepository internal constructor(private val dao: PatternStateD
 
     suspend fun resetToDefaults() {
         dao.deleteAll()
+    }
+
+    suspend fun deleteAll() {
+        dao.deleteAll()
+    }
+
+    /**
+     * Single-pattern trigger projection used by the Stage 8 Patterns screen.
+     * Returns `null` when the row is absent (pattern never triggered).
+     */
+    suspend fun triggerInfo(patternId: String): PatternTriggerInfo? {
+        val entity = dao.findById(patternId) ?: return null
+        val last = entity.lastTriggeredAt ?: return null
+        return PatternTriggerInfo(
+            patternId = entity.patternId,
+            lastTriggeredAt = Instant.parse(last),
+            timesTriggered = entity.timesTriggered,
+        )
     }
 }
