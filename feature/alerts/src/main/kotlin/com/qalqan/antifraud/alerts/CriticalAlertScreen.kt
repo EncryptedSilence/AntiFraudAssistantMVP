@@ -70,7 +70,10 @@ fun CriticalAlertScreen(
     }
 }
 
+@Suppress("MagicNumber")
 private val BACKGROUND_RED = Color(0xFFFFEBEE)
+
+@Suppress("MagicNumber")
 private val TITLE_RED = Color(0xFFB71C1C)
 private val OUTER_PADDING = 24.dp
 private val VERTICAL_SPACING = 16.dp
