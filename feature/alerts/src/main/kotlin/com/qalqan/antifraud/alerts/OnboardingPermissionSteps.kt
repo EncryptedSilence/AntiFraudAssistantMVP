@@ -36,12 +36,11 @@ object OnboardingPermissionSteps {
         val pkg = context.packageName
         val fsi = AlertPermissionRequester.fullScreenIntentSettingsIntent(pkg)
         val fsGate = FullScreenIntentPermissionGate(context)
-        if (fsi != null && !fsGate.fullScreenAllowed()) {
-            return Step.FullScreenIntent(fsi)
+        val overlayNeeded = !Settings.canDrawOverlays(context)
+        return when {
+            fsi != null && !fsGate.fullScreenAllowed() -> Step.FullScreenIntent(fsi)
+            overlayNeeded -> Step.SystemAlertWindow(AlertPermissionRequester.overlaySettingsIntent(pkg))
+            else -> Step.None
         }
-        if (!Settings.canDrawOverlays(context)) {
-            return Step.SystemAlertWindow(AlertPermissionRequester.overlaySettingsIntent(pkg))
-        }
-        return Step.None
     }
 }
