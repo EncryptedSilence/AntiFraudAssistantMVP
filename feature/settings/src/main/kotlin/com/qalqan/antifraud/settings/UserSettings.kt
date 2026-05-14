@@ -46,15 +46,23 @@ class UserSettings(context: Context) {
             prefs.edit().putLong(KEY_LAST_EDU_AT, value).apply()
         }
 
-    private fun booleanPref(key: String, default: Boolean) =
-        object : ReadWriteProperty<Any?, Boolean> {
-            override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean =
-                prefs.getBoolean(key, default)
+    private fun booleanPref(
+        key: String,
+        default: Boolean,
+    ) = object : ReadWriteProperty<Any?, Boolean> {
+        override fun getValue(
+            thisRef: Any?,
+            property: KProperty<*>,
+        ): Boolean = prefs.getBoolean(key, default)
 
-            override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
-                prefs.edit().putBoolean(key, value).apply()
-            }
+        override fun setValue(
+            thisRef: Any?,
+            property: KProperty<*>,
+            value: Boolean,
+        ) {
+            prefs.edit().putBoolean(key, value).apply()
         }
+    }
 
     companion object {
         const val PREFS_NAME: String = "antifraud_user_prefs"
