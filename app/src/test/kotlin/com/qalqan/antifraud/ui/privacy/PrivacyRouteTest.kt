@@ -20,8 +20,9 @@ class PrivacyRouteTest {
             PrivacyRoute(
                 state =
                     PrivacyUiState(
-                        retentionRows = RetentionDisplay.rows()
-                            .map { PrivacyUiState.RetentionRow(it.key, it.days) },
+                        retentionRows =
+                            RetentionDisplay.rows()
+                                .map { PrivacyUiState.RetentionRow(it.key, it.days) },
                     ),
                 onDeleteAll = {},
                 onDisableSync = {},

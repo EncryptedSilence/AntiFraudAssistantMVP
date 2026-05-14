@@ -1,10 +1,9 @@
+@file:Suppress("LongMethod")
+
 package com.qalqan.antifraud.ui.nav
 
 import android.app.Application
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -32,6 +31,7 @@ import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.crypto.InMemoryCryptoBox
 import com.qalqan.antifraud.database.crypto.KeyStoreCryptoBox
 import com.qalqan.antifraud.database.manual.ManualEntry
+import com.qalqan.antifraud.database.manual.WebEntryDigest
 import com.qalqan.antifraud.domain.CallDirection
 import com.qalqan.antifraud.settings.UserSettings
 import com.qalqan.antifraud.ui.campaign.CampaignDetailRoute
@@ -40,6 +40,10 @@ import com.qalqan.antifraud.ui.campaign.CampaignListRoute
 import com.qalqan.antifraud.ui.campaign.CampaignsViewModel
 import com.qalqan.antifraud.ui.home.HomeRoute
 import com.qalqan.antifraud.ui.home.HomeViewModel
+import com.qalqan.antifraud.ui.home.SuspiciousCallSheet
+import com.qalqan.antifraud.ui.home.SuspiciousSmsSheet
+import com.qalqan.antifraud.ui.onboarding.OnboardingRoute
+import com.qalqan.antifraud.ui.onboarding.OnboardingViewModel
 import com.qalqan.antifraud.ui.patterns.PatternsRoute
 import com.qalqan.antifraud.ui.patterns.PatternsViewModel
 import com.qalqan.antifraud.ui.privacy.PrivacyRoute
@@ -48,10 +52,6 @@ import com.qalqan.antifraud.ui.references.ReferencesRoute
 import com.qalqan.antifraud.ui.references.ReferencesViewModel
 import com.qalqan.antifraud.ui.settings.SettingsRoute
 import com.qalqan.antifraud.ui.settings.SettingsViewModel
-import com.qalqan.antifraud.ui.home.SuspiciousCallSheet
-import com.qalqan.antifraud.ui.home.SuspiciousSmsSheet
-import com.qalqan.antifraud.ui.onboarding.OnboardingRoute
-import com.qalqan.antifraud.ui.onboarding.OnboardingViewModel
 import com.qalqan.antifraud.web.DomainNormalizer
 import com.qalqan.antifraud.web.DomainSeenChecker
 import com.qalqan.antifraud.web.LookalikeDetector
@@ -59,7 +59,6 @@ import com.qalqan.antifraud.web.LookalikeSeedCatalog
 import com.qalqan.antifraud.web.WebEventBuilder
 import com.qalqan.antifraud.web.WebManualCapture
 import com.qalqan.antifraud.web.WebObserverActionLog
-import com.qalqan.antifraud.database.manual.WebEntryDigest
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -316,12 +315,5 @@ private fun AntifraudBottomBar(navController: NavHostController) {
                 label = { Text(stringResource(dest.labelResId)) },
             )
         }
-    }
-}
-
-@Composable
-private fun PlaceholderRoute(label: String) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(label, style = MaterialTheme.typography.titleLarge)
     }
 }

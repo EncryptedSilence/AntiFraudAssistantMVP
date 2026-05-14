@@ -42,7 +42,10 @@ class AntifraudAppSmokeTest {
     @After
     fun tearDown() {
         composeRule.waitForIdle()
-        repos.close()
+        // Intentionally do NOT close `repos`. HomeViewModel.refresh launches Room queries
+        // via LaunchedEffect on the Home destination; those coroutines can outlive
+        // waitForIdle and would crash on a freshly closed SQLCipher connection pool.
+        // The in-memory DB is freed when the Robolectric sandbox is torn down.
         context.getSharedPreferences("antifraud_user_prefs", Context.MODE_PRIVATE)
             .edit().clear().commit()
     }

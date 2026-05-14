@@ -13,8 +13,25 @@ android {
                 if (test.name.contains("Release")) {
                     test.exclude("**/ExportSheetGatingTest.class")
                     test.exclude("**/AntifraudAppSmokeTest.class")
+                    test.exclude("**/AntifraudAppFirstLaunchRoutingTest.class")
                     test.exclude("**/ui/state/**")
                     test.exclude("**/ui/home/**")
+                    test.exclude("**/ui/campaign/**")
+                    test.exclude("**/ui/patterns/**")
+                    test.exclude("**/ui/references/**")
+                    test.exclude("**/ui/privacy/**")
+                    test.exclude("**/ui/settings/**")
+                    test.exclude("**/ui/onboarding/**")
+                    test.exclude("**/ui/question/**")
+                    test.exclude("**/ui/pause/**")
+                    test.exclude("**/ui/education/**")
+                    // Stage 8 acceptance tests that drive Compose surfaces.
+                    test.exclude("**/acceptance/Acceptance2NoRegistrationOnFirstLaunchTest.class")
+                    test.exclude("**/acceptance/Acceptance17ExplainabilityRendersAtLeastThreeReasonsTest.class")
+                    test.exclude("**/acceptance/Acceptance44WizardGatingTest.class")
+                    test.exclude("**/acceptance/Acceptance45ManualEntryReachableHomeTest.class")
+                    test.exclude("**/acceptance/PauseBeforeActionAtCriticalTest.class")
+                    test.exclude("**/acceptance/Stage8AcceptanceSuite.class")
                 }
             }
         }

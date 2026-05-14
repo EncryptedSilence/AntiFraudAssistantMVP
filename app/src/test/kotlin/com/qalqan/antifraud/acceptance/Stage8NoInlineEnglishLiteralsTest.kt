@@ -12,6 +12,7 @@ class Stage8NoInlineEnglishLiteralsTest {
     private val repoRoot = File(System.getProperty("user.dir")!!).parentFile!!
 
     @Test
+    @Suppress("NestedBlockDepth")
     fun `every Stage 8 ui package uses stringResource(R_string_xxx) for user-facing copy`() {
         val targets =
             listOf(

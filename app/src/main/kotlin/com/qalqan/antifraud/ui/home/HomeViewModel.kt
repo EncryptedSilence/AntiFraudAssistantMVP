@@ -63,14 +63,15 @@ class HomeViewModel(
                     smsPermissionState = SmsObserverPermissions(app).state(),
                     batteryExempt = BatteryOptimizationPrompt.isExempt(app),
                     syncEnabled = SyncSettings(app).enabled,
-                    educationalCardVisible = run {
-                        val s = UserSettings(app)
-                        EducationalCardScheduler.shouldShow(
-                            enabled = s.educationalCardsEnabled,
-                            lastShownAtMs = s.lastEducationalCardAtMs,
-                            nowMs = System.currentTimeMillis(),
-                        )
-                    },
+                    educationalCardVisible =
+                        run {
+                            val s = UserSettings(app)
+                            EducationalCardScheduler.shouldShow(
+                                enabled = s.educationalCardsEnabled,
+                                lastShownAtMs = s.lastEducationalCardAtMs,
+                                nowMs = System.currentTimeMillis(),
+                            )
+                        },
                 )
         }
     }

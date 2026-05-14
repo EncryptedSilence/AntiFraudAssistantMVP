@@ -20,7 +20,10 @@ internal interface RiskCampaignDao {
     suspend fun listByStatus(status: String): List<RiskCampaignEntity>
 
     @Query("UPDATE risk_campaign SET status = :status WHERE campaignId = :id")
-    suspend fun updateStatus(id: String, status: String): Int
+    suspend fun updateStatus(
+        id: String,
+        status: String,
+    ): Int
 
     @Query("SELECT * FROM risk_campaign ORDER BY lastEventAtMs ASC")
     suspend fun listAll(): List<RiskCampaignEntity>

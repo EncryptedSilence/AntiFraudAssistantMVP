@@ -17,14 +17,19 @@ class RiskCampaignRepository internal constructor(private val dao: RiskCampaignD
 
     suspend fun listActive(): List<RiskCampaign> = dao.listActive().map { it.toDomain() }
 
-    suspend fun listByStatus(status: CampaignStatus): List<RiskCampaign> =
-        dao.listByStatus(status.name).map { it.toDomain() }
+    suspend fun listByStatus(status: CampaignStatus): List<RiskCampaign> {
+        val entities = dao.listByStatus(status.name)
+        return entities.map { it.toDomain() }
+    }
 
     suspend fun listAll(): List<RiskCampaign> = dao.listAll().map { it.toDomain() }
 
     suspend fun markFalsePositive(id: CampaignId): Int = dao.markFalsePositive(id.value)
 
-    suspend fun updateStatus(id: String, status: CampaignStatus): Int = dao.updateStatus(id, status.name)
+    suspend fun updateStatus(
+        id: String,
+        status: CampaignStatus,
+    ): Int = dao.updateStatus(id, status.name)
 
     suspend fun deleteArchivedOlderThan(before: Instant): Int = dao.deleteArchivedOlderThan(before.toEpochMilli())
 }

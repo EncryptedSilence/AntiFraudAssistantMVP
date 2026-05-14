@@ -20,7 +20,7 @@ import java.time.Instant
 class QuestionFatigueGate(
     private val allowedKinds: Set<QuestionPromptKind>,
 ) {
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "ReturnCount")
     fun nextPrompt(
         @Suppress("UNUSED_PARAMETER") campaignId: String,
         currentBand: RiskBand,

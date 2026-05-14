@@ -17,9 +17,7 @@ import com.qalqan.antifraud.ui.nav.AntifraudNavGraph
  * [UserSettings.onboardingCompleted].
  */
 @Composable
-fun AntifraudApp(
-    repos: Repositories? = null,
-) {
+fun AntifraudApp(repos: Repositories? = null) {
     val context = LocalContext.current
     val resolvedRepos =
         repos ?: remember(context) { Repositories.build(context.applicationContext) }

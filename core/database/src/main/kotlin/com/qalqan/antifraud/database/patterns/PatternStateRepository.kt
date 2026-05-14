@@ -82,6 +82,7 @@ class PatternStateRepository internal constructor(private val dao: PatternStateD
      * Single-pattern trigger projection used by the Stage 8 Patterns screen.
      * Returns `null` when the row is absent (pattern never triggered).
      */
+    @Suppress("ReturnCount")
     suspend fun triggerInfo(patternId: String): PatternTriggerInfo? {
         val entity = dao.findById(patternId) ?: return null
         val last = entity.lastTriggeredAt ?: return null

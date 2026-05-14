@@ -68,7 +68,10 @@ class OnboardingViewModel(
         }
     }
 
-    private suspend fun logResult(step: OnboardingStep, isGrant: Boolean) {
+    private suspend fun logResult(
+        step: OnboardingStep,
+        isGrant: Boolean,
+    ) {
         when (step) {
             // Stage 9-owned permissions: use AlertPermissionResultLogger so the action-log
             // detail carries the canonical permission name string.

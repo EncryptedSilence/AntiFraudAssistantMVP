@@ -41,7 +41,7 @@ class Acceptance2NoRegistrationOnFirstLaunchTest {
     @After
     fun tearDown() {
         composeRule.waitForIdle()
-        repos.close()
+        // Intentionally do NOT close `repos`. See AntifraudAppFirstLaunchRoutingTest doc.
         context.getSharedPreferences("antifraud_user_prefs", Context.MODE_PRIVATE)
             .edit().clear().commit()
     }
