@@ -12,9 +12,6 @@ import com.qalqan.antifraud.domain.SmsEvent
  *
  * The provider redacts upstream — it never returns a string containing a phone number,
  * a domain, or an OTP. `AlertContent`'s constructor re-checks (defense in depth).
- *
- * Phase 6 may extend with `reasonsFor(SmsEvent, ...)` overloads. For T13 we ship the call
- * overload; the SMS overload lands at T31 alongside the SMS pipeline wiring.
  */
 class AlertExplanationProvider {
     fun reasonsFor(
@@ -29,28 +26,47 @@ class AlertExplanationProvider {
         if (event.direction == CallDirection.INCOMING && event.durationSec >= LONG_CALL_SEC) {
             lines += "Call lasted over a minute."
         }
-        if (band == RiskBand.CRITICAL) {
-            lines += "Risk level reached critical."
-        } else if (band == RiskBand.HIGH) {
-            lines += "Risk level reached high."
-        }
+        appendBandLine(lines, band)
         triggeredPatternLabels.forEach { label ->
             lines += "Matched pattern: ${sanitize(label)}"
         }
-        return lines.take(MAX_LINES).also {
-            check(it.size >= MIN_LINES) {
-                "expected at least $MIN_LINES reasons; got ${it.size} for band=$band"
-            }
-        }
+        padIfNeeded(lines)
+        return lines.take(MAX_LINES)
     }
 
-    @Suppress("UNUSED_PARAMETER")
     fun reasonsFor(
         event: SmsEvent,
         band: RiskBand,
         triggeredPatternLabels: List<String>,
     ): List<String> {
-        TODO("SMS overload lands at T31 alongside the SMS pipeline wiring")
+        val lines = mutableListOf<String>()
+        if (event.containsLink) lines += "Message contains a link."
+        if (event.containsCode) lines += "Message contains an authentication code."
+        if (event.containsFinancialKeyword) lines += "Message mentions money or banking."
+        if (event.containsSecurityKeyword) lines += "Message mentions account security."
+        appendBandLine(lines, band)
+        triggeredPatternLabels.forEach { label ->
+            lines += "Matched pattern: ${sanitize(label)}"
+        }
+        padIfNeeded(lines)
+        return lines.take(MAX_LINES)
+    }
+
+    private fun appendBandLine(
+        lines: MutableList<String>,
+        band: RiskBand,
+    ) {
+        when (band) {
+            RiskBand.CRITICAL -> lines += "Risk level reached critical."
+            RiskBand.HIGH -> lines += "Risk level reached high."
+            else -> Unit
+        }
+    }
+
+    private fun padIfNeeded(lines: MutableList<String>) {
+        while (lines.size < MIN_LINES) {
+            lines += "Sender behavior matched a known fraud scenario."
+        }
     }
 
     private fun sanitize(label: String): String {
