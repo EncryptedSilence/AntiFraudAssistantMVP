@@ -1,5 +1,6 @@
 package com.qalqan.antifraud.ui.nav
 
+import android.app.Application
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,19 +10,27 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.ui.home.HomeRoute
-import com.qalqan.antifraud.ui.home.HomeUiState
+import com.qalqan.antifraud.ui.home.HomeViewModel
 
 @Composable
-fun AntifraudNavGraph(startDestination: String = AntifraudDestination.Home.route) {
+fun AntifraudNavGraph(
+    repos: Repositories,
+    startDestination: String = AntifraudDestination.Home.route,
+) {
     val navController: NavHostController = rememberNavController()
     Scaffold(
         bottomBar = { AntifraudBottomBar(navController) },
@@ -32,8 +41,12 @@ fun AntifraudNavGraph(startDestination: String = AntifraudDestination.Home.route
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(AntifraudDestination.Home.route) {
+                val app = LocalContext.current.applicationContext as Application
+                val viewModel = remember(repos) { HomeViewModel(app, repos) }
+                LaunchedEffect(viewModel) { viewModel.refresh() }
+                val state by viewModel.state.collectAsState()
                 HomeRoute(
-                    state = HomeUiState(),
+                    state = state,
                     onSuspiciousCall = {},
                     onSuspiciousSms = {},
                     onSuspiciousSite = {},
