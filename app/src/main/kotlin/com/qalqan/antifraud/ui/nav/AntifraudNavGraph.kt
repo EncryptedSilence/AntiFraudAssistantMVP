@@ -40,6 +40,8 @@ import com.qalqan.antifraud.ui.campaign.CampaignListRoute
 import com.qalqan.antifraud.ui.campaign.CampaignsViewModel
 import com.qalqan.antifraud.ui.home.HomeRoute
 import com.qalqan.antifraud.ui.home.HomeViewModel
+import com.qalqan.antifraud.ui.patterns.PatternsRoute
+import com.qalqan.antifraud.ui.patterns.PatternsViewModel
 import com.qalqan.antifraud.ui.home.SuspiciousCallSheet
 import com.qalqan.antifraud.ui.home.SuspiciousSmsSheet
 import com.qalqan.antifraud.web.DomainNormalizer
@@ -112,7 +114,21 @@ fun AntifraudNavGraph(
                 )
             }
             composable(AntifraudDestination.Patterns.route) {
-                PlaceholderRoute(label = stringResource(AntifraudDestination.Patterns.labelResId))
+                val app = LocalContext.current.applicationContext as Application
+                val vm = remember(repos) { PatternsViewModel(app, repos) }
+                LaunchedEffect(vm) { vm.refresh() }
+                val patternsState by vm.state.collectAsState()
+                PatternsRoute(
+                    state = patternsState,
+                    onToggle = { id, enabled ->
+                        vm.setEnabled(id, enabled)
+                        vm.refresh()
+                    },
+                    onResetDefaults = {
+                        vm.resetDefaults()
+                        vm.refresh()
+                    },
+                )
             }
             composable(AntifraudDestination.References.route) {
                 PlaceholderRoute(label = stringResource(AntifraudDestination.References.labelResId))
