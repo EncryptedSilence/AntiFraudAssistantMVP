@@ -12,13 +12,17 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         pluginManager.apply("com.android.application")
         pluginManager.apply("org.jetbrains.kotlin.android")
 
+        val appVersion = resolveAppVersion()
+        extensions.extraProperties["antifraudVersionName"] = appVersion.name
+        extensions.extraProperties["antifraudVersionCode"] = appVersion.code
+
         extensions.configure<ApplicationExtension>("android") {
             compileSdk = 34
             defaultConfig {
                 minSdk = 26
                 targetSdk = 34
-                versionCode = 1
-                versionName = "0.1.0-alpha01"
+                versionCode = appVersion.code
+                versionName = appVersion.name
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             }
             compileOptions {

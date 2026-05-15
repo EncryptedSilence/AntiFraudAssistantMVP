@@ -1,11 +1,37 @@
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+
 plugins {
     id("antifraud.android.application")
     alias(libs.plugins.kotlin.compose)
 }
 
+(extensions.getByName("android") as AppExtension).applicationVariants.all {
+    val capturedVariant = this
+    outputs.all {
+        (this as BaseVariantOutputImpl).outputFileName =
+            "AntiFraud-${capturedVariant.versionName}-${capturedVariant.flavorName}.apk"
+    }
+}
+
 android {
     namespace = "com.qalqan.antifraud"
     buildFeatures.compose = true
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            isDefault = true
+        }
+        create("qa") {
+            dimension = "env"
+        }
+        create("prod") {
+            dimension = "env"
+        }
+    }
+
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
