@@ -34,10 +34,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.qalqan.antifraud.WebEntrySheet
 import com.qalqan.antifraud.alerts.AlertPermissionRequester
 import com.qalqan.antifraud.alerts.FullScreenIntentPermissionGate
-import com.qalqan.antifraud.WebEntrySheet
-import com.qalqan.antifraud.calls.CallObserverPermissions
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.database.crypto.InMemoryCryptoBox
 import com.qalqan.antifraud.database.crypto.KeyStoreCryptoBox
@@ -46,7 +45,6 @@ import com.qalqan.antifraud.database.manual.WebEntryDigest
 import com.qalqan.antifraud.domain.CallDirection
 import com.qalqan.antifraud.settings.OnboardingStep
 import com.qalqan.antifraud.settings.UserSettings
-import com.qalqan.antifraud.sms.SmsObserverPermissions
 import com.qalqan.antifraud.sms.SmsPermissionRequester
 import com.qalqan.antifraud.ui.campaign.CampaignDetailRoute
 import com.qalqan.antifraud.ui.campaign.CampaignDetailViewModel
@@ -249,7 +247,8 @@ fun AntifraudNavGraph(
                             OnboardingStep.SMS ->
                                 permissionLauncher.launch(SmsPermissionRequester.requestList().toTypedArray())
                             OnboardingStep.FULL_SCREEN_INTENT -> {
-                                val intent = AlertPermissionRequester.fullScreenIntentSettingsIntent(context.packageName)
+                                val intent =
+                                    AlertPermissionRequester.fullScreenIntentSettingsIntent(context.packageName)
                                 if (intent != null) {
                                     settingsLauncher.launch(intent)
                                 } else {
@@ -257,7 +256,9 @@ fun AntifraudNavGraph(
                                 }
                             }
                             OnboardingStep.OVERLAY_WINDOW ->
-                                settingsLauncher.launch(AlertPermissionRequester.overlaySettingsIntent(context.packageName))
+                                settingsLauncher.launch(
+                                    AlertPermissionRequester.overlaySettingsIntent(context.packageName),
+                                )
                             OnboardingStep.BATTERY_OPTIMIZATION ->
                                 settingsLauncher.launch(batteryOptimizationIntent(context.packageName))
                             null -> Unit
