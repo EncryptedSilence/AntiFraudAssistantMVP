@@ -29,11 +29,7 @@ class PauseBeforeActionAtCriticalTest {
         composeRule.setContent {
             HomeRoute(
                 state = HomeUiState(currentBand = RiskBand.CRITICAL),
-                onSuspiciousCall = {},
-                onSuspiciousSms = {},
-                onSuspiciousSite = {},
                 onOpenCampaign = {},
-                onOpenPrivacy = {},
             )
         }
         composeRule.onNodeWithText("Pause — verify before continuing").assertIsDisplayed()
@@ -44,11 +40,7 @@ class PauseBeforeActionAtCriticalTest {
         composeRule.setContent {
             HomeRoute(
                 state = HomeUiState(currentBand = RiskBand.HIGH),
-                onSuspiciousCall = {},
-                onSuspiciousSms = {},
-                onSuspiciousSite = {},
                 onOpenCampaign = {},
-                onOpenPrivacy = {},
             )
         }
         composeRule.onAllNodesWithText("Pause — verify before continuing")

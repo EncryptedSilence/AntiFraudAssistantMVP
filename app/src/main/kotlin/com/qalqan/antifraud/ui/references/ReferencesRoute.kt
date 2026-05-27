@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,10 +39,15 @@ fun ReferencesRoute(state: ReferencesUiState) {
                 R.string.references_tab_official,
             )
         var selectedIndex by remember { mutableIntStateOf(0) }
-        TabRow(selectedTabIndex = selectedIndex) {
+        ScrollableTabRow(selectedTabIndex = selectedIndex, edgePadding = 0.dp) {
             tabs.forEachIndexed { i, label ->
                 Tab(selected = i == selectedIndex, onClick = { selectedIndex = i }) {
-                    Text(stringResource(label), modifier = Modifier.padding(16.dp))
+                    Text(
+                        text = stringResource(label),
+                        maxLines = 1,
+                        softWrap = false,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp),
+                    )
                 }
             }
         }

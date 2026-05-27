@@ -1,4 +1,4 @@
-package com.qalqan.antifraud.ui.home
+package com.qalqan.antifraud.ui.add
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -10,23 +10,20 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class HomeQuickActionRoutingTest {
+class AddRouteTest {
     @get:Rule
     val composeRule = createComposeRule()
 
     @Test
-    fun `tapping each quick-action button invokes the corresponding callback`() {
+    fun `tapping each add action invokes the corresponding callback`() {
         var call = 0
         var sms = 0
         var site = 0
         composeRule.setContent {
-            HomeRoute(
-                state = HomeUiState(),
-                onSuspiciousCall = { call++ },
-                onSuspiciousSms = { sms++ },
-                onSuspiciousSite = { site++ },
-                onOpenCampaign = {},
-                onOpenPrivacy = {},
+            AddRoute(
+                onAddCall = { call++ },
+                onAddSms = { sms++ },
+                onAddSite = { site++ },
             )
         }
         composeRule.onNodeWithText("I had a suspicious call").performClick()

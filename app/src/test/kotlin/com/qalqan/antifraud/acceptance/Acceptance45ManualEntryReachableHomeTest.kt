@@ -3,10 +3,7 @@ package com.qalqan.antifraud.acceptance
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.qalqan.antifraud.calls.CallObserverPermissions
-import com.qalqan.antifraud.sms.SmsObserverPermissions
-import com.qalqan.antifraud.ui.home.HomeRoute
-import com.qalqan.antifraud.ui.home.HomeUiState
+import com.qalqan.antifraud.ui.add.AddRoute
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,24 +15,14 @@ class Acceptance45ManualEntryReachableHomeTest {
     val composeRule = createComposeRule()
 
     /**
-     * Spec §23 #45 — "I had a suspicious call / SMS / site" buttons reachable in at most one
-     * tap from any main tab AND work even when all auto-capture permissions are denied.
+     * Spec §23 #45 — the "I had a suspicious call / SMS / site" affordances are reachable in at
+     * most one tap (the dedicated Add tab) and do not depend on any auto-capture permission.
+     * The Add screen renders all three regardless of permission state.
      */
     @Test
-    fun `§23 #45 — three quick-action buttons render with all permissions denied`() {
+    fun `§23 #45 — three manual-entry actions render on the Add tab`() {
         composeRule.setContent {
-            HomeRoute(
-                state =
-                    HomeUiState(
-                        callPermissionState = CallObserverPermissions.State.DENIED,
-                        smsPermissionState = SmsObserverPermissions.State.DENIED,
-                    ),
-                onSuspiciousCall = {},
-                onSuspiciousSms = {},
-                onSuspiciousSite = {},
-                onOpenCampaign = {},
-                onOpenPrivacy = {},
-            )
+            AddRoute(onAddCall = {}, onAddSms = {}, onAddSite = {})
         }
         composeRule.onNodeWithText("I had a suspicious call").assertIsDisplayed()
         composeRule.onNodeWithText("I had a suspicious SMS").assertIsDisplayed()

@@ -51,10 +51,10 @@ class AntifraudAppSmokeTest {
     }
 
     @Test
-    fun `app shell renders all five §17 top-level labels`() {
+    fun `app shell renders all five v2 top-level labels`() {
         composeRule.setContent { AntifraudApp(repos = repos) }
         composeRule.waitForIdle()
-        listOf("Home", "Campaigns", "Patterns", "References", "Privacy").forEach { label ->
+        listOf("Overview", "Activity", "Add", "Lists", "Profile").forEach { label ->
             composeRule.onAllNodesWithText(label, useUnmergedTree = true).onFirst().assertIsDisplayed()
         }
     }

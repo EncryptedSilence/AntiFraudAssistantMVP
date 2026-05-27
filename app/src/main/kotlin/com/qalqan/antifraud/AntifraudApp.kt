@@ -9,6 +9,7 @@ import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.settings.UserSettings
 import com.qalqan.antifraud.ui.nav.AntifraudDestination
 import com.qalqan.antifraud.ui.nav.AntifraudNavGraph
+import com.qalqan.antifraud.ui.theme.AntifraudTheme
 
 /**
  * Spec §17 + §22 Stage 8 — root Compose entry point. Constructs a process-scoped
@@ -28,7 +29,7 @@ fun AntifraudApp(repos: Repositories? = null) {
         } else {
             AntifraudDestination.Onboarding.route
         }
-    MaterialTheme {
+    AntifraudTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             AntifraudNavGraph(repos = resolvedRepos, startDestination = startDestination)
         }

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AntiFraud Assistant</string>
+
+    <!-- Home (legacy status content) -->
+    <string name="home_title">AntiFraud Assistant</string>
+    <string name="home_calls_count">Звонков обработано: %1$d</string>
+    <string name="home_sms_count">SMS обработано: %1$d</string>
+    <string name="home_web_count">Веб-визитов обработано: %1$d</string>
+    <string name="home_patterns_enabled_count">Паттернов включено: %1$d</string>
+    <string name="home_battery_optimization_warning">Включена оптимизация батареи; наблюдение за звонками может быть остановлено в фоне.</string>
+    <string name="home_latest_warning">Последнее предупреждение: %1$s — %2$s</string>
+    <string name="home_call_perm_granted">Автозахват звонков: включён</string>
+    <string name="home_call_perm_partial">Автозахват звонков: частично — не хватает разрешений</string>
+    <string name="home_call_perm_denied">Автозахват звонков: выключен — только ручной ввод</string>
+    <string name="home_sms_perm_granted">Автозахват SMS: включён</string>
+    <string name="home_sms_perm_partial">Автозахват SMS: частично — не хватает разрешений</string>
+    <string name="home_sms_perm_denied">Автозахват SMS: выключен — только ручная вставка</string>
+    <string name="home_run_demo_button">Запустить демо (быстрая атака)</string>
+    <string name="home_wipe_button">Стереть все данные</string>
+    <string name="home_suspicious_call_button">Подозрительный звонок</string>
+    <string name="home_suspicious_sms_button">Подозрительное SMS</string>
+    <string name="home_suspicious_site_button">Подозрительный сайт</string>
+    <string name="home_export_button">Экспорт…</string>
+    <string name="home_sync_label">Синхронизация: %1$s</string>
+    <string name="home_sync_state_enabled">включена</string>
+    <string name="home_sync_state_disabled">выключена</string>
+    <string name="home_last_synced">Последняя синхронизация: %1$s</string>
+    <string name="home_sync_now_button">Синхронизировать</string>
+    <string name="home_import_local_button">Импорт локального пакета…</string>
+
+    <!-- Bottom nav tabs (legacy) -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_campaigns">Цепочки</string>
+    <string name="nav_patterns">Паттерны</string>
+    <string name="nav_references">Справочники</string>
+    <string name="nav_privacy">Приватность</string>
+
+    <!-- UI v2 shell — bottom nav -->
+    <string name="nav_overview">Обзор</string>
+    <string name="nav_activity">Активность</string>
+    <string name="nav_add">Добавить</string>
+    <string name="nav_lists">Списки</string>
+    <string name="nav_profile">Профиль</string>
+
+    <!-- UI v2 shell — Overview (Обзор) -->
+    <string name="home_risk_level_label">Текущий уровень риска</string>
+    <string name="home_risk_hint">Будьте внимательны</string>
+    <string name="home_activity_24h">Активность за последние 24 часа</string>
+    <string name="home_activity_7d">Активность за последние 7 дней</string>
+    <string name="home_active_chains">Активные рисковые цепочки</string>
+    <string name="home_chain_started">Цепочка от %1$s</string>
+    <string name="channel_calls">Звонки</string>
+    <string name="channel_sms">SMS</string>
+    <string name="channel_sites">Новые сайты</string>
+    <string name="risk_band_low">Низкий</string>
+    <string name="risk_band_medium">Средний</string>
+    <string name="risk_band_high">Высокий</string>
+    <string name="risk_band_critical">Критический</string>
+    <string name="risk_band_clear">Спокойно</string>
+
+    <!-- UI v2 shell — scaffolded tabs -->
+    <string name="activity_title">Активность</string>
+    <string name="activity_soon">Детальная разбивка и хронология событий появятся в следующем обновлении.</string>
+    <string name="lists_title">Списки</string>
+    <string name="lists_soon">Здесь появятся сохранённые подозрительные номера, отправители и сайты.</string>
+    <string name="add_title">Добавить в список</string>
+    <string name="add_subtitle">Сообщите вручную о подозрительном звонке, сайте или отправителе SMS.</string>
+    <string name="profile_settings">Настройки</string>
+    <string name="profile_patterns">Паттерны обнаружения</string>
+    <string name="profile_references">Справочники</string>
+    <string name="profile_campaigns">Рисковые цепочки</string>
+    <string name="profile_privacy">Приватность и данные</string>
+
+    <!-- §17.7 common UI states -->
+    <string name="state_empty_default">Пока нет данных.</string>
+    <string name="state_loading_default">Загрузка…</string>
+    <string name="state_error_default">Что-то пошло не так.</string>
+    <string name="state_error_report_button">Открыть журнал действий</string>
+    <string name="state_permission_denied_default">Требуется разрешение.</string>
+    <string name="state_permission_denied_open_settings">Открыть настройки</string>
+    <string name="state_offline_default">Нет сети.</string>
+
+    <!-- Home screen §17.1 -->
+    <string name="home_risk_all_clear">Спокойно</string>
+    <string name="home_risk_label">Текущий риск: %1$s</string>
+    <string name="home_24h_summary">За 24 ч: %1$d событий, %2$d оповещений, %3$d отклонено</string>
+    <string name="home_active_campaign_card_title">Активная цепочка</string>
+    <string name="home_active_campaign_card_started">Начало: %1$s</string>
+    <string name="home_active_campaign_card_last_event">Последнее событие: %1$s</string>
+    <string name="home_active_campaign_card_open">Открыть</string>
+    <string name="home_empty_watching">Следим за сигналами — пока ничего.</string>
+    <string name="home_empty_state">Наблюдаем — сигналов пока нет.</string>
+
+    <!-- Suspicious-{call,sms,site} sheets §17.1 / §23 #45 -->
+    <string name="suspicious_call_sheet_phone_label">Телефон (напр. +7…)</string>
+    <string name="suspicious_sms_sheet_sender_label">Отправитель</string>
+    <string name="suspicious_sms_sheet_body_label">Текст SMS</string>
+    <string name="suspicious_sheet_save">Сохранить</string>
+
+    <!-- Campaigns screen §17.2 -->
+    <string name="campaign_tab_active">Активные</string>
+    <string name="campaign_tab_closed">Закрытые</string>
+    <string name="campaign_tab_archived">Архив</string>
+    <string name="campaign_tab_false_positive">Ложная тревога</string>
+    <string name="campaign_list_empty">Цепочек пока нет.</string>
+    <string name="campaign_card_started">Начало: %1$s</string>
+    <string name="campaign_card_last_event">Последнее событие: %1$s</string>
+    <string name="campaign_card_risk">Риск: %1$s</string>
+    <string name="campaign_detail_title">Цепочка</string>
+    <string name="campaign_detail_linked_events">Связанные события</string>
+    <string name="campaign_detail_triggered_patterns">Сработавшие паттерны</string>
+    <string name="campaign_detail_reasons">Причины</string>
+    <string name="campaign_detail_pending_questions">Вопросы без ответа</string>
+    <string name="campaign_detail_recommendations">Рекомендации</string>
+    <string name="campaign_action_close">Закрыть</string>
+    <string name="campaign_action_false_alarm">Ложная тревога</string>
+    <string name="campaign_action_mark_suspicious">Отметить как подозрительную</string>
+    <string name="campaign_action_export">Экспорт</string>
+    <string name="campaign_action_create_pattern">Создать паттерн из этой цепочки</string>
+
+    <!-- Patterns screen §17.3 -->
+    <string name="patterns_title">Паттерны</string>
+    <string name="patterns_empty">Паттернов пока нет.</string>
+    <string name="patterns_source_seed">встроенный</string>
+    <string name="patterns_source_bundle">пакет</string>
+    <string name="patterns_last_update_unknown">не обновлялся</string>
+    <string name="patterns_trigger_count">Сработал %1$d раз</string>
+    <string name="patterns_last_trigger_at">Последнее срабатывание: %1$s</string>
+    <string name="patterns_last_trigger_never">Ни разу не срабатывал</string>
+    <string name="patterns_reset_button">Сбросить к стандартным</string>
+    <string name="patterns_toggle_enabled">Включён</string>
+
+    <!-- References screen §17.4 -->
+    <string name="references_tab_numbers">Номера</string>
+    <string name="references_tab_domains">Домены</string>
+    <string name="references_tab_sms_categories">Категории SMS</string>
+    <string name="references_tab_official">Официальные</string>
+    <string name="references_section_suspicious">Подозрительные</string>
+    <string name="references_section_trusted">Доверенные</string>
+    <string name="references_last_update_label">Обновлено: %1$s · источник: %2$s</string>
+    <string name="references_no_bundle">Пакет не применён</string>
+    <string name="references_empty_list">Записей нет.</string>
+
+    <!-- Privacy screen §17.6 -->
+    <string name="privacy_title">Приватность</string>
+    <string name="privacy_what_is_stored">Что хранится</string>
+    <string name="privacy_what_is_stored_body">Хешированные номера телефонов, хешированные идентификаторы отправителей, метки времени событий, домены eTLD+1, идентификаторы сработавших паттернов, ответы пользователя.</string>
+    <string name="privacy_where_is_stored">Где хранится</string>
+    <string name="privacy_where_is_stored_body">Зашифрованная локальная база SQLite (SQLCipher) внутри песочницы приложения. Ключ хранится в Android Keystore.</string>
+    <string name="privacy_modules_enabled">Включённые модули</string>
+    <string name="privacy_permissions_granted">Выданные разрешения</string>
+    <string name="privacy_retention_label">Срок хранения</string>
+    <string name="privacy_retention_row">%1$s — %2$d дн.</string>
+    <string name="privacy_sync_status_label">Синхронизация</string>
+    <string name="privacy_sync_status_idle">ожидание</string>
+    <string name="privacy_sync_status_failed">ошибка</string>
+    <string name="privacy_sync_status_paused">приостановлена — нет сети</string>
+    <string name="privacy_delete_all_button">Удалить все данные</string>
+    <string name="privacy_disable_sync_button">Отключить синхронизацию</string>
+    <string name="privacy_reset_permissions_button">Сбросить разрешения</string>
+    <string name="privacy_open_settings_button">Открыть настройки</string>
+
+    <!-- Settings screen §18 -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_sensitivity_label">Чувствительность</string>
+    <string name="settings_sensitivity_low">Низкая</string>
+    <string name="settings_sensitivity_standard">Стандартная</string>
+    <string name="settings_sensitivity_high">Высокая</string>
+    <string name="settings_sensitivity_maximum">Максимальная</string>
+    <string name="settings_toggle_call_analysis">Анализ звонков</string>
+    <string name="settings_toggle_sms_analysis">Анализ SMS</string>
+    <string name="settings_toggle_web_analysis">Анализ новых сайтов</string>
+    <string name="settings_toggle_risk_campaigns">Рисковые цепочки</string>
+    <string name="settings_toggle_local_patterns">Локальные паттерны</string>
+    <string name="settings_toggle_reference_sync">Синхронизация справочников</string>
+    <string name="settings_toggle_pattern_sync">Синхронизация паттернов</string>
+    <string name="settings_toggle_notifications">Уведомления</string>
+    <string name="settings_toggle_post_call_q">Вопросы после звонка</string>
+    <string name="settings_toggle_post_sms_q">Вопросы после SMS</string>
+    <string name="settings_toggle_post_site_q">Вопросы после сайта</string>
+    <string name="settings_toggle_auto_archiving">Автоматическое архивирование</string>
+    <string name="settings_toggle_advanced_rules">Включить расширенные правила</string>
+    <string name="settings_toggle_educational_cards">Обучающие карточки</string>
+
+    <!-- Onboarding §22 Stage 8 -->
+    <string name="onboarding_title">Добро пожаловать</string>
+    <string name="onboarding_step_n_of_m">Шаг %1$d из %2$d</string>
+    <string name="onboarding_step_notifications_title">Уведомления</string>
+    <string name="onboarding_step_notifications_why">Уведомления нужны, чтобы в реальном времени предупреждать вас о подозрительных звонках и SMS.</string>
+    <string name="onboarding_step_phone_title">Телефон</string>
+    <string name="onboarding_step_phone_why">Мы читаем состояние телефона, чтобы анализировать входящие звонки, не записывая их.</string>
+    <string name="onboarding_step_call_log_title">Журнал звонков</string>
+    <string name="onboarding_step_call_log_why">Мы читаем журнал звонков, чтобы связывать недавние вызовы в единую рисковую цепочку.</string>
+    <string name="onboarding_step_sms_title">SMS</string>
+    <string name="onboarding_step_sms_why">Мы читаем SMS локально, чтобы выявлять мошеннические схемы. Тексты хранятся в хешированном и усечённом виде.</string>
+    <string name="onboarding_step_full_screen_title">Полноэкранные оповещения</string>
+    <string name="onboarding_step_full_screen_why">Позволяет показать полноэкранное предупреждение во время звонка.</string>
+    <string name="onboarding_step_overlay_title">Баннер поверх окна</string>
+    <string name="onboarding_step_overlay_why">Позволяет показать тонкий баннер-предупреждение поверх банковских приложений.</string>
+    <string name="onboarding_step_battery_title">Исключение из экономии батареи</string>
+    <string name="onboarding_step_battery_why">Исключение приложения из оптимизации батареи поддерживает работу службы наблюдения за звонками.</string>
+    <string name="onboarding_action_grant">Разрешить</string>
+    <string name="onboarding_action_skip">Пропустить</string>
+    <string name="onboarding_action_already_granted">Уже разрешено</string>
+    <string name="onboarding_action_finish">Готово</string>
+
+    <!-- Question prompts §5.5 -->
+    <string name="question_caller_identity">Звонивший представился сотрудником банка, госоргана или другой официальной службы?</string>
+    <string name="question_pressure">Вас просили не перезванивать, ни с кем не советоваться или торопили?</string>
+    <string name="question_action_request">Вас просили сообщить код, установить приложение, открыть ссылку или перевести деньги?</string>
+    <string name="question_answer_yes">Да</string>
+    <string name="question_answer_no">Нет</string>
+    <string name="question_answer_not_sure">Не уверен</string>
+    <string name="question_dont_ask_again">Не спрашивать для этой цепочки</string>
+
+    <!-- Pause-before-action modal §11.5 -->
+    <string name="pause_title">Пауза — проверьте, прежде чем продолжить</string>
+    <string name="pause_body">Активная цепочка достигла критического риска. Уделите минуту проверке, прежде чем выполнять любые запрошенные действия.</string>
+    <string name="pause_action_pause">Сделаю паузу</string>
+    <string name="pause_action_show_details">Показать детали</string>
+
+    <!-- Educational cards §19A -->
+    <string name="edu_card_1_title">Никогда не сообщайте код из SMS</string>
+    <string name="edu_card_1_body">Настоящий банк или сервис никогда не попросит вас вслух назвать код из SMS. Если просят — это мошенничество.</string>
+    <string name="edu_card_2_title">Не устанавливайте приложения по просьбе звонящего</string>
+    <string name="edu_card_2_body">Если звонящий настаивает установить приложение, чтобы «защитить счёт», положите трубку. Почти наверняка это программа удалённого доступа.</string>
+    <string name="edu_card_3_title">Проверяйте официальный номер банка</string>
+    <string name="edu_card_3_body">Найдите официальный номер банка на обратной стороне карты или на настоящем сайте банка. Не используйте номер, который дал звонящий.</string>
+    <string name="edu_card_4_title">Что делать с подозрительным SMS</string>
+    <string name="edu_card_4_body">Не переходите по ссылкам в подозрительных SMS. Сообщите об отправителе оператору. Удалите сообщение.</string>
+    <string name="edu_card_5_title">Как распознать инвестиционную схему</string>
+    <string name="edu_card_5_body">Обещания гарантированной высокой доходности — главный признак мошенничества. Если предложение звучит слишком хорошо, чтобы быть правдой, — так и есть.</string>
+    <string name="edu_card_next_button">Далее</string>
+    <string name="edu_card_dismiss_button">Закрыть</string>
+</resources>

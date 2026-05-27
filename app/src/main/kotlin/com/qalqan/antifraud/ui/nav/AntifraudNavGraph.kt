@@ -12,6 +12,8 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -20,10 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -34,45 +33,33 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.qalqan.antifraud.WebEntrySheet
 import com.qalqan.antifraud.alerts.AlertPermissionRequester
 import com.qalqan.antifraud.alerts.FullScreenIntentPermissionGate
 import com.qalqan.antifraud.database.Repositories
-import com.qalqan.antifraud.database.crypto.InMemoryCryptoBox
-import com.qalqan.antifraud.database.crypto.KeyStoreCryptoBox
-import com.qalqan.antifraud.database.manual.ManualEntry
-import com.qalqan.antifraud.database.manual.WebEntryDigest
-import com.qalqan.antifraud.domain.CallDirection
 import com.qalqan.antifraud.settings.OnboardingStep
 import com.qalqan.antifraud.settings.UserSettings
 import com.qalqan.antifraud.sms.SmsPermissionRequester
+import com.qalqan.antifraud.ui.activity.ActivityRoute
+import com.qalqan.antifraud.ui.add.AddRoute
 import com.qalqan.antifraud.ui.campaign.CampaignDetailRoute
 import com.qalqan.antifraud.ui.campaign.CampaignDetailViewModel
 import com.qalqan.antifraud.ui.campaign.CampaignListRoute
 import com.qalqan.antifraud.ui.campaign.CampaignsViewModel
 import com.qalqan.antifraud.ui.home.HomeRoute
 import com.qalqan.antifraud.ui.home.HomeViewModel
-import com.qalqan.antifraud.ui.home.SuspiciousCallSheet
-import com.qalqan.antifraud.ui.home.SuspiciousSmsSheet
+import com.qalqan.antifraud.ui.lists.ListsRoute
+import com.qalqan.antifraud.ui.manual.ManualEntrySheetsHost
 import com.qalqan.antifraud.ui.onboarding.OnboardingRoute
 import com.qalqan.antifraud.ui.onboarding.OnboardingViewModel
 import com.qalqan.antifraud.ui.patterns.PatternsRoute
 import com.qalqan.antifraud.ui.patterns.PatternsViewModel
 import com.qalqan.antifraud.ui.privacy.PrivacyRoute
 import com.qalqan.antifraud.ui.privacy.PrivacyViewModel
+import com.qalqan.antifraud.ui.profile.ProfileRoute
 import com.qalqan.antifraud.ui.references.ReferencesRoute
 import com.qalqan.antifraud.ui.references.ReferencesViewModel
 import com.qalqan.antifraud.ui.settings.SettingsRoute
 import com.qalqan.antifraud.ui.settings.SettingsViewModel
-import com.qalqan.antifraud.web.DomainNormalizer
-import com.qalqan.antifraud.web.DomainSeenChecker
-import com.qalqan.antifraud.web.LookalikeDetector
-import com.qalqan.antifraud.web.LookalikeSeedCatalog
-import com.qalqan.antifraud.web.WebEventBuilder
-import com.qalqan.antifraud.web.WebManualCapture
-import com.qalqan.antifraud.web.WebObserverActionLog
-import kotlinx.coroutines.launch
-import java.time.Instant
 
 @Composable
 fun AntifraudNavGraph(
@@ -90,6 +77,24 @@ fun AntifraudNavGraph(
         ) {
             composable(AntifraudDestination.Home.route) {
                 HomeHost(navController = navController, repos = repos)
+            }
+            composable(AntifraudDestination.Activity.route) {
+                ActivityRoute()
+            }
+            composable(AntifraudDestination.Add.route) {
+                AddHost(repos = repos)
+            }
+            composable(AntifraudDestination.Lists.route) {
+                ListsRoute()
+            }
+            composable(AntifraudDestination.Profile.route) {
+                ProfileRoute(
+                    onOpenSettings = { navController.navigate(AntifraudDestination.Settings.route) },
+                    onOpenPatterns = { navController.navigate(AntifraudDestination.Patterns.route) },
+                    onOpenReferences = { navController.navigate(AntifraudDestination.References.route) },
+                    onOpenCampaigns = { navController.navigate(AntifraudDestination.Campaigns.route) },
+                    onOpenPrivacy = { navController.navigate(AntifraudDestination.Privacy.route) },
+                )
             }
             composable(AntifraudDestination.Campaigns.route) {
                 val app = LocalContext.current.applicationContext as Application
@@ -299,82 +304,19 @@ private fun HomeHost(
     LaunchedEffect(viewModel) { viewModel.refresh() }
     val state by viewModel.state.collectAsState()
 
-    var showCallSheet by remember { mutableStateOf(false) }
-    var showSmsSheet by remember { mutableStateOf(false) }
-    var showSiteSheet by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-    val manual =
-        remember(repos) {
-            val box =
-                runCatching { KeyStoreCryptoBox.create(app, alias = "antifraud.field_box") }
-                    .getOrElse { InMemoryCryptoBox() }
-            ManualEntry.create(app, repos, box)
-        }
-
     HomeRoute(
         state = state,
-        onSuspiciousCall = { showCallSheet = true },
-        onSuspiciousSms = { showSmsSheet = true },
-        onSuspiciousSite = { showSiteSheet = true },
         onOpenCampaign = { id ->
             navController.navigate(AntifraudDestination.CampaignDetail(id).route)
         },
-        onOpenPrivacy = {
-            navController.navigate(AntifraudDestination.Privacy.route)
-        },
         onDismissEducationalCard = { viewModel.dismissEducationalCard() },
     )
+}
 
-    if (showCallSheet) {
-        SuspiciousCallSheet(
-            onDismiss = { showCallSheet = false },
-            onSubmit = { raw ->
-                scope.launch {
-                    runCatching {
-                        manual.calls.submit(
-                            rawNumber = raw,
-                            direction = CallDirection.INCOMING,
-                            startedAt = Instant.now(),
-                            durationSec = 0,
-                            isKnownContact = false,
-                        )
-                    }
-                    viewModel.refresh()
-                }
-            },
-        )
-    }
-    if (showSmsSheet) {
-        SuspiciousSmsSheet(
-            onDismiss = { showSmsSheet = false },
-            onSubmit = { sender, body ->
-                scope.launch {
-                    runCatching { manual.sms.submit(sender, Instant.now(), body) }
-                    viewModel.refresh()
-                }
-            },
-        )
-    }
-    if (showSiteSheet) {
-        WebEntrySheet(
-            onDismiss = { showSiteSheet = false },
-            onSubmit = { rawInput, onResult ->
-                scope.launch {
-                    val capture =
-                        WebManualCapture(
-                            normalizer = DomainNormalizer(),
-                            detector = LookalikeDetector(LookalikeSeedCatalog.seeds),
-                            seenChecker = DomainSeenChecker(repos.web),
-                            builder = WebEventBuilder(WebEntryDigest.create(app)),
-                            repo = repos.web,
-                            actionLog = WebObserverActionLog(repos.actionLogger),
-                        )
-                    val outcome = capture.submit(rawInput, Instant.now())
-                    onResult(outcome)
-                    viewModel.refresh()
-                }
-            },
-        )
+@Composable
+private fun AddHost(repos: Repositories) {
+    ManualEntrySheetsHost(repos = repos) { openCall, openSms, openSite ->
+        AddRoute(onAddCall = openCall, onAddSms = openSms, onAddSite = openSite)
     }
 }
 
@@ -395,8 +337,22 @@ private fun AntifraudBottomBar(navController: NavHostController) {
                         }
                     }
                 },
-                icon = { Text(stringResource(dest.labelResId).take(1)) },
-                label = { Text(stringResource(dest.labelResId)) },
+                icon = {
+                    val ic = dest.icon
+                    if (ic != null) {
+                        Icon(ic, contentDescription = null)
+                    } else {
+                        Text(stringResource(dest.labelResId).take(1))
+                    }
+                },
+                label = {
+                    Text(
+                        text = stringResource(dest.labelResId),
+                        maxLines = 1,
+                        softWrap = false,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
             )
         }
     }

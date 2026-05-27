@@ -35,6 +35,42 @@
     <string name="nav_references">References</string>
     <string name="nav_privacy">Privacy</string>
 
+    <!-- UI v2 shell — bottom nav -->
+    <string name="nav_overview">Overview</string>
+    <string name="nav_activity">Activity</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_lists">Lists</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- UI v2 shell — Overview (Обзор) -->
+    <string name="home_risk_level_label">Current risk level</string>
+    <string name="home_risk_hint">Stay alert</string>
+    <string name="home_activity_24h">Activity — last 24 hours</string>
+    <string name="home_activity_7d">Activity — last 7 days</string>
+    <string name="home_active_chains">Active risk chains</string>
+    <string name="home_chain_started">Chain from %1$s</string>
+    <string name="channel_calls">Calls</string>
+    <string name="channel_sms">SMS</string>
+    <string name="channel_sites">New sites</string>
+    <string name="risk_band_low">Low</string>
+    <string name="risk_band_medium">Medium</string>
+    <string name="risk_band_high">High</string>
+    <string name="risk_band_critical">Critical</string>
+    <string name="risk_band_clear">All clear</string>
+
+    <!-- UI v2 shell — scaffolded tabs -->
+    <string name="activity_title">Activity</string>
+    <string name="activity_soon">Detailed breakdown and event timeline arrive in the next update.</string>
+    <string name="lists_title">Lists</string>
+    <string name="lists_soon">Your saved suspicious numbers, senders and sites will appear here.</string>
+    <string name="add_title">Add to list</string>
+    <string name="add_subtitle">Manually report a suspicious call, site, or SMS sender.</string>
+    <string name="profile_settings">Settings</string>
+    <string name="profile_patterns">Detection patterns</string>
+    <string name="profile_references">References</string>
+    <string name="profile_campaigns">Risk chains</string>
+    <string name="profile_privacy">Privacy &amp; data</string>
+
     <!-- §17.7 common UI states -->
     <string name="state_empty_default">No data yet.</string>
     <string name="state_loading_default">Loading…</string>

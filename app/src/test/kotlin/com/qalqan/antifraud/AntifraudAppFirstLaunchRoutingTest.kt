@@ -52,6 +52,6 @@ class AntifraudAppFirstLaunchRoutingTest {
     fun `second launch with onboarding complete jumps straight to home`() {
         UserSettings(context).onboardingCompleted = true
         composeRule.setContent { AntifraudApp(repos = repos) }
-        composeRule.onNodeWithText("Home").assertIsDisplayed()
+        composeRule.onNodeWithText("Overview").assertIsDisplayed()
     }
 }

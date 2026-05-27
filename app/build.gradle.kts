@@ -42,6 +42,7 @@ android {
                     test.exclude("**/AntifraudAppFirstLaunchRoutingTest.class")
                     test.exclude("**/ui/state/**")
                     test.exclude("**/ui/home/**")
+                    test.exclude("**/ui/add/**")
                     test.exclude("**/ui/campaign/**")
                     test.exclude("**/ui/patterns/**")
                     test.exclude("**/ui/references/**")
