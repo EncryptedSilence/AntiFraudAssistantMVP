@@ -24,6 +24,7 @@ class CampaignDetailQuestionPromptTest {
                         band = RiskBand.HIGH,
                         pendingPrompt = QuestionPromptKind.CALLER_IDENTITY,
                     ),
+                onBack = {},
                 onClose = {},
                 onFalseAlarm = {},
                 onMarkSuspicious = {},

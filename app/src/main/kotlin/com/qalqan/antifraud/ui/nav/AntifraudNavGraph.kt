@@ -19,6 +19,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,6 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -75,8 +79,8 @@ fun AntifraudNavGraph(
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable(AntifraudDestination.Home.route) {
-                HomeHost(navController = navController, repos = repos)
+            composable(AntifraudDestination.Home.route) { entry ->
+                HomeHost(navController = navController, repos = repos, lifecycleOwner = entry)
             }
             composable(AntifraudDestination.Activity.route) {
                 ActivityRoute()
@@ -130,8 +134,15 @@ fun AntifraudNavGraph(
                 val detailState by vm.state.collectAsState()
                 CampaignDetailRoute(
                     state = detailState,
-                    onClose = { vm.closeCampaign() },
-                    onFalseAlarm = { vm.markFalseAlarm() },
+                    onBack = { navController.popBackStack() },
+                    onClose = {
+                        vm.closeCampaign()
+                        navController.popBackStack()
+                    },
+                    onFalseAlarm = {
+                        vm.markFalseAlarm()
+                        navController.popBackStack()
+                    },
                     onMarkSuspicious = {},
                     onExport = {},
                     onCreatePattern = {},
@@ -297,11 +308,22 @@ private fun batteryOptimizationIntent(packageName: String): Intent =
 private fun HomeHost(
     navController: NavHostController,
     repos: Repositories,
+    lifecycleOwner: LifecycleOwner,
 ) {
     val context = LocalContext.current
     val app = context.applicationContext as Application
     val viewModel = remember(repos) { HomeViewModel(app, repos) }
-    LaunchedEffect(viewModel) { viewModel.refresh() }
+    // Home is the bottom-nav anchor (restoreState), so a one-shot LaunchedEffect would only run
+    // on cold launch. Re-read on every ON_RESUME so returning to the tab (or foregrounding the
+    // app) reflects campaigns closed elsewhere or data seeded under the screen.
+    DisposableEffect(viewModel, lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh()
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     val state by viewModel.state.collectAsState()
 
     HomeRoute(

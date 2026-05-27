@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performScrollTo
 import com.qalqan.antifraud.domain.RiskBand
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +36,7 @@ class CampaignDetailRouteRendersFieldsTest {
         composeRule.setContent {
             CampaignDetailRoute(
                 state = sampleState,
+                onBack = {},
                 onClose = {},
                 onFalseAlarm = {},
                 onMarkSuspicious = {},
@@ -45,6 +47,6 @@ class CampaignDetailRouteRendersFieldsTest {
         composeRule.onNodeWithText("Linked events").assertIsDisplayed()
         composeRule.onNodeWithText("Triggered patterns").assertIsDisplayed()
         composeRule.onNodeWithText("Reasons").assertIsDisplayed()
-        composeRule.onAllNodesWithText("Unknown caller").onFirst().assertIsDisplayed()
+        composeRule.onAllNodesWithText("Unknown caller").onFirst().performScrollTo().assertIsDisplayed()
     }
 }

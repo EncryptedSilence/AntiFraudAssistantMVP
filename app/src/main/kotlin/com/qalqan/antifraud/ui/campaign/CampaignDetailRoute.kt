@@ -3,14 +3,20 @@ package com.qalqan.antifraud.ui.campaign
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -31,6 +37,7 @@ import com.qalqan.antifraud.ui.state.accessibleTouchTarget
 @Suppress("LongParameterList")
 fun CampaignDetailRoute(
     state: CampaignDetailUiState,
+    onBack: () -> Unit,
     onClose: () -> Unit,
     onFalseAlarm: () -> Unit,
     onMarkSuspicious: () -> Unit,
@@ -47,7 +54,15 @@ fun CampaignDetailRoute(
         modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(stringResource(R.string.campaign_detail_title), style = MaterialTheme.typography.titleLarge)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.action_back),
+                )
+            }
+            Text(stringResource(R.string.campaign_detail_title), style = MaterialTheme.typography.titleLarge)
+        }
         Text(stringResource(R.string.campaign_card_started, state.startedAt.toString()))
         Text(stringResource(R.string.campaign_card_last_event, state.lastEventAt.toString()))
         Text(stringResource(R.string.campaign_card_risk, state.band.name.lowercase()))

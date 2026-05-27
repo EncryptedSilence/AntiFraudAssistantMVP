@@ -41,6 +41,7 @@ class Acceptance17ExplainabilityRendersAtLeastThreeReasonsTest {
         composeRule.setContent {
             CampaignDetailRoute(
                 state = state,
+                onBack = {},
                 onClose = {},
                 onFalseAlarm = {},
                 onMarkSuspicious = {},

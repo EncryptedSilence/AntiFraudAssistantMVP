@@ -80,6 +80,7 @@
     <string name="state_permission_denied_default">Требуется разрешение.</string>
     <string name="state_permission_denied_open_settings">Открыть настройки</string>
     <string name="state_offline_default">Нет сети.</string>
+    <string name="action_back">Назад</string>
 
     <!-- Home screen §17.1 -->
     <string name="home_risk_all_clear">Спокойно</string>

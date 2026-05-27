@@ -34,6 +34,7 @@ class Acceptance44WizardGatingTest {
         composeRule.setContent {
             CampaignDetailRoute(
                 state = CampaignDetailUiState(advancedRulesEnabled = false, band = RiskBand.HIGH),
+                onBack = {},
                 onClose = {},
                 onFalseAlarm = {},
                 onMarkSuspicious = {},
@@ -50,6 +51,7 @@ class Acceptance44WizardGatingTest {
         composeRule.setContent {
             CampaignDetailRoute(
                 state = CampaignDetailUiState(advancedRulesEnabled = true, band = RiskBand.HIGH),
+                onBack = {},
                 onClose = {},
                 onFalseAlarm = {},
                 onMarkSuspicious = {},

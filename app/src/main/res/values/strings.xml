@@ -79,6 +79,7 @@
     <string name="state_permission_denied_default">Permission required.</string>
     <string name="state_permission_denied_open_settings">Open settings</string>
     <string name="state_offline_default">Offline.</string>
+    <string name="action_back">Back</string>
 
     <!-- Home screen §17.1 -->
     <string name="home_risk_all_clear">All clear</string>
