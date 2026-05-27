@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Debug-only chain seeder for UX testing of the Campaigns screen. Exported so it can be
+      triggered from adb; present only in debug builds (src/debug). See DebugSeedReceiver.
+        adb shell am broadcast -n com.qalqan.antifraud/.debug.DebugSeedReceiver
+    -->
+    <application>
+        <receiver
+            android:name=".debug.DebugSeedReceiver"
+            android:exported="true" />
+    </application>
+</manifest>
