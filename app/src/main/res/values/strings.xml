@@ -119,6 +119,40 @@
     <string name="campaign_action_export">Export</string>
     <string name="campaign_action_create_pattern">Create pattern from this campaign</string>
 
+    <!-- Campaign detail localization §17.2 (app-layer; see CampaignText.kt) -->
+    <string name="event_type_call">Call</string>
+    <string name="event_type_sms">SMS</string>
+    <string name="event_type_web">Site</string>
+    <string name="event_type_answer">Answer</string>
+    <string name="campaign_event_line">%1$s · %2$s</string>
+    <string name="pattern_name_bank_security_otp">Bank security service / OTP after a call</string>
+    <string name="pattern_name_unknown_call_link_sms">Unknown call followed by a link SMS</string>
+    <string name="pattern_name_authority_spoof_call">Authority impersonation by phone</string>
+    <string name="pattern_name_new_lookalike_domain">Visited a new lookalike domain</string>
+    <string name="pattern_name_multistage_pressure">Multi-stage pressure campaign</string>
+    <string name="reason_call_unknown">An unknown call was received.</string>
+    <string name="reason_call_known">A known contact called.</string>
+    <string name="reason_call_repeated">Repeat call from the same number.</string>
+    <string name="reason_call_direction">Call direction matched.</string>
+    <string name="reason_call_duration">Call duration matched.</string>
+    <string name="reason_generic_call">A call event condition matched.</string>
+    <string name="reason_sms_code">An SMS with a verification code arrived.</string>
+    <string name="reason_sms_link">An SMS with a link arrived.</string>
+    <string name="reason_sms_financial">An SMS with a financial keyword arrived.</string>
+    <string name="reason_sms_security">An SMS with a security keyword arrived.</string>
+    <string name="reason_sms_category">SMS category matched.</string>
+    <string name="reason_generic_sms">An SMS event condition matched.</string>
+    <string name="reason_web_new">A new domain was visited.</string>
+    <string name="reason_web_status">Domain status matched.</string>
+    <string name="reason_web_lookalike">Domain resembles a known organization.</string>
+    <string name="reason_web_risk">Web risk score matched.</string>
+    <string name="reason_generic_web">A web event condition matched.</string>
+    <string name="reason_answer_official_claim">Caller claimed to be an official service.</string>
+    <string name="reason_answer_act_now">You were pressured to act immediately.</string>
+    <string name="reason_answer_confirmed">You answered Yes.</string>
+    <string name="reason_generic_answer">A user-answer condition matched.</string>
+    <string name="reason_generic">A pattern condition matched.</string>
+
     <!-- Patterns screen §17.3 -->
     <string name="patterns_title">Patterns</string>
     <string name="patterns_empty">No patterns yet.</string>

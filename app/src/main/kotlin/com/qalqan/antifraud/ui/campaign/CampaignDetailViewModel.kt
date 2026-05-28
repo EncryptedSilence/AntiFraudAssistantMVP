@@ -3,12 +3,12 @@ package com.qalqan.antifraud.ui.campaign
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.qalqan.antifraud.R
 import com.qalqan.antifraud.database.Repositories
 import com.qalqan.antifraud.domain.CampaignStatus
 import com.qalqan.antifraud.domain.RiskBand
 import com.qalqan.antifraud.domain.RiskEvent
 import com.qalqan.antifraud.patterns.BatchPatternMatcher
-import com.qalqan.antifraud.patterns.PatternExplainer
 import com.qalqan.antifraud.patterns.SeedPatternLoader
 import com.qalqan.antifraud.settings.QuestionFatigueGate
 import com.qalqan.antifraud.settings.QuestionPromptKind
@@ -51,12 +51,13 @@ class CampaignDetailViewModel(
                 }
             val matchResults = BatchPatternMatcher.matchAll(patterns, events)
             val triggeredPairs = patterns.zip(matchResults).filter { (_, r) -> r.matched }
+            val app = getApplication<Application>()
+            // §14 / §17 — reasons are localized in the UI layer (see CampaignText.kt) rather than
+            // going through core PatternExplainer, which is deliberately locale-neutral English.
             val reasons =
-                if (triggeredPairs.isNotEmpty()) {
-                    PatternExplainer.explain(triggeredPairs).reasons.map { it.text }
-                } else {
-                    emptyList()
-                }
+                triggeredPairs
+                    .flatMap { (p, _) -> p.conditions.map { localizedReason(app, it) } }
+                    .distinct()
             val pendingPrompt = computePendingPrompt(campaign.campaignId.value, campaign.campaignRiskBand)
             _state.value =
                 CampaignDetailUiState(
@@ -66,9 +67,14 @@ class CampaignDetailViewModel(
                     band = campaign.campaignRiskBand,
                     linkedEvents =
                         events.map { event ->
-                            "${event.javaClass.simpleName} @ ${event.occurredAt}"
+                            app.getString(
+                                R.string.campaign_event_line,
+                                eventTypeLabel(app, event),
+                                formatInstant(event.occurredAt),
+                            )
                         },
-                    triggeredPatterns = triggeredPairs.map { (p, _) -> p.name },
+                    triggeredPatterns =
+                        triggeredPairs.map { (p, _) -> patternNameFor(app, p.patternId.value, p.name) },
                     reasons = reasons,
                     pendingQuestions = emptyList(),
                     pendingPrompt = pendingPrompt,

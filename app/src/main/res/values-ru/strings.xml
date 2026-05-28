@@ -120,6 +120,40 @@
     <string name="campaign_action_export">Экспорт</string>
     <string name="campaign_action_create_pattern">Создать паттерн из этой цепочки</string>
 
+    <!-- Campaign detail localization §17.2 (app-layer; see CampaignText.kt) -->
+    <string name="event_type_call">Звонок</string>
+    <string name="event_type_sms">SMS</string>
+    <string name="event_type_web">Сайт</string>
+    <string name="event_type_answer">Ответ</string>
+    <string name="campaign_event_line">%1$s · %2$s</string>
+    <string name="pattern_name_bank_security_otp">Служба безопасности банка / код после звонка</string>
+    <string name="pattern_name_unknown_call_link_sms">Неизвестный звонок и SMS со ссылкой</string>
+    <string name="pattern_name_authority_spoof_call">Звонок с выдачей себя за госорган</string>
+    <string name="pattern_name_new_lookalike_domain">Посещён новый похожий домен</string>
+    <string name="pattern_name_multistage_pressure">Многоэтапная схема с давлением</string>
+    <string name="reason_call_unknown">Получен звонок с неизвестного номера.</string>
+    <string name="reason_call_known">Звонил известный контакт.</string>
+    <string name="reason_call_repeated">Повторный звонок с того же номера.</string>
+    <string name="reason_call_direction">Совпало направление звонка.</string>
+    <string name="reason_call_duration">Совпала длительность звонка.</string>
+    <string name="reason_generic_call">Сработало условие по звонку.</string>
+    <string name="reason_sms_code">Пришло SMS с кодом подтверждения.</string>
+    <string name="reason_sms_link">Пришло SMS со ссылкой.</string>
+    <string name="reason_sms_financial">Пришло SMS с финансовым ключевым словом.</string>
+    <string name="reason_sms_security">Пришло SMS с ключевым словом о безопасности.</string>
+    <string name="reason_sms_category">Совпала категория SMS.</string>
+    <string name="reason_generic_sms">Сработало условие по SMS.</string>
+    <string name="reason_web_new">Открыт новый домен.</string>
+    <string name="reason_web_status">Совпал статус домена.</string>
+    <string name="reason_web_lookalike">Домен похож на известную организацию.</string>
+    <string name="reason_web_risk">Совпала оценка риска сайта.</string>
+    <string name="reason_generic_web">Сработало условие по сайту.</string>
+    <string name="reason_answer_official_claim">Звонивший представился официальной службой.</string>
+    <string name="reason_answer_act_now">На вас давили действовать немедленно.</string>
+    <string name="reason_answer_confirmed">Вы ответили «Да».</string>
+    <string name="reason_generic_answer">Сработало условие по ответу пользователя.</string>
+    <string name="reason_generic">Сработало условие паттерна.</string>
+
     <!-- Patterns screen §17.3 -->
     <string name="patterns_title">Паттерны</string>
     <string name="patterns_empty">Паттернов пока нет.</string>

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.qalqan.antifraud.R
 import com.qalqan.antifraud.domain.CampaignStatus
+import com.qalqan.antifraud.ui.home.bandTitle
 import com.qalqan.antifraud.ui.state.EmptyState
 
 /**
@@ -77,9 +78,9 @@ private fun CampaignRowCard(
         onClick = { onOpen(row.campaignId) },
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(stringResource(R.string.campaign_card_started, row.startedAt.toString()))
-            Text(stringResource(R.string.campaign_card_last_event, row.lastEventAt.toString()))
-            Text(stringResource(R.string.campaign_card_risk, row.band.name.lowercase()))
+            Text(stringResource(R.string.campaign_card_started, formatInstant(row.startedAt)))
+            Text(stringResource(R.string.campaign_card_last_event, formatInstant(row.lastEventAt)))
+            Text(stringResource(R.string.campaign_card_risk, bandTitle(row.band)))
         }
     }
 }

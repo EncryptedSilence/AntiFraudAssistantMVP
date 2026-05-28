@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.qalqan.antifraud.R
 import com.qalqan.antifraud.domain.AnswerCode
 import com.qalqan.antifraud.settings.QuestionPromptKind
+import com.qalqan.antifraud.ui.home.bandTitle
 import com.qalqan.antifraud.ui.question.QuestionPromptCard
 import com.qalqan.antifraud.ui.state.LoadingState
 import com.qalqan.antifraud.ui.state.accessibleTouchTarget
@@ -63,9 +64,9 @@ fun CampaignDetailRoute(
             }
             Text(stringResource(R.string.campaign_detail_title), style = MaterialTheme.typography.titleLarge)
         }
-        Text(stringResource(R.string.campaign_card_started, state.startedAt.toString()))
-        Text(stringResource(R.string.campaign_card_last_event, state.lastEventAt.toString()))
-        Text(stringResource(R.string.campaign_card_risk, state.band.name.lowercase()))
+        Text(stringResource(R.string.campaign_card_started, formatInstant(state.startedAt)))
+        Text(stringResource(R.string.campaign_card_last_event, formatInstant(state.lastEventAt)))
+        Text(stringResource(R.string.campaign_card_risk, bandTitle(state.band)))
         Section(R.string.campaign_detail_linked_events, state.linkedEvents)
         Section(R.string.campaign_detail_triggered_patterns, state.triggeredPatterns)
         Section(R.string.campaign_detail_reasons, state.reasons, tag = "Reason")
