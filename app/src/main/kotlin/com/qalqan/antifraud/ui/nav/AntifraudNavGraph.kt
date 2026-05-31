@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -40,6 +41,7 @@ import androidx.navigation.navArgument
 import com.qalqan.antifraud.alerts.AlertPermissionRequester
 import com.qalqan.antifraud.alerts.FullScreenIntentPermissionGate
 import com.qalqan.antifraud.database.Repositories
+import com.qalqan.antifraud.debug.DebugHooks
 import com.qalqan.antifraud.settings.OnboardingStep
 import com.qalqan.antifraud.settings.UserSettings
 import com.qalqan.antifraud.sms.SmsPermissionRequester
@@ -64,6 +66,7 @@ import com.qalqan.antifraud.ui.references.ReferencesRoute
 import com.qalqan.antifraud.ui.references.ReferencesViewModel
 import com.qalqan.antifraud.ui.settings.SettingsRoute
 import com.qalqan.antifraud.ui.settings.SettingsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun AntifraudNavGraph(
@@ -101,16 +104,7 @@ fun AntifraudNavGraph(
                 )
             }
             composable(AntifraudDestination.Campaigns.route) {
-                val app = LocalContext.current.applicationContext as Application
-                val vm = remember(repos) { CampaignsViewModel(app, repos) }
-                LaunchedEffect(vm) { vm.refresh() }
-                val campaignsState by vm.state.collectAsState()
-                CampaignListRoute(
-                    state = campaignsState,
-                    onOpenCampaign = { id ->
-                        navController.navigate(AntifraudDestination.CampaignDetail(id).route)
-                    },
-                )
+                CampaignsHost(navController = navController, repos = repos)
             }
             composable(
                 route = AntifraudDestination.CampaignDetail.ROUTE_PATTERN,
@@ -303,6 +297,36 @@ private fun batteryOptimizationIntent(packageName: String): Intent =
         Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
         Uri.parse("package:$packageName"),
     )
+
+@Composable
+private fun CampaignsHost(
+    navController: NavHostController,
+    repos: Repositories,
+) {
+    val app = LocalContext.current.applicationContext as Application
+    val vm = remember(repos) { CampaignsViewModel(app, repos) }
+    LaunchedEffect(vm) { vm.refresh() }
+    val campaignsState by vm.state.collectAsState()
+    val scope = rememberCoroutineScope()
+    // Debug builds only: DebugInitProvider registers the seeder hook at startup, so this is null
+    // (and the button hidden) in release. Await the seed, then refresh so rows appear immediately.
+    val onSeedDemo: (() -> Unit)? =
+        DebugHooks.seedDemoChains?.let { seed ->
+            {
+                scope.launch {
+                    seed(repos)
+                    vm.refresh()
+                }
+            }
+        }
+    CampaignListRoute(
+        state = campaignsState,
+        onOpenCampaign = { id ->
+            navController.navigate(AntifraudDestination.CampaignDetail(id).route)
+        },
+        onSeedDemo = onSeedDemo,
+    )
+}
 
 @Composable
 private fun HomeHost(

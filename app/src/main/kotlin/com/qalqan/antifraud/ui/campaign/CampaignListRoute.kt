@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ScrollableTabRow
@@ -33,6 +34,7 @@ import com.qalqan.antifraud.ui.state.EmptyState
 fun CampaignListRoute(
     state: CampaignsUiState,
     onOpenCampaign: (String) -> Unit,
+    onSeedDemo: (() -> Unit)? = null,
 ) {
     val tabs =
         listOf(
@@ -53,6 +55,14 @@ fun CampaignListRoute(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp),
                     )
                 }
+            }
+        }
+        onSeedDemo?.let { seed ->
+            Button(
+                onClick = seed,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            ) {
+                Text(stringResource(R.string.debug_seed_demo_chains))
             }
         }
         if (state.rows.isEmpty()) {

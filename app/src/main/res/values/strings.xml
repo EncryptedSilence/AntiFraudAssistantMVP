@@ -104,6 +104,7 @@
     <string name="campaign_tab_archived">Archived</string>
     <string name="campaign_tab_false_positive">False alarm</string>
     <string name="campaign_list_empty">No campaigns yet.</string>
+    <string name="debug_seed_demo_chains">Seed demo chains (debug)</string>
     <string name="campaign_card_started">Started: %1$s</string>
     <string name="campaign_card_last_event">Last event: %1$s</string>
     <string name="campaign_card_risk">Risk: %1$s</string>

@@ -105,6 +105,7 @@
     <string name="campaign_tab_archived">Архив</string>
     <string name="campaign_tab_false_positive">Ложная тревога</string>
     <string name="campaign_list_empty">Цепочек пока нет.</string>
+    <string name="debug_seed_demo_chains">Заполнить демо-цепочками (debug)</string>
     <string name="campaign_card_started">Начало: %1$s</string>
     <string name="campaign_card_last_event">Последнее событие: %1$s</string>
     <string name="campaign_card_risk">Риск: %1$s</string>

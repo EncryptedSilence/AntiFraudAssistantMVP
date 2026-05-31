@@ -10,5 +10,12 @@
         <receiver
             android:name=".debug.DebugSeedReceiver"
             android:exported="true" />
+
+        <!-- Registers DebugHooks before any screen renders so the in-app "Seed demo chains"
+             button appears. Debug-only; not exported (no data is served). -->
+        <provider
+            android:name=".debug.DebugInitProvider"
+            android:authorities="${applicationId}.debuginit"
+            android:exported="false" />
     </application>
 </manifest>
